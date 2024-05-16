@@ -20,6 +20,7 @@ using namespace std;
 5. Top K Frequent Elements: https://leetcode.com/problems/top-k-frequent-elements/description/
 6. String Encode and Decode: https://neetcode.io/problems/string-encode-and-decode
 7. Product of Array Except Self: https://leetcode.com/problems/product-of-array-except-self/description/
+9. Longest Consecutive Sequence: https://leetcode.com/problems/longest-consecutive-sequence/description/
 */
 
 // 1.
@@ -318,5 +319,50 @@ public:
                 ans[i] = allMulRes / nums[i];
         }
         return ans;
+    }
+};
+
+// 8.
+
+// 9.
+class LongestConsecutiveSeq
+{
+    /*
+        For each number which is not seen yet, we will find the longest sequence containing that number
+            we will do it by increasing the windows size by going both left and right of the number
+        T:O(n) S:O(n)
+    */
+public:
+    int longestConsecutive_slow(vector<int> &nums)
+    {
+
+        unordered_map<int, bool> marked; // to find which number is present in constant time
+        int streak = 0;
+
+        for (auto x : nums)
+            marked[x] = false; // false means this numbr has not been used in any sequence
+
+        for (auto start : nums)
+        {
+            if (marked[start] == false) // we will find sequence which includes the number
+            {
+                int end = start;
+                marked[start] = true;
+                while (marked.find(start - 1) != marked.end())
+                {            // this loop finds start of sequence, if start-1 exists only then decrease start
+                    start--; // start-1 is present, we reduce the window by 1 and mark it
+                    marked[start] = true;
+                }
+
+                while (marked.find(end + 1) != marked.end())
+                {          // this loop finds end of sequnece, if end+1 exist only then increase cur
+                    end++; // we increase the window by 1 and mark it
+                    marked[end] = true;
+                }
+
+                streak = max(streak, end - start + 1);
+            }
+        }
+        return streak;
     }
 };
