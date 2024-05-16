@@ -19,7 +19,7 @@ using namespace std;
 4. Group Anagrams: https://leetcode.com/problems/group-anagrams/description/
 5. Top K Frequent Elements: https://leetcode.com/problems/top-k-frequent-elements/description/
 6. String Encode and Decode: https://neetcode.io/problems/string-encode-and-decode
-
+7. Product of Array Except Self: https://leetcode.com/problems/product-of-array-except-self/description/
 */
 
 // 1.
@@ -247,5 +247,76 @@ public:
             i = i + string_size;
         }
         return decoded;
+    }
+};
+
+// 7.
+class Solution
+{
+    /*
+        1. With division:
+            Count of zeros: Two 0s all values will be 0, One 0 all except the index where nums[i] is 0 will be 0
+                            Zero 0s ans[i]=mulAll/nums[i]
+            T:O(n) S:O(n) to store answer
+
+        2. Without division: for ans[i]=leftCumMul[i-1] * rightCumMul[i+1]
+            we will store the answer in leftCumMul which we computed
+            and rightCumMul we will store in a variable when we traverse from end
+            T:O(n) S:O(n) to store answer
+    */
+public:
+    vector<int> productExceptSelfWithoutDivision(vector<int> &nums)
+    {
+
+        int n = nums.size();
+        vector<int> leftCumMul(nums); // we will store answer in this as well
+        if (n <= 1)
+            return leftCumMul;
+
+        for (int i = 1; i < n; i++)
+            leftCumMul[i] = leftCumMul[i - 1] * nums[i];
+
+        int rightCumMul = 1;
+        for (int i = n - 1; i >= 0; i--)
+        {
+            if (i == 0)
+                leftCumMul[i] = rightCumMul;
+            else
+                leftCumMul[i] = leftCumMul[i - 1] * rightCumMul;
+
+            rightCumMul = rightCumMul * nums[i];
+        }
+        return leftCumMul;
+    }
+    vector<int> productExceptSelf(vector<int> &nums)
+    {
+        int zeroCount = 0;
+        int allMulRes = 1;
+        vector<int> ans(nums.size(), 0);
+
+        for (auto n : nums)
+        {
+            if (n == 0)
+                zeroCount++;
+            else
+                allMulRes *= n;
+        }
+
+        if (zeroCount > 1)
+            return ans;
+
+        for (int i = 0; i < ans.size(); i++)
+        {
+            if (zeroCount == 1)
+            {
+                if (nums[i] == 0)
+                    ans[i] = allMulRes;
+                else
+                    ans[i] = 0;
+            }
+            else
+                ans[i] = allMulRes / nums[i];
+        }
+        return ans;
     }
 };
