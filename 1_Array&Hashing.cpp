@@ -17,6 +17,7 @@ using namespace std;
 2. Valid Anagram: https://leetcode.com/problems/valid-anagram/description/
 3. Two Sum: https://leetcode.com/problems/two-sum/description/
 4. Group Anagrams: https://leetcode.com/problems/group-anagrams/description/
+5. Top K Frequent Elements: https://leetcode.com/problems/top-k-frequent-elements/description/
 */
 
 // 1.
@@ -156,5 +157,46 @@ public:
         for (auto p : groupedAnagrams)
             ans.push_back(p.second);
         return ans;
+    }
+};
+
+// 5.
+class topKFreq
+{
+    /*
+        first find freq of all elements, push {freq, number} in min heap of size k at the end get the k elements from min heap
+        T: O(n+nlogk) => O(nlogk)
+        S: O(n+k) hash map + heap
+    */
+public:
+    vector<int> topKFrequent(vector<int> &nums, int k)
+    {
+        unordered_map<int, int> freq;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pqMin;
+        vector<int> topKFreq;
+
+        // get freq
+        for (auto v : nums)
+        {
+            if (freq.find(v) == freq.end())
+                freq[v] = 0;
+            freq[v]++;
+        }
+
+        // push in min heap with max size k allowed
+        for (auto p : freq)
+        {
+            pqMin.push({p.second, p.first});
+            if (pqMin.size() > k)
+                pqMin.pop();
+        }
+
+        // retrieve top k elements
+        while (!pqMin.empty())
+        {
+            topKFreq.push_back(pqMin.top().second);
+            pqMin.pop();
+        }
+        return topKFreq;
     }
 };
