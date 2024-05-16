@@ -15,16 +15,17 @@ using namespace std;
 /*
 1. Contains Duplicate :https://leetcode.com/problems/contains-duplicate/description/
 2. Valid Anagram: https://leetcode.com/problems/valid-anagram/description/
+3. Two Sum: https://leetcode.com/problems/two-sum/description/
 */
 
 // 1.
 class ContainsDuplicate
 {
     /*
-    For sorted array : no need for set, compare i and i-1 index values, if same there is duplicate
+    1. For sorted array : no need for set, compare i and i-1 index values, if same there is duplicate
         T: O(n) S:O(1)
 
-    For unsorted array: use hashmap/set
+    2. For unsorted array: use hashmap/set
         T: O(n) S:O(n)
     */
 public:
@@ -41,7 +42,7 @@ public:
     }
 };
 
-// 2
+// 2.
 class IsAnagram
 {
     /*
@@ -68,5 +69,30 @@ public:
             if (v != 0)
                 return false;
         return true;
+    }
+};
+
+// 3.
+class TwoSum
+{
+    /*
+        1. For Sorted array: use two pointers start and end
+            T:O(n) S:O(1)
+
+        2. For Unsorted array: use hashmap to store the index of each value
+            we will check for nums[i] if target-nums[i] is already present
+            T:O(n) S:O(n)
+    */
+public:
+    vector<int> twoSum(vector<int> &nums, int target)
+    {
+        unordered_map<int, int> value_to_index;
+        for (int i = 0; i < nums.size(); i++)
+        {
+            if (value_to_index.find(target - nums[i]) != value_to_index.end())
+                return {i, value_to_index[target - nums[i]]};
+            value_to_index[nums[i]] = i;
+        }
+        return {};
     }
 };
