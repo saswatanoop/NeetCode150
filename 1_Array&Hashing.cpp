@@ -20,6 +20,7 @@ using namespace std;
 5. Top K Frequent Elements: https://leetcode.com/problems/top-k-frequent-elements/description/
 6. String Encode and Decode: https://neetcode.io/problems/string-encode-and-decode
 7. Product of Array Except Self: https://leetcode.com/problems/product-of-array-except-self/description/
+8. Valid Sudoku: https://leetcode.com/problems/valid-sudoku/description/
 9. Longest Consecutive Sequence: https://leetcode.com/problems/longest-consecutive-sequence/description/
 */
 
@@ -323,6 +324,65 @@ public:
 };
 
 // 8.
+class ValidSudoku
+{
+    bool isRowValid(const vector<vector<char>> &board, const int &row)
+    {
+        unordered_set<char> s;
+        for (int i = 0; i < 9; i++)
+        {
+            if (board[row][i] == '.')
+                continue;
+            if (s.find(board[row][i]) != s.end())
+                return false;
+            s.insert(board[row][i]);
+        }
+        return true;
+    }
+    bool isColValid(const vector<vector<char>> &board, const int &col)
+    {
+        unordered_set<char> s;
+        for (int i = 0; i < 9; i++)
+        {
+            if (board[i][col] == '.')
+                continue;
+            if (s.find(board[i][col]) != s.end())
+                return false;
+            s.insert(board[i][col]);
+        }
+        return true;
+    }
+    bool isSubBoxValid(const vector<vector<char>> &board, const int &row, const int &col)
+    {
+        unordered_set<char> s;
+        for (int k = row; k < row + 3; k++)
+        {
+            for (int l = col; l < col + 3; l++)
+            {
+                if (board[k][l] != '.' && s.find(board[k][l]) != s.end())
+                    return false;
+                s.insert(board[k][l]);
+            }
+        }
+        return true;
+    }
+
+public:
+    bool isValidSudoku(vector<vector<char>> &board)
+    {
+        for (int i = 0; i < 9; i++)
+            if (!(isRowValid(board, i) && isColValid(board, i)))
+                return false;
+
+        // check for sub-boxes
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (!isSubBoxValid(board, 3 * i, 3 * j))
+                    return false;
+
+        return true;
+    }
+};
 
 // 9.
 class LongestConsecutiveSeq
