@@ -251,7 +251,7 @@ public:
 };
 
 // 7.
-class Solution
+class ProductExceptSelf
 {
     /*
         1. With division:
