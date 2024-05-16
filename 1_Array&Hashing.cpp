@@ -18,6 +18,8 @@ using namespace std;
 3. Two Sum: https://leetcode.com/problems/two-sum/description/
 4. Group Anagrams: https://leetcode.com/problems/group-anagrams/description/
 5. Top K Frequent Elements: https://leetcode.com/problems/top-k-frequent-elements/description/
+6. String Encode and Decode: https://neetcode.io/problems/string-encode-and-decode
+
 */
 
 // 1.
@@ -198,5 +200,52 @@ public:
             pqMin.pop();
         }
         return topKFreq;
+    }
+};
+
+// 6.
+class EncodeAndDecode
+{
+    /*
+        We can't use a delimiter as it can be part of the string
+        we will use format: string_size + ',' + orig_string to encode and decode
+
+        n=num of strings m=max size of string
+        Encode: T:O(n*m) S:O(n*m)
+        Decode: T:O(n*m) S:O(n*m)
+    */
+public:
+    string encode(vector<string> &strs)
+    {
+        string encoded = "";
+        for (auto s : strs)
+            encoded += to_string(s.size()) + "," + s;
+        return encoded;
+    }
+
+    vector<string> decode(string s)
+    {
+        vector<string> decoded;
+        int i = 0;
+        string size = ""; // to store size of next string which will be decoded
+        while (i < s.size())
+        {
+            // till ',' is reached we know it is a number
+            while (s[i] != ',')
+            {
+                size += s[i];
+                i++;
+            }
+            // decode: now we will get string of that size
+            i++; // move i from 'i' to start of string
+            int string_size = stoi(size);
+            string orig = s.substr(i, string_size); // got the decoded string
+            decoded.push_back(orig);
+
+            // now look for next string
+            size = "";
+            i = i + string_size;
+        }
+        return decoded;
     }
 };
