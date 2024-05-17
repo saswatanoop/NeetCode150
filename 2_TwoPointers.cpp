@@ -13,12 +13,41 @@
 using namespace std;
 
 /*
+1. Valid Palindrome :https://leetcode.com/problems/valid-palindrome/description/
 4. Container With Most Water :https://leetcode.com/problems/container-with-most-water/description/
 5. Trapping Rain Water :https://leetcode.com/problems/trapping-rain-water/description/
 */
 
-// 4.
+// 1.
+class CheckPalindrome
+{
+public:
+    bool isAlphaNumeric(char c)
+    {
+        return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z');
+    }
 
+    bool isPalindrome(string s)
+    {
+        int n = s.size();
+        int i = 0, j = n - 1;
+        while (i < j)
+        {
+            // i<j check very important in all 3 conditions
+            while (i < j && !isAlphaNumeric(s[i]))
+                i++;
+            while (i < j && !isAlphaNumeric(s[j]))
+                j--;
+            if (i < j && tolower(s[i]) != tolower(s[j]))
+                return false;
+
+            i++;
+            j--;
+        }
+        return true;
+    }
+};
+// 4.
 class ContainerMaxWater
 {
 public:
