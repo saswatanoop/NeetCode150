@@ -14,6 +14,7 @@ using namespace std;
 
 /*
 1. Valid Palindrome :https://leetcode.com/problems/valid-palindrome/description/
+2. Two Sum II - Input Array Is Sorted: https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/description/
 4. Container With Most Water :https://leetcode.com/problems/container-with-most-water/description/
 5. Trapping Rain Water :https://leetcode.com/problems/trapping-rain-water/description/
 */
@@ -47,6 +48,30 @@ public:
         return true;
     }
 };
+
+// 2.
+class TwoSumSortedArray
+{
+public:
+    vector<int> twoSum(vector<int> &nums, int target)
+    {
+
+        int i = 0, j = nums.size() - 1;
+
+        while (i < j)
+        {
+            int sum = nums[i] + nums[j];
+            if (sum == target)
+                break;
+            else if (sum > target)
+                j--;
+            else
+                i++;
+        }
+        return {i + 1, j + 1};
+    }
+};
+
 // 4.
 class ContainerMaxWater
 {
