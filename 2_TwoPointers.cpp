@@ -15,6 +15,7 @@ using namespace std;
 /*
 1. Valid Palindrome :https://leetcode.com/problems/valid-palindrome/description/
 2. Two Sum II - Input Array Is Sorted: https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/description/
+3. 3Sum: https://leetcode.com/problems/3sum/description/
 4. Container With Most Water :https://leetcode.com/problems/container-with-most-water/description/
 5. Trapping Rain Water :https://leetcode.com/problems/trapping-rain-water/description/
 */
@@ -69,6 +70,59 @@ public:
                 i++;
         }
         return {i + 1, j + 1};
+    }
+};
+
+// 3.
+class ThreeSum
+{
+    /*
+        We don't want unique triplets of indexes, we want unique triplets of values
+    */
+public:
+    vector<vector<int>>
+    threeSum(vector<int> &nums)
+    {
+        int target = 0; // it is specified in problem target is 0
+        vector<vector<int>> threeSums;
+        sort(nums.begin(), nums.end());
+        int s = 0, e = nums.size() - 1;
+        while (s < e)
+        {
+            auto ans = twoSum(nums, s + 1, e, target - nums[s]);
+            if (ans.size() > 0)
+                for (auto v : ans)
+                    threeSums.push_back({nums[s], v[0], v[1]});
+
+            s++;
+            // search for new nums[s] value
+            while (s < e && nums[s - 1] == nums[s])
+                s++;
+        }
+        return threeSums;
+    }
+    vector<vector<int>> twoSum(vector<int> &nums, int s, int e, int target)
+    {
+        vector<vector<int>> twoSums;
+        while (s < e)
+        {
+            int sum = nums[s] + nums[e];
+            if (sum == target)
+            {
+                twoSums.push_back({nums[s], nums[e]});
+                // num[s] and num[e] are used
+                s++;
+                e--;
+                // search for new nums[s] value
+                while (s < e && nums[s] == nums[s - 1])
+                    s++;
+            }
+            else if (sum > target)
+                e--;
+            else
+                s++;
+        }
+        return twoSums;
     }
 };
 
