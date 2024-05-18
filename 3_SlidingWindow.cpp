@@ -14,8 +14,10 @@ using namespace std;
 
 /*
 1. Best Time to Buy and Sell Stock: https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/
-
+2. Longest Substring Without Repeating Characters: https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
 */
+
+// 1
 class BuyAndSellStock
 {
     /*
@@ -34,5 +36,33 @@ public:
             minV = min(minV, prices[i]);        // update min buying price
         }
         return prof;
+    }
+};
+
+// 2
+class LongestSubstring
+{
+public:
+    int lengthOfLongestSubstring(string s)
+    {
+        int n = s.size();
+        int winStart = 0, winEnd = 0;
+        int maxSubstrSize = 0;
+        unordered_set<char> char_exist;
+
+        while (winEnd < n)
+        {
+            // we need to remove from left till current char is not present in window
+            while (char_exist.find(s[winEnd]) != char_exist.end())
+            {
+                char_exist.erase(s[winStart]);
+                winStart++;
+            }
+            // now insert the char since it is not present in window
+            char_exist.insert(s[winEnd]);
+            maxSubstrSize = max(maxSubstrSize, winEnd - winStart + 1); // now the window has only unique characters
+            winEnd++;
+        }
+        return maxSubstrSize;
     }
 };
