@@ -15,6 +15,7 @@ using namespace std;
 /*
 1. Best Time to Buy and Sell Stock: https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/
 2. Longest Substring Without Repeating Characters: https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
+6. Sliding Window Maximum: https://leetcode.com/problems/sliding-window-maximum/description/
 */
 
 // 1
@@ -42,6 +43,11 @@ public:
 // 2
 class LongestSubstring
 {
+    /*
+        We will use sliding window approach, keep adding from right till you see an existing character
+        once existing character is there remove from left till it is not present
+        T:O(n) S:O(1)
+    */
 public:
     int lengthOfLongestSubstring(string s)
     {
@@ -64,5 +70,34 @@ public:
             winEnd++;
         }
         return maxSubstrSize;
+    }
+};
+
+// 6
+class MaxSlidingWindow
+{
+public:
+    vector<int> maxSlidingWindow(vector<int> &nums, int k)
+    {
+        deque<int> deq;
+        vector<int> maxValeusInWindow;
+        for (int i = 0; i < k - 1; i++)
+        {
+            while (!deq.empty() && nums[i] >= nums[deq.back()])
+                deq.pop_back();
+            deq.push_back(i);
+        }
+        for (int i = k - 1; i < nums.size(); i++)
+        {
+            while (!deq.empty() && nums[i] >= nums[deq.back()])
+                deq.pop_back();
+            deq.push_back(i);
+
+            // check the window size is of size k from left as well
+            while (deq.front() + k == i)
+                deq.pop_front();
+            maxValeusInWindow.push_back(nums[deq.front()]);
+        }
+        return maxValeusInWindow;
     }
 };
