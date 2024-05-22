@@ -15,7 +15,7 @@ using namespace std;
 /*
 1. Valid Parentheses: https://leetcode.com/problems/valid-parentheses/description/
 2. Min Stack: https://leetcode.com/problems/min-stack/description/
-3.
+3. Evaluate Reverse Polish Notation: https://leetcode.com/problems/evaluate-reverse-polish-notation/description/
 */
 
 // 1.
@@ -109,5 +109,44 @@ public:
     int getMin()
     {
         return ms.top();
+    }
+};
+
+class EvalRPN
+{
+    /*
+        Input: tokens = ["4","13","5","/","+"]
+        Output: 6
+        Explanation: (4 + (13 / 5)) = 6
+
+    */
+public:
+    int evalRPN(vector<string> &tokens)
+    {
+        stack<int> st;
+        unordered_set<string> operations = {"+", "-", "/", "*"};
+        for (auto token : tokens)
+        {
+            if (operations.find(token) == operations.end())
+                st.push(stoi(token));
+            else
+            {
+                int right = st.top();
+                st.pop();
+                int left = st.top();
+                st.pop();
+                int ans;
+                if (token == "+")
+                    ans = left + right;
+                else if (token == "-")
+                    ans = left - right;
+                else if (token == "*")
+                    ans = left * right;
+                else if (token == "/")
+                    ans = left / right;
+                st.push(ans);
+            }
+        }
+        return st.top();
     }
 };
