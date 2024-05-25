@@ -23,6 +23,11 @@ using namespace std;
 // 1.
 class CheckPalindrome
 {
+    /*
+        if the string only had alphanumneric we can move i and j from both the side, the main part of this to find the alphanumeric
+        characters and then check if they are same
+        T:O(n) S:O(1)
+    */
 public:
     bool isAlphaNumeric(char c)
     {
@@ -53,12 +58,14 @@ public:
 // 2.
 class TwoSumSortedArray
 {
+    /*
+        Too easy no need for explanation
+        T:O(n) S:O(1)
+    */
 public:
     vector<int> twoSum(vector<int> &nums, int target)
     {
-
         int i = 0, j = nums.size() - 1;
-
         while (i < j)
         {
             int sum = nums[i] + nums[j];
@@ -77,8 +84,35 @@ public:
 class ThreeSum
 {
     /*
-        We don't want unique triplets of indexes, we want unique triplets of values
+        We don't want unique triplets of indexes, we want unique triplets of values,
+
+        T:O(n^2): nlogn + n*(n-1)
+        S:O(n) //the pairs returned by the twoSum function
     */
+    vector<vector<int>> twoSum(vector<int> &nums, int s, int e, int target)
+    {
+        vector<vector<int>> twoSums;
+        while (s < e)
+        {
+            int sum = nums[s] + nums[e];
+            if (sum == target)
+            {
+                twoSums.push_back({nums[s], nums[e]});
+                // num[s] and num[e] are used
+                s++;
+                e--;
+                // search for new nums[s] value, we want unique pairs whose sum is target
+                while (s < e && nums[s] == nums[s - 1])
+                    s++;
+            }
+            else if (sum > target)
+                e--;
+            else
+                s++;
+        }
+        return twoSums;
+    }
+
 public:
     vector<vector<int>>
     threeSum(vector<int> &nums)
@@ -94,41 +128,23 @@ public:
                 for (auto v : ans)
                     threeSums.push_back({nums[s], v[0], v[1]});
 
+            // nums[s] used,search for new nums[s] value, since all tiplets which has nums[s] are already added, and we need unique ones
             s++;
-            // search for new nums[s] value
             while (s < e && nums[s - 1] == nums[s])
                 s++;
         }
         return threeSums;
-    }
-    vector<vector<int>> twoSum(vector<int> &nums, int s, int e, int target)
-    {
-        vector<vector<int>> twoSums;
-        while (s < e)
-        {
-            int sum = nums[s] + nums[e];
-            if (sum == target)
-            {
-                twoSums.push_back({nums[s], nums[e]});
-                // num[s] and num[e] are used
-                s++;
-                e--;
-                // search for new nums[s] value
-                while (s < e && nums[s] == nums[s - 1])
-                    s++;
-            }
-            else if (sum > target)
-                e--;
-            else
-                s++;
-        }
-        return twoSums;
     }
 };
 
 // 4.
 class ContainerMaxWater
 {
+    /*
+        We will start from max width, with s=0 and e=n-1 and try to find max Water possible in container
+        the vertical line which whose height is lower we will move it and try to use the long vertical line for max water
+        T:O(n), S:O(1)
+    */
 public:
     int maxArea(vector<int> &height)
     {
@@ -151,6 +167,17 @@ public:
 // 5.
 class TrapRainWater
 {
+    /*
+        For each index the max water that can be trapped is = min(rmax,lmax)-height[index] if negative then 0
+        T:O(n) S:O(1)
+
+        1. With Extra space:
+             we will store max height on the lefi of index i and right of index i and use it to find the ans
+
+        2: Without extra space:
+            we will keep two pointers at start and at end and will move the one whose side the max(lmax or rmax) is minimum
+            since we can only store the min(lmax,rmax)-height[i] so just move that side which is lower
+    */
 public:
     int trap_extra_space(vector<int> &height)
     {

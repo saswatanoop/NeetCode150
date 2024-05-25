@@ -290,7 +290,8 @@ public:
         }
         return leftCumMul;
     }
-    vector<int> productExceptSelf(vector<int> &nums)
+
+    vector<int> productExceptSelfWithDivision(vector<int> &nums)
     {
         int zeroCount = 0;
         int allMulRes = 1;
