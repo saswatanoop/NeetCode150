@@ -13,8 +13,78 @@
 using namespace std;
 
 /*
+6. Design Twitter: https://leetcode.com/problems/design-twitter/description/
 7. Find Median from Data Stream: https://leetcode.com/problems/find-median-from-data-stream/description/
 */
+
+// 6
+class Twitter
+{
+    // time variable will be used to know which tweet is latest
+    int time;
+    unordered_map<int, unordered_set<int>> follows;
+    unordered_map<int, vector<pair<int, int>>> tweets; // user->{time,tweets}
+public:
+    Twitter()
+    {
+        this->time = 0;
+    }
+
+    void postTweet(int userId, int tweetId)
+    {
+        // T:O(1)
+        tweets[userId].push_back({time++, tweetId});
+    }
+
+    vector<int> getNewsFeed(int userId)
+    {
+        /*
+            T: users*10*log10=> O(users)
+            we will check 10 recent tweets of people user is following, worst case they can follow all users
+        */
+        vector<int> feed;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq_min;
+
+        // own tweets
+        for (int i = tweets[userId].size() - 1, count = 0; i >= 0 && count < 10; i--, count++)
+            pq_min.push(tweets[userId][i]);
+
+        // tweets from user they are following, start from end as the latest tweets are inserted at end
+        for (auto user_following : follows[userId])
+            for (int i = tweets[user_following].size() - 1, count = 0; i >= 0 && count < 10; i--, count++)
+            {
+                // no need more tweet from this user, since heap already has 10 tweets which are newer than current user
+                if (pq_min.size() >= 10 && pq_min.top().first >= tweets[user_following][i].first)
+                    break;
+
+                pq_min.push(tweets[user_following][i]);
+                if (pq_min.size() > 10)
+                    pq_min.pop();
+            }
+
+        // retrieve the 10 tweets from heap
+        while (!pq_min.empty())
+        {
+            feed.push_back(pq_min.top().second);
+            pq_min.pop();
+        }
+        // the latest should be first, min priority queue had the least recent of the 10 tweets on top
+        reverse(feed.begin(), feed.end());
+        return feed;
+    }
+
+    void follow(int followerId, int followeeId)
+    {
+        // T:O(1)
+        follows[followerId].insert(followeeId);
+    }
+
+    void unfollow(int followerId, int followeeId)
+    {
+        // T:O(1)
+        follows[followerId].erase(followeeId);
+    }
+};
 
 // 7
 class MedianFinder
