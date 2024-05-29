@@ -14,6 +14,7 @@ using namespace std;
 
 /*
 1. Kth Largest Element in a Stream: https://leetcode.com/problems/kth-largest-element-in-a-stream/description/
+2. Last Stone Weight: https://leetcode.com/problems/last-stone-weight/description/
 6. Design Twitter: https://leetcode.com/problems/design-twitter/description/
 7. Find Median from Data Stream: https://leetcode.com/problems/find-median-from-data-stream/description/
 */
@@ -23,7 +24,7 @@ class KthLargest
 {
     /*
         We will use min heap and maintain it's size to be k, so that the Kth largest is at the top of heap
-        T:O(logk)
+        T:O(logk) S:O(k)
     */
     priority_queue<int, vector<int>, greater<int>> pq_min;
     int size;
@@ -52,10 +53,44 @@ public:
     }
 };
 
+// 2
+class LastStone
+{
+    /*
+        We will just simulate the game rules, pick top 2 heaviest and smash them and add it back to remaining stones
+        to get top 2 heaviest stones, with multiple insertions while playing thr game we will use max Heap
+
+        T:O(nlogn) S:O(n)
+    */
+public:
+    int lastStoneWeight(vector<int> &stones)
+    {
+        priority_queue<int> pq_max;
+        for (auto s : stones)
+            pq_max.push(s);
+
+        while (pq_max.size() > 1)
+        {
+            auto y = pq_max.top();
+            pq_max.pop();
+            auto x = pq_max.top();
+            pq_max.pop();
+            // if the weights are same no need to push to queue as both the stones are destroyed
+            if (y != x)
+                pq_max.push(y - x); // y will be >= x
+        }
+        // number of stones remaining can be 0 or 1
+        return pq_max.empty() ? 0 : pq_max.top();
+    }
+};
 // 6
 class Twitter
 {
-    // time variable will be used to know which tweet is latest
+    /*
+        time variable will be used to know which tweet is latest int time;
+        S:O(users+tweets)
+        T: next to each funtion
+    */
     int time;
     unordered_map<int, unordered_set<int>> follows;
     unordered_map<int, vector<pair<int, int>>> tweets; // user->{time,tweets}
@@ -130,6 +165,8 @@ class MedianFinder
         2nd half will be in pq_min
 
         we will maintain pq_max.top() <= pq_min.top()
+        S:O(n)
+        T: next to each funtion
     */
 
     priority_queue<int> pq_max;
