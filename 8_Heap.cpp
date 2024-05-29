@@ -13,9 +13,44 @@
 using namespace std;
 
 /*
+1. Kth Largest Element in a Stream: https://leetcode.com/problems/kth-largest-element-in-a-stream/description/
 6. Design Twitter: https://leetcode.com/problems/design-twitter/description/
 7. Find Median from Data Stream: https://leetcode.com/problems/find-median-from-data-stream/description/
 */
+
+// 1
+class KthLargest
+{
+    /*
+        We will use min heap and maintain it's size to be k, so that the Kth largest is at the top of heap
+        T:O(logk)
+    */
+    priority_queue<int, vector<int>, greater<int>> pq_min;
+    int size;
+
+    // this will make sure the heap size is never greater than k
+    void add_and_maintain_size(const int &val)
+    {
+        // Each insertion will take O(logk) time
+        pq_min.push(val);
+        if (pq_min.size() > size)
+            pq_min.pop();
+    }
+
+public:
+    KthLargest(int k, vector<int> &nums)
+    {
+        size = k;
+        for (auto val : nums)
+            add_and_maintain_size(val);
+    }
+
+    int add(int val)
+    {
+        add_and_maintain_size(val);
+        return pq_min.top();
+    }
+};
 
 // 6
 class Twitter
