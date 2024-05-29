@@ -16,6 +16,7 @@ using namespace std;
 1. Kth Largest Element in a Stream: https://leetcode.com/problems/kth-largest-element-in-a-stream/description/
 2. Last Stone Weight: https://leetcode.com/problems/last-stone-weight/description/
 3. K Closest Points to Origin: https://leetcode.com/problems/k-closest-points-to-origin/description/
+4. Kth Largest Element in an Array: https://leetcode.com/problems/kth-largest-element-in-an-array/description/
 6. Design Twitter: https://leetcode.com/problems/design-twitter/description/
 7. Find Median from Data Stream: https://leetcode.com/problems/find-median-from-data-stream/description/
 */
@@ -119,6 +120,88 @@ public:
         return ans;
     }
 };
+
+// 4
+class KthLargestInArray
+{
+    /*
+    1. QUICK SELECT METHOD
+        T:O(n) Avg case , S:O(1)
+        Two Optimizations to avoid O(n^2) worst case scenario:
+            1. Use random value for pivot
+            2. Use three way parition, this is when multiple same values are present in array
+
+    2. USING MIN HEAP
+        T:O(nlogk) S:O(k)
+    */
+    int generate_random(int s, int e)
+    {
+        return s + rand() % (e - s + 1);
+    }
+    // this is same Sort Colors problem: https://leetcode.com/problems/sort-colors/description/
+    pair<int, int> threeWayPartition(vector<int> &nums, int s, int e, int &pivot)
+    { /*
+          2nd Optimization:
+          this function will return the start and end position of pivot value, all elements with value=pivot will be present in correct index as if they will be present in sorted array
+
+          till l-1 we have <pivot
+          from r+1 we have >pivot
+          from [l to r] we have pivot
+      */
+        int l = s, r = e, i = s;
+        while (i <= r)
+        {
+            if (nums[i] == pivot)
+                i++;
+            else if (nums[i] < pivot)
+            {
+                swap(nums[l], nums[i]);
+                l++;
+                i++;
+            }
+            else
+            {
+                swap(nums[r], nums[i]);
+                r--;
+            }
+        }
+        return {l, r};
+    }
+
+public:
+    int findKthLargest_priority_queue(vector<int> &nums, int k)
+    {
+        priority_queue<int, vector<int>, greater<int>> pq_min;
+        for (auto v : nums)
+        {
+            pq_min.push(v);
+            if (pq_min.size() > k)
+                pq_min.pop();
+        }
+        return pq_min.top();
+    }
+    int findKthLargest(vector<int> &nums, int k)
+    {
+        srand(time(0));
+        int n = nums.size();
+        return findPivotValueAtPosition(nums, 0, n - 1, n - k);
+    }
+    int findPivotValueAtPosition(vector<int> &nums, int s, int e, int pos)
+    {
+        // 1. Optimization: random pivot
+        int pivot = nums[generate_random(s, e)];
+        pair<int, int> pivotPos = threeWayPartition(nums, s, e, pivot);
+
+        // found the value which should be present at pos according to sorted array
+        if (pivotPos.first <= pos && pos <= pivotPos.second)
+            return pivot;
+        else if (pos < pivotPos.first) // go to left half
+            return findPivotValueAtPosition(nums, s, pivotPos.first - 1, pos);
+        else // go to right half
+            return findPivotValueAtPosition(nums, pivotPos.second + 1, e, pos);
+    }
+};
+
 // 6
 class Twitter
 {
