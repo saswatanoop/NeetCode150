@@ -15,6 +15,7 @@ using namespace std;
 /*
 1. Kth Largest Element in a Stream: https://leetcode.com/problems/kth-largest-element-in-a-stream/description/
 2. Last Stone Weight: https://leetcode.com/problems/last-stone-weight/description/
+3. K Closest Points to Origin: https://leetcode.com/problems/k-closest-points-to-origin/description/
 6. Design Twitter: https://leetcode.com/problems/design-twitter/description/
 7. Find Median from Data Stream: https://leetcode.com/problems/find-median-from-data-stream/description/
 */
@@ -81,6 +82,41 @@ public:
         }
         // number of stones remaining can be 0 or 1
         return pq_max.empty() ? 0 : pq_max.top();
+    }
+};
+
+// 3
+class KClosest
+{
+    /*
+        Distance will be ((x-0)^2+(y-0)^2)^0.5, so will just store x^2+y^2 value for distance
+        Use max heap of size k so that kth closest will be at the top
+        T:O(Nlogk)
+        S:O(k)
+    */
+public:
+    vector<vector<int>> kClosest(vector<vector<int>> &points, int k)
+    {
+        vector<vector<int>> ans;
+        priority_queue<pair<int, int>> pq_max;
+
+        // push in max Heap and maintain size k
+        for (int i = 0; i < points.size(); i++)
+        {
+            auto p = points[i];
+            // pushing {distance,index}
+            pq_max.push({p[0] * p[0] + p[1] * p[1], i});
+            if (pq_max.size() > k)
+                pq_max.pop();
+        }
+
+        // retrieve k closest points using the index
+        while (!pq_max.empty())
+        {
+            ans.push_back(points[pq_max.top().second]);
+            pq_max.pop();
+        }
+        return ans;
     }
 };
 // 6
