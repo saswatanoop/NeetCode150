@@ -204,7 +204,7 @@ public:
 };
 
 // 5
-class Solution
+class TaskScheduler
 {
     /*
         T:O(nlog26)=>O(n)
