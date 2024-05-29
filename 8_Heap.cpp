@@ -17,6 +17,7 @@ using namespace std;
 2. Last Stone Weight: https://leetcode.com/problems/last-stone-weight/description/
 3. K Closest Points to Origin: https://leetcode.com/problems/k-closest-points-to-origin/description/
 4. Kth Largest Element in an Array: https://leetcode.com/problems/kth-largest-element-in-an-array/description/
+5. Task Scheduler: https://leetcode.com/problems/task-scheduler/description/
 6. Design Twitter: https://leetcode.com/problems/design-twitter/description/
 7. Find Median from Data Stream: https://leetcode.com/problems/find-median-from-data-stream/description/
 */
@@ -199,6 +200,75 @@ public:
             return findPivotValueAtPosition(nums, s, pivotPos.first - 1, pos);
         else // go to right half
             return findPivotValueAtPosition(nums, pivotPos.second + 1, e, pos);
+    }
+};
+
+// 5
+class Solution
+{
+    /*
+        T:O(nlog26)=>O(n)
+        S:O(26) O(1) PQ of max size 26
+
+        In case we want to print tasks in order, we need to create custom comparator with {freq,i}
+        such that if we have A:10, B:10 and we pop from top the returned order is A,B
+        and when we push back A:9 B:9 the return order again should be A,B
+    */
+public:
+    int leastInterval(vector<char> &tasks, int n)
+    {
+        // get the frequency of each task
+        vector<int> task_freq(26, 0);
+        for (auto task : tasks)
+            task_freq[task - 'A']++;
+
+        // put the task in max heap
+        priority_queue<int> pq_max;
+        for (int i = 0; i < 26; i++)
+            if (task_freq[i] > 0)
+                pq_max.push(task_freq[i]);
+
+        int total_time = 0;
+        int idle_time = 0;
+
+        //  everytime we pop, we performed one operation so increase the time
+        while (!pq_max.empty())
+        {
+            auto task_freq = pq_max.top();
+            pq_max.pop();
+            task_freq--;
+            total_time++;
+
+            int no_of_tasks_left = pq_max.size();
+            // if we have more tasks in pq than n, then we can execute them and no idle time is needed
+            idle_time = max(n - no_of_tasks_left, 0);
+
+            vector<int> task_freqs;
+            if (task_freq > 0)
+                task_freqs.push_back(task_freq);
+
+            // we will get next n tasks if present, else there will be idle time
+            for (int i = 0; i < min(n, no_of_tasks_left); i++)
+            {
+                auto top_freq = pq_max.top();
+                pq_max.pop();
+                top_freq--;
+                total_time++;
+                if (top_freq > 0)
+                    task_freqs.push_back(top_freq);
+            }
+
+            // push the freq of remaining task back to heap
+            for (auto t : task_freqs)
+                pq_max.push(t);
+
+            // no tasks remaining, so no additional idle time is needed
+            if (pq_max.empty())
+                break;
+
+            total_time += idle_time;
+        }
+        return total_time;
     }
 };
 
