@@ -15,6 +15,7 @@ using namespace std;
 /*
 1. Reverse Linked List: https://leetcode.com/problems/reverse-linked-list/description/
 2. Merge Two Sorted Lists: https://leetcode.com/problems/merge-two-sorted-lists/description/
+3. Reorder List: https://leetcode.com/problems/reorder-list/description/
 */
 
 struct ListNode
@@ -104,4 +105,71 @@ public:
     }
 };
 
+// 3
+class ReorderList
+{
+    /*
+        T:O(n) S:O(1)
+        1. break into two halfs
+        2. reverse second half
+        3. merge both the lists first_half and second_half
+    */
+    ListNode *reverseLL(ListNode *head)
+    {
+
+        ListNode *prev = NULL;
+        while (head)
+        {
+            auto next = head->next;
+            head->next = prev;
+            prev = head;
+            head = next;
+        }
+        return prev;
+    }
+
+public:
+    void reorderList(ListNode *head)
+    {
+        if (!head || !head->next)
+            return;
+
+        // break into two halfs, by getting the mid, consider both the cases even and odd length list
+        auto slow = head, fast = head;
+        while (fast && fast->next && fast->next->next)
+        {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        auto first_half = head;
+        auto second_half = slow->next;
+        slow->next = NULL;
+
+        // reverse second half
+        second_half = reverseLL(second_half);
+
+        // merge both the lists first_half and second_half
+        ListNode ans;
+        auto temp = &ans;
+        bool use_first_half = true;
+
+        while (first_half || second_half) // OR used here as elements in first half >= elements in second half
+        {
+            if (use_first_half)
+            {
+                temp->next = first_half;
+                first_half = first_half->next;
+            }
+            else
+            {
+                temp->next = second_half;
+                second_half = second_half->next;
+            }
+            // change the half to use
+            use_first_half = !use_first_half;
+            temp = temp->next;
+        }
+    }
+};
 //
