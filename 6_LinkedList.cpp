@@ -14,6 +14,7 @@ using namespace std;
 
 /*
 1. Reverse Linked List: https://leetcode.com/problems/reverse-linked-list/description/
+2. Merge Two Sorted Lists: https://leetcode.com/problems/merge-two-sorted-lists/description/
 */
 
 struct ListNode
@@ -25,6 +26,7 @@ struct ListNode
     ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
+// 1
 class ReverseLinkList
 {
     /*
@@ -62,3 +64,44 @@ public:
         return root;
     }
 };
+
+// 2
+class MergeTwoSortedList
+{
+    /*
+        Same way we do merge in merge sort
+            T:O(n) S:O(1)
+    */
+public:
+    ListNode *mergeTwoLists(ListNode *list1, ListNode *list2)
+    {
+        // we will use ans.next to store the start of merge list
+        ListNode ans;
+        ListNode *temp = &ans;
+
+        while (list1 && list2)
+        {
+            if (list1->val < list2->val)
+            {
+                temp->next = list1;
+                list1 = list1->next;
+            }
+            else
+            {
+                temp->next = list2;
+                list2 = list2->next;
+            }
+            temp = temp->next;
+        }
+        // attach the remaining list whichever is remaining
+        if (list1)
+            temp->next = list1;
+
+        if (list2)
+            temp->next = list2;
+
+        return ans.next;
+    }
+};
+
+//
