@@ -17,6 +17,7 @@ using namespace std;
 2. Merge Two Sorted Lists: https://leetcode.com/problems/merge-two-sorted-lists/description/
 3. Reorder List: https://leetcode.com/problems/reorder-list/description/
 6. Add Two Numbers: https://leetcode.com/problems/add-two-numbers/description/
+7. Linked List Cycle: https://leetcode.com/problems/linked-list-cycle/
 */
 
 struct ListNode
@@ -206,6 +207,24 @@ public:
                 l2 = l2->next;
         }
         return ans.next;
+    }
+};
+
+// 7
+class CheckCycle
+{
+public:
+    bool hasCycle(ListNode *head)
+    {
+        auto slow = head, fast = head;
+        while (fast && fast->next)
+        {
+            slow = slow->next;
+            fast = fast->next->next;
+            if (slow == fast)
+                return true;
+        }
+        return false;
     }
 };
 //
