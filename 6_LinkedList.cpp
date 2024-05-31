@@ -16,6 +16,7 @@ using namespace std;
 1. Reverse Linked List: https://leetcode.com/problems/reverse-linked-list/description/
 2. Merge Two Sorted Lists: https://leetcode.com/problems/merge-two-sorted-lists/description/
 3. Reorder List: https://leetcode.com/problems/reorder-list/description/
+6. Add Two Numbers: https://leetcode.com/problems/add-two-numbers/description/
 */
 
 struct ListNode
@@ -170,6 +171,41 @@ public:
             use_first_half = !use_first_half;
             temp = temp->next;
         }
+    }
+};
+
+//
+class AddTwoNumbers
+{
+    /*
+        Here the number is alredy given in reverse, if not we will need to do below extra steps
+            1. we need to reverse both lists
+            2. Add both lists
+            3. Return reverse of both lists
+
+    */
+public:
+    ListNode *addTwoNumbers(ListNode *l1, ListNode *l2)
+    {
+        ListNode ans;
+        ListNode *temp = &ans;
+
+        int carry = 0;
+        while (l1 || l2 || carry)
+        {
+            int a = l1 ? l1->val : 0;
+            int b = l2 ? l2->val : 0;
+            int sum = a + b + carry;
+            carry = sum / 10;
+            temp->next = new ListNode(sum % 10);
+            temp = temp->next;
+
+            if (l1)
+                l1 = l1->next;
+            if (l2)
+                l2 = l2->next;
+        }
+        return ans.next;
     }
 };
 //
