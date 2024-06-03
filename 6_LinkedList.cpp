@@ -18,6 +18,8 @@ using namespace std;
 3. Reorder List: https://leetcode.com/problems/reorder-list/description/
 6. Add Two Numbers: https://leetcode.com/problems/add-two-numbers/description/
 7. Linked List Cycle: https://leetcode.com/problems/linked-list-cycle/
+
+10. Merge k Sorted Lists: https://leetcode.com/problems/merge-k-sorted-lists/description/
 */
 
 struct ListNode
@@ -225,6 +227,52 @@ public:
                 return true;
         }
         return false;
+    }
+};
+
+// 10
+class MergeKSortedList
+{
+    /*
+        We will use priority queue to find smallest out of k list and keep pushing the next element of node which is popped
+        k is no of lists, n is max size of each list
+        T:O(nlogk) S:O(k)
+
+    */
+    struct Comp
+    {
+        bool operator()(ListNode *a, ListNode *b)
+        {
+            return a->val > b->val;
+        }
+    };
+
+public:
+    ListNode *mergeKLists(vector<ListNode *> &lists)
+    {
+        // min heap, so that smallest element is on top
+        priority_queue<ListNode *, vector<ListNode *>, Comp> pq_min;
+
+        // push first element of each list
+        for (auto head : lists)
+            if (head)
+                pq_min.push(head);
+
+        ListNode ans;
+        ListNode *temp = &ans;
+
+        while (!pq_min.empty())
+        {
+            auto top = pq_min.top();
+            pq_min.pop();
+            temp->next = top;
+            temp = temp->next;
+            // push next element of popped node in min heap
+            if (top->next)
+                pq_min.push(top->next);
+        }
+        temp->next = NULL;
+        return ans.next;
     }
 };
 //
