@@ -16,6 +16,7 @@ using namespace std;
 1. Subsets: https://leetcode.com/problems/subsets/description/
 2. Subsets II: https://leetcode.com/problems/subsets-ii/description/
 3. Combination Sum: https://leetcode.com/problems/combination-sum/description/
+4. Combination Sum II: https://leetcode.com/problems/combination-sum-ii/description/
 */
 
 // 1
@@ -132,6 +133,7 @@ public:
             all_combinations.push_back(combination);
             return;
         }
+        // we have processed all the elements and did not find a combination
         if (pos >= candidates.size())
             return;
 
@@ -146,6 +148,52 @@ public:
             combinationSum_helper(candidates, pos, target - candidates[pos], combination, all_combinations);
             combination.pop_back();
         }
+    }
+};
+
+// 4
+class CombinationSum2
+{
+public:
+    vector<vector<int>> combinationSum2(vector<int> &candidates, int target)
+    {
+        vector<vector<int>> ans;
+        vector<int> combination;
+        unordered_map<int, int> count;
+        vector<pair<int, int>> freq;
+        for (auto v : candidates)
+            count[v]++;
+        // we will use freq vector instead of original nums vector and follow same logic as combination sum
+        for (auto p : count)
+            freq.push_back(p);
+        combinationSum_helper(freq, 0, target, combination, ans);
+        return ans;
+    }
+    void combinationSum_helper(vector<pair<int, int>> &freq, int pos, int target,
+                               vector<int> &combination, vector<vector<int>> &ans)
+    {
+        // we got one possible combination
+        if (target == 0)
+        {
+            ans.push_back(combination);
+            return;
+        }
+        // we have processed all the elements and did not find a combination
+        if (pos >= freq.size())
+            return;
+
+        // take current: if it's value <= target and it's freq is there
+        if (freq[pos].first <= target && freq[pos].second > 0)
+        {
+            combination.push_back(freq[pos].first);
+            freq[pos].second--;
+            // keep the pos same, we might use same number again if it's freq is still >0
+            combinationSum_helper(freq, pos, target - freq[pos].first, combination, ans);
+            freq[pos].second++;
+            combination.pop_back();
+        }
+        // do not take current
+        combinationSum_helper(freq, pos + 1, target, combination, ans);
     }
 };
 //
