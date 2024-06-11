@@ -15,7 +15,7 @@ using namespace std;
 
 /*
 1. Implement Trie (Prefix Tree): https://leetcode.com/problems/implement-trie-prefix-tree/description/
-2.
+2. Design Add and Search Words Data Structure: https://leetcode.com/problems/design-add-and-search-words-data-structure/
 */
 
 // 1
@@ -74,6 +74,51 @@ public:
         }
         return true;
     }
+    bool serach_with_dot_in_string(string word)
+    {
+        return serach_with_dot_in_string_helper(word, 0, head);
+    }
+    // use backtracking
+    bool serach_with_dot_in_string_helper(string &s, int index, TrieNode *cur)
+    {
+        // if no node available to search for s[index] we can't find the string s
+        if (!cur)
+            return false;
+        // the word is present but is it a prefix of some other word or word itself is present
+        if (index == s.size())
+            return cur->isEnd;
+
+        // if . we need to consider all the children nodes which might match
+        if (s[index] == '.')
+        {
+            for (auto p : cur->children)
+                if (serach_with_dot_in_string_helper(s, index + 1, p.second))
+                    return true;
+            return false;
+        }
+        // check if s[index] is present in current node and the recursively check for index+1
+        return cur->children.find(s[index]) != cur->children.end() && serach_with_dot_in_string_helper(s, index + 1, cur->children[s[index]]);
+    }
 };
 
+// 2
+class WordDictionary
+{
+    Trie t;
+
+public:
+    WordDictionary()
+    {
+    }
+
+    void addWord(string word)
+    {
+        t.insert(word);
+    }
+
+    bool search(string word)
+    {
+        return t.serach_with_dot_in_string(word);
+    }
+};
 //
