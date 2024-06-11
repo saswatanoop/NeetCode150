@@ -144,7 +144,7 @@ public:
     // we will use backtracking as in word search and use trie to search for all words
     void find_words_in_grid(vector<vector<char>> &board, int i, int j, string &ans, TrieNode *cur, vector<string> &all_words)
     {
-        if (i >= board.size() || j >= board[i].size() || !cur || board[i][j] == ' ')
+        if (i < 0 || i >= board.size() || j < 0 || j >= board[i].size() || !cur || board[i][j] == '.')
             return;
 
         if (cur->children.find(board[i][j]) == cur->children.end())
@@ -152,7 +152,7 @@ public:
 
         // mark the i,j as visited, go one level deeper in trie node and add c to ans string
         char c = board[i][j];
-        board[i][j] = ' ';
+        board[i][j] = '.';
         cur = cur->children[c];
         ans += c;
 

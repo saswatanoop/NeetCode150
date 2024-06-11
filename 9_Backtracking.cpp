@@ -17,6 +17,7 @@ using namespace std;
 2. Subsets II: https://leetcode.com/problems/subsets-ii/description/
 3. Combination Sum: https://leetcode.com/problems/combination-sum/description/
 4. Combination Sum II: https://leetcode.com/problems/combination-sum-ii/description/
+7. Word Search: https://leetcode.com/problems/word-search/description/
 */
 
 // 1
@@ -194,6 +195,46 @@ public:
         }
         // do not take current
         combinationSum_helper(freq, pos + 1, target, combination, ans);
+    }
+};
+
+// 7
+class WordSearch
+{
+public:
+    bool exist(vector<vector<char>> &board, string word)
+    {
+        for (int i = 0; i < board.size(); i++)
+            for (int j = 0; j < board[0].size(); j++)
+                if (search(board, i, j, word, 0))
+                    return true;
+        return false;
+    }
+    bool search(vector<vector<char>> &board, int i, int j, string word, int pos)
+    {
+        // all the letters have been matched already
+        if (pos == word.size())
+            return true;
+
+        // out of range, alrady visited or word[index] is different
+        if (i < 0 || i >= board.size() || j < 0 || j >= board[0].size() || board[i][j] == '.' || board[i][j] != word[pos])
+            return false;
+
+        auto last = board[i][j];
+        board[i][j] = '.'; // mark i,j as visited
+
+        bool found = false;
+        int dx[] = {0, 0, -1, 1};
+        int dy[] = {1, -1, 0, 0};
+        for (int k = 0; k < 4; k++)
+            if (search(board, i + dx[k], j + dy[k], word, pos + 1))
+            {
+                found = true; // can' return true here since we need to correct the board before returning
+                break;
+            }
+
+        board[i][j] = last; // reset the board
+        return found;
     }
 };
 //
