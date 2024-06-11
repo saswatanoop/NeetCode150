@@ -15,6 +15,7 @@ using namespace std;
 /*
 1. Subsets: https://leetcode.com/problems/subsets/description/
 2. Subsets II: https://leetcode.com/problems/subsets-ii/description/
+3. Combination Sum: https://leetcode.com/problems/combination-sum/description/
 */
 
 // 1
@@ -110,3 +111,41 @@ public:
         }
     }
 };
+
+// 3
+class CombinationSum
+{
+public:
+    vector<vector<int>> combinationSum(vector<int> &candidates, int target)
+    {
+        vector<vector<int>> all_combinations = {};
+        vector<int> combination = {};
+        combinationSum_helper(candidates, 0, target, combination, all_combinations);
+        return all_combinations;
+    }
+    void combinationSum_helper(vector<int> &candidates, int pos, int target,
+                               vector<int> &combination, vector<vector<int>> &all_combinations)
+    {
+        // we got one possible combination
+        if (target == 0)
+        {
+            all_combinations.push_back(combination);
+            return;
+        }
+        if (pos >= candidates.size())
+            return;
+
+        // do not take current
+        combinationSum_helper(candidates, pos + 1, target, combination, all_combinations);
+
+        // take current if it's value <= target
+        if (candidates[pos] <= target)
+        {
+            combination.push_back(candidates[pos]);
+            // pos will remain as it is, since we can take this item again
+            combinationSum_helper(candidates, pos, target - candidates[pos], combination, all_combinations);
+            combination.pop_back();
+        }
+    }
+};
+//
