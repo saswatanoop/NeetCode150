@@ -14,8 +14,10 @@
 using namespace std;
 /*
 1. Subsets: https://leetcode.com/problems/subsets/description/
+2. Subsets II: https://leetcode.com/problems/subsets-ii/description/
 */
 
+// 1
 class AllSubsets
 {
     void subsets_helper(vector<int> &nums, int pos, vector<int> &subset, vector<vector<int>> &all_subsets)
@@ -62,5 +64,49 @@ public:
         vector<int> subset = {};
         subsets_helper(nums, 0, subset, all_subsets);
         return all_subsets;
+    }
+};
+
+// 2
+class AllUniqueSubsetsWithDuplicates
+{
+public:
+    vector<vector<int>> subsetsWithDup(vector<int> &nums)
+    {
+        vector<vector<int>> ans;
+        vector<int> subset;
+        vector<pair<int, int>> freq;
+        unordered_map<int, int> count;
+        for (auto v : nums)
+            count[v]++;
+        // we will use freq vector instead of original nums vector and follow same logic as subsets
+        for (auto p : count)
+            freq.push_back(p);
+
+        subsetsWithDup_helper(freq, 0, subset, ans);
+        return ans;
+    }
+    void subsetsWithDup_helper(vector<pair<int, int>> &freq, int pos, vector<int> &subset, vector<vector<int>> &ans)
+    {
+        // we have processed all the elements
+        if (pos == freq.size())
+        {
+            ans.push_back(subset);
+            return;
+        }
+
+        // do not take it, all the cases where the current is not in subset
+        subsetsWithDup_helper(freq, pos + 1, subset, ans);
+
+        // take current if atleast 1 item is still present
+        if (freq[pos].second > 0)
+        {
+            subset.push_back(freq[pos].first);
+            // so it can be used at max remaining number of times
+            freq[pos].second--;
+            subsetsWithDup_helper(freq, pos, subset, ans);
+            freq[pos].second++;
+            subset.pop_back();
+        }
     }
 };
