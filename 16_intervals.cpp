@@ -13,8 +13,12 @@
 using namespace std;
 
 /*
+Always clear that at boundary they are at conlfict or not example: [2,5] and [5,9], they may or may not be in conflict
+depending on the problem
+
 1. Insert Interval: https://leetcode.com/problems/insert-interval/
 2. Merge Intervals: https://leetcode.com/problems/merge-intervals/description/
+3. Non-overlapping Intervals: https://leetcode.com/problems/non-overlapping-intervals/description/
 */
 
 // 1
@@ -87,6 +91,41 @@ public:
 };
 
 // 3
+class NonOverLappingIntervals
+{
+    /*
+        We will find the maximum number of activities we can do
+        Min intervals to remove= totalActivities - maxActiviesPossible
+
+        Sort in ascending order by end time
+        T:O(nlogn) S:O(n)
+    */
+    static bool comp(vector<int> const &a, vector<int> const &b)
+    {
+        return a[1] < b[1];
+    }
+
+public:
+    int eraseOverlapIntervals(vector<vector<int>> &intervals)
+    {
+        sort(intervals.begin(), intervals.end(), comp);
+        int maxMeetings = 1;
+        auto last = intervals[0];
+        for (int i = 1; i < intervals.size(); i++)
+        {
+            // can do ith activity, increase the count
+            if (last[1] <= intervals[i][0])
+            {
+                maxMeetings++;
+                last = intervals[i];
+            }
+            // can't attend ith meeting, can store intervals to be erased here
+            else
+                continue;
+        }
+        return intervals.size() - maxMeetings;
+    }
+};
 
 // 4
 
