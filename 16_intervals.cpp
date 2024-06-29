@@ -21,6 +21,7 @@ depending on the problem
 3. Non-overlapping Intervals: https://leetcode.com/problems/non-overlapping-intervals/description/
 4. Meeting Rooms: https://neetcode.io/problems/meeting-schedule
 5. Meeting Rooms II: https://neetcode.io/problems/meeting-schedule-ii
+6. Minimum Interval to Include Each Query: https://leetcode.com/problems/minimum-interval-to-include-each-query/description/
 */
 
 // 1
@@ -204,4 +205,56 @@ public:
         return pq_min.size();
     }
 };
+
+// 6
+class MinIntervalForEachQuery
+{
+    /*
+        We will sort intervals by their size and that interval will be the ans for the queries which lie in that interval
+
+        T:O(ilogi + qlogq + ilogq)
+        S:O(q(unordered map)+q(result array)+q(set))
+    */
+    static bool compare_intervals(const vector<int> &a, const vector<int> &b)
+    {
+        if (a[1] - a[0] == b[1] - b[0])
+            return a[0] < b[0]; // if size is same, return the one whose start time is smaller
+        return a[1] - a[0] < b[1] - b[0];
+    }
+
+public:
+    vector<int> minInterval(vector<vector<int>> &intervals, vector<int> &queries)
+    {
+        vector<int> result(queries.size()); // to store each query ans;
+        set<int> s;                         // it will store all queries in sorted order
+        unordered_map<int, int> ans;
+
+        for (auto q : queries)
+        {
+            s.insert(q);
+            ans[q] = -1; // set as -1 by default
+        }
+        // sorted by the smallest size interval first
+        sort(intervals.begin(), intervals.end(), compare_intervals);
+        // find all queries which are part of intv, set the ans and remove the queries from set
+        for (auto intv : intervals)
+        {
+            if (s.empty())
+                break;
+            auto it = s.lower_bound(intv[0]);       // O(logq), iterator to first value >= intv[0]
+            while (it != s.end() && *it <= intv[1]) // find all queries q, intv[0]<=q<=intv[1]
+            {
+                ans[*it] = intv[1] - intv[0] + 1;
+                it = s.erase(it); // O(1) amortized constant when iterator is used, and returns the next element in order
+            }
+        }
+
+        int i = 0;
+        for (auto q : queries)
+            result[i++] = ans[q];
+
+        return result;
+    }
+};
+
 //
