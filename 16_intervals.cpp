@@ -14,7 +14,10 @@ using namespace std;
 
 /*
 1. Insert Interval: https://leetcode.com/problems/insert-interval/
+2. Merge Intervals: https://leetcode.com/problems/merge-intervals/description/
 */
+
+// 1
 class InsertInterval
 {
     /*
@@ -51,3 +54,40 @@ public:
         return merged;
     }
 };
+
+// 2
+class MergeIntervals
+{
+    /*
+        1. Sort by start time and keep resolving the conflicts untill all intervals are processed
+        T:O(nlogn) S:O(n)
+    */
+public:
+    vector<vector<int>> merge_(vector<vector<int>> &intervals)
+    {
+        vector<vector<int>> merged;
+        sort(intervals.begin(), intervals.end());
+        auto last = intervals[0];
+
+        for (int i = 1; i < intervals.size(); i++)
+        {
+            if (last[1] < intervals[i][0]) // no conflict
+            {
+                merged.push_back(last);
+                last = intervals[i];
+            }
+            else // there is conflict merge them and set the correct end time
+                last[1] = max(last[1], intervals[i][1]);
+        }
+        // push the last one
+        merged.push_back(last);
+
+        return merged;
+    }
+};
+
+// 3
+
+// 4
+
+//
