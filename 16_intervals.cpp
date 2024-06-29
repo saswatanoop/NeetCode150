@@ -19,6 +19,7 @@ depending on the problem
 1. Insert Interval: https://leetcode.com/problems/insert-interval/
 2. Merge Intervals: https://leetcode.com/problems/merge-intervals/description/
 3. Non-overlapping Intervals: https://leetcode.com/problems/non-overlapping-intervals/description/
+4. Meeting Rooms: https://neetcode.io/problems/meeting-schedule
 */
 
 // 1
@@ -100,10 +101,7 @@ class NonOverLappingIntervals
         Sort in ascending order by end time
         T:O(nlogn) S:O(n)
     */
-    static bool comp(vector<int> const &a, vector<int> const &b)
-    {
-        return a[1] < b[1];
-    }
+    static bool comp(vector<int> const &a, vector<int> const &b) { return a[1] < b[1]; }
 
 public:
     int eraseOverlapIntervals(vector<vector<int>> &intervals)
@@ -128,5 +126,47 @@ public:
 };
 
 // 4
+class Interval
+{
+public:
+    int start, end;
+    Interval(int start, int end)
+    {
+        this->start = start;
+        this->end = end;
+    }
+};
+class CheckAllMeetingsPossible
+{
+    /*
+        Sort in increasing order of endTime and try to finish the meeting which finishes earlier
+        T:O(nlogn) S:O(1)
+    */
+    static bool comp(const Interval &a, const Interval &b) { return a.end < b.end; }
 
+public:
+    bool canAttendMeetings(vector<Interval> &intervals)
+    {
+        if (intervals.size() <= 1)
+            return true;
+
+        // sort by the meeting which finishes first
+        sort(intervals.begin(), intervals.end(), comp);
+
+        auto last = intervals[0];
+        for (int i = 1; i < intervals.size(); i++)
+        {
+            // can do the ith meeting
+            if (last.end <= intervals[i].start)
+                last = intervals[i];
+            // can't do ith meeting, we can't do all meetings
+            else
+                return false;
+        }
+
+        return true;
+    }
+};
+
+// 5
 //
