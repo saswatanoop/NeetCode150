@@ -20,6 +20,7 @@ depending on the problem
 2. Merge Intervals: https://leetcode.com/problems/merge-intervals/description/
 3. Non-overlapping Intervals: https://leetcode.com/problems/non-overlapping-intervals/description/
 4. Meeting Rooms: https://neetcode.io/problems/meeting-schedule
+5. Meeting Rooms II: https://neetcode.io/problems/meeting-schedule-ii
 */
 
 // 1
@@ -169,4 +170,38 @@ public:
 };
 
 // 5
+class MinMeetingRoomsRequired
+{
+    /*
+        [1,5] and [5,6] are allowed in one room
+        Min heap will act as meeting rooms, the size of min heap after all the meeting will be the answer
+
+        Sort by start time and start allocating meeting rooms to the meeting which start first,
+        if any one meeting room is free use it, else use a new meeting room
+
+        T: nlogn(sort) + nlogn(heap) => O(nlogn)
+        S:(n) For min heap
+    */
+    static bool comp(const Interval &a, const Interval &b) { return a.start < b.start; }
+
+public:
+    int minMeetingRooms(vector<Interval> &intervals)
+    {
+        sort(intervals.begin(), intervals.end(), comp);
+
+        // to store end time of each meeting and return the earliest one finishing first
+        priority_queue<int, vector<int>, greater<int>> pq_min;
+
+        for (auto interval : intervals)
+        {
+            // if possible to empty a meeting room do it
+            if (!pq_min.empty() && pq_min.top() <= interval.start)
+                pq_min.pop();
+
+            // push the current meeting
+            pq_min.push(interval.end);
+        }
+        return pq_min.size();
+    }
+};
 //
