@@ -150,6 +150,21 @@ public:
         return balanced;
     }
 };
+// 5
+/*
+    Check if the node values are same, then recursively check for both left and right subtrees
+    T: O(n)
+    S: O(h)=>O(n) worst case
+*/
+bool isSameTree(TreeNode *p, TreeNode *q)
+{
+    if (!p && !q) // both do not exist
+        return true;
+    if (p && q)
+        return (p->val == q->val) && isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
+    else // one exist and one do not
+        return false;
+}
 //  ============================================= Binary Search Tree ==============================================
 
 //
