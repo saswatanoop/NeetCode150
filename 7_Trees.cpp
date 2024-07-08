@@ -33,7 +33,7 @@ Binary Tree:
 4. Balanced Binary Tree: https://leetcode.com/problems/balanced-binary-tree/description/
 5. Same Tree: https://leetcode.com/problems/same-tree/description/
 6. Subtree of Another Tree: https://leetcode.com/problems/subtree-of-another-tree/description/
-
+7. Binary Tree Level Order Traversal: https://leetcode.com/problems/binary-tree-level-order-traversal/description/
 
 Binary Search Tree:
 1. Lowest Common Ancestor of a Binary Search Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
@@ -197,6 +197,41 @@ public:
     }
 };
 
+// 7
+class LevelOrderTraversal
+{
+    /*
+        T:O(n)
+        S:O(max size of level)=> O(n) leaves will have n/2 nodes
+    */
+public:
+    vector<vector<int>> levelOrder(TreeNode *root)
+    {
+        if (!root)
+            return {};
+        vector<vector<int>> level_order;
+        queue<TreeNode *> q;
+        q.push(root);
+
+        while (!q.empty())
+        {
+            int level_size = q.size();
+            vector<int> level(level_size);
+            for (int i = 0; i < level_size; i++)
+            {
+                auto temp = q.front();
+                q.pop();
+                level[i] = temp->val;
+                if (temp->left)
+                    q.push(temp->left);
+                if (temp->right)
+                    q.push(temp->right);
+            }
+            level_order.push_back(level);
+        }
+        return level_order;
+    }
+};
 //  ============================================= Binary Search Tree ==============================================
 
 // 1
