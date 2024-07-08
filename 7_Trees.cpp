@@ -24,11 +24,12 @@ struct TreeNode
 };
 /*
 1. Invert Binary Tree/Convert a Binary Tree into its Mirror Tree: https://leetcode.com/problems/invert-binary-tree/description/
+2. Maximum-Depth/Height of Binary Tree: https://leetcode.com/problems/maximum-depth-of-binary-tree/description/
 */
 
 // ============================================= Binary Tree ==============================================
-// 1
 
+// 1
 class InvertBinaryTree
 {
     /*
@@ -50,4 +51,23 @@ public:
     }
 };
 
+// 2
+class HeightOfBT
+{
+    /*
+        Add 1 to height to include current node
+        T: O(n)
+        S: O(h)=>O(n) worst case
+    */
+public:
+    int maxDepth(TreeNode *root)
+    {
+        if (!root)
+            return 0;
+
+        int left_height = maxDepth(root->left);
+        int right_height = maxDepth(root->right);
+        return 1 + max(left_height, right_height);
+    }
+};
 // ============================================= Binary Search Tree ==============================================
