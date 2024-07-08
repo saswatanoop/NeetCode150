@@ -36,6 +36,7 @@ Binary Tree:
 
 
 Binary Search Tree:
+1. Lowest Common Ancestor of a Binary Search Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
 
 */
 
@@ -198,4 +199,34 @@ public:
 
 //  ============================================= Binary Search Tree ==============================================
 
+// 1
+class LCAInBST
+{
+    /*
+        LCA will be the node, where both p and q are divided into 2 diff subtrees
+        In the problem it is given both p and q exists in tree,
+        if not first check if p and q are present in tree
+        T:O(logn)
+        S:O(1)
+    */
+public:
+    TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *p, TreeNode *q)
+    {
+        // check first if p and q exists in tree, if not stated that p and q exists in tree
+        if (p->val > q->val)
+            return lowestCommonAncestor(root, q, p);
+
+        TreeNode *temp = root;
+        while (temp)
+        {
+            if (p->val <= temp->val && temp->val <= q->val)
+                break;
+            else if (temp->val > q->val)
+                temp = temp->left;
+            else
+                temp = temp->right;
+        }
+        return temp;
+    }
+};
 //
