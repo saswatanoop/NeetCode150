@@ -35,7 +35,7 @@ Binary Tree:
 6. Subtree of Another Tree: https://leetcode.com/problems/subtree-of-another-tree/description/
 7. Binary Tree Level Order Traversal: https://leetcode.com/problems/binary-tree-level-order-traversal/description/
 8. Binary Tree Right Side View: https://leetcode.com/problems/binary-tree-right-side-view/description/
-
+9. Count Good Nodes in Binary Tree: https://leetcode.com/problems/count-good-nodes-in-binary-tree/description/
 
 Binary Search Tree:
 1. Lowest Common Ancestor of a Binary Search Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
@@ -273,6 +273,34 @@ public:
     }
 };
 
+// 9
+class GoodNodesInTree
+{
+    /*
+        pass the maxValue till now to both left and right subtree and use it to compute good node
+        This is top down approach
+        T:O(n)
+        S:O(height)=>O(n) height worst case can be n
+    */
+    void goodNodes_helper(TreeNode *root, int &ans, int maxValue)
+    {
+        if (!root)
+            return;
+        if (root->val >= maxValue)
+            ans++;
+        maxValue = max(maxValue, root->val);
+        goodNodes_helper(root->left, ans, maxValue);
+        goodNodes_helper(root->right, ans, maxValue);
+    }
+
+public:
+    int goodNodes(TreeNode *root)
+    {
+        int goodCount = 0;
+        goodNodes(root, goodCount, INT_MIN);
+        return goodCount;
+    }
+};
 //  ============================================= Binary Search Tree ==============================================
 
 // 1
