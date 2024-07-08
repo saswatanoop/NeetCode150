@@ -34,6 +34,8 @@ Binary Tree:
 5. Same Tree: https://leetcode.com/problems/same-tree/description/
 6. Subtree of Another Tree: https://leetcode.com/problems/subtree-of-another-tree/description/
 7. Binary Tree Level Order Traversal: https://leetcode.com/problems/binary-tree-level-order-traversal/description/
+8. Binary Tree Right Side View: https://leetcode.com/problems/binary-tree-right-side-view/description/
+
 
 Binary Search Tree:
 1. Lowest Common Ancestor of a Binary Search Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
@@ -232,6 +234,45 @@ public:
         return level_order;
     }
 };
+
+// 8
+class RightViewOfTree
+{
+    /*
+        Use level order traversal and store the last node of each level
+        T:O(n)
+        S:O(max size of level)=> O(n) leaves will have n/2 nodes
+    */
+public:
+    vector<int> rightSideView(TreeNode *root)
+    {
+        if (!root)
+            return {};
+        vector<int> right_view;
+        queue<TreeNode *> q;
+        q.push(root);
+
+        while (!q.empty())
+        {
+            int level_size = q.size();
+            for (int i = 0; i < level_size; i++)
+            {
+                auto temp = q.front();
+                q.pop();
+
+                if (i == level_size - 1)
+                    right_view.push_back(temp->val);
+
+                if (temp->left)
+                    q.push(temp->left);
+                if (temp->right)
+                    q.push(temp->right);
+            }
+        }
+        return right_view;
+    }
+};
+
 //  ============================================= Binary Search Tree ==============================================
 
 // 1
