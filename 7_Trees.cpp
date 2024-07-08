@@ -150,21 +150,52 @@ public:
         return balanced;
     }
 };
+
 // 5
-/*
-    Check if the node values are same, then recursively check for both left and right subtrees
-    T: O(n)
-    S: O(h)=>O(n) worst case
-*/
-bool isSameTree(TreeNode *p, TreeNode *q)
+bool isSameTree_helper(TreeNode *p, TreeNode *q)
 {
     if (!p && !q) // both do not exist
         return true;
     if (p && q)
-        return (p->val == q->val) && isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
+        return (p->val == q->val) && isSameTree_helper(p->left, q->left) &&
+               isSameTree_helper(p->right, q->right);
     else // one exist and one do not
         return false;
 }
+class IsSameTree
+{
+    /*
+        Check if the node values are same, then recursively check for both left
+       and right subtrees T: O(n) S: O(h)=>O(n) worst case
+    */
+public:
+    bool isSameTree(TreeNode *p, TreeNode *q)
+    {
+        return isSameTree_helper(p, q);
+    }
+};
+// 6
+class IsSubTree
+{
+    /*
+        T:O(n*m) where n and m are size of each tree
+        S:O(m) max height of second tree
+    */
+public:
+    bool isSubtree(TreeNode *root, TreeNode *subRoot)
+    {
+        // both do not exist
+        if (!root && !subRoot)
+            return true;
+        if (root && subRoot)
+            return isSameTree_helper(root, subRoot) ||
+                   isSubtree(root->left, subRoot) ||
+                   isSubtree(root->right, subRoot);
+        else // one exist and one do not
+            return false;
+    }
+};
+
 //  ============================================= Binary Search Tree ==============================================
 
 //
