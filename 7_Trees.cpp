@@ -43,6 +43,7 @@ Binary Search Tree:
 1. Lowest Common Ancestor of a Binary Search Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
 2. Validate Binary Search Tree: https://leetcode.com/problems/validate-binary-search-tree/description/
 3. Kth Smallest Element in a BST: https://leetcode.com/problems/kth-smallest-element-in-a-bst/
+4. Construct BST from given keys: https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/
 */
 
 // ============================================= Binary Tree ==============================================
@@ -564,6 +565,33 @@ public:
         int ans = -1;
         isValidBST_inorder(root, k, ans);
         return ans;
+    }
+};
+
+// 4
+class ConstructBalancedBST
+{
+    /*
+        get the mid and use it for parent and set two halfs for left and right subtrees
+        T:O(n)
+        S:O(n)
+    */
+    TreeNode *sortedArrayToBST_helper(vector<int> &nums, int s, int e)
+    {
+        if (s > e)
+            return NULL;
+        int mid = s + (e - s) / 2;
+        auto parent = new TreeNode(nums[mid]);
+        parent->left = sortedArrayToBST_helper(nums, s, mid - 1);
+        parent->right = sortedArrayToBST_helper(nums, mid + 1, e);
+
+        return parent;
+    }
+
+public:
+    TreeNode *sortedArrayToBST(vector<int> &nums)
+    {
+        return sortedArrayToBST_helper(nums, 0, nums.size() - 1);
     }
 };
 //
