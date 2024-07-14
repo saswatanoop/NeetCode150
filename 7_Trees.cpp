@@ -24,7 +24,6 @@ struct TreeNode
 };
 
 /*
-preorder and order traversal with NULL values will always be unique for each tree
 
 Binary Tree:
 1. Invert Binary Tree/Convert a Binary Tree into its Mirror Tree: https://leetcode.com/problems/invert-binary-tree/description/
@@ -39,6 +38,7 @@ Binary Tree:
 
 Binary Search Tree:
 1. Lowest Common Ancestor of a Binary Search Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
+2. Validate Binary Search Tree: https://leetcode.com/problems/validate-binary-search-tree/description/
 
 */
 
@@ -48,9 +48,10 @@ Binary Search Tree:
 class InvertBinaryTree
 {
     /*
-    swap left and right and recursively do the same for left and right sub trees
-    T: O(n)
-    S: O(height of tree) => O(n) worst case
+    =======Top Down========
+        Swap left and right using temp and recursively do the same for left and right sub trees
+        T: O(n)
+        S: O(height of tree) => O(n) worst case
     */
 public:
     TreeNode *invertTree(TreeNode *node)
@@ -70,6 +71,7 @@ public:
 class HeightOfBT
 {
     /*
+    =======Bottom Up========
         Add 1 to height to include current node
         T: O(n)
         S: O(h)=>O(n) worst case
@@ -90,11 +92,13 @@ public:
 class DiameterOfBT
 {
     /*
+    =======Bottom Up========
         We will compute the diameter in each node with bottom up approach,
-        the helper function returns the longest path which ends at root, which can be used by the parent node for diameter
+        The helper function returns the longest path from subtree which can be connected to root
 
         *IMPORTANT*
-        We are computing number of nodes in diameter the problem wants edges, so it would be (no of nodes - 1)
+        We are computing number of nodes in diameter but the problem wants no of edges in diameter,
+        so edges would be edges = (no of nodes - 1)
 
         T:O(n)
         S:O(height) => O(n) worst case
@@ -126,6 +130,7 @@ public:
 class IsBalancedBT
 {
     /*
+    =======Bottom Up========
         We will check if the tree is balanced in each node with bottom up approach, and return height of the subtree
         T: O(n)
         S: O(h)=>O(n) worst case
@@ -138,6 +143,7 @@ class IsBalancedBT
         int left_height = isBalanced_helper(root->left, balanced);
         int right_height = isBalanced_helper(root->right, balanced);
 
+        // at each node the height diff between 2 subtrees should not be >1
         if (abs(left_height - right_height) > 1)
             balanced = false;
 
@@ -157,6 +163,7 @@ public:
 // 5
 bool isSameTree_helper(TreeNode *p, TreeNode *q)
 {
+    // =======Top Down========
     if (!p && !q) // both do not exist
         return true;
     if (p && q)
@@ -168,8 +175,10 @@ bool isSameTree_helper(TreeNode *p, TreeNode *q)
 class IsSameTree
 {
     /*
-        Check if the node values are same, then recursively check for both left
-       and right subtrees T: O(n) S: O(h)=>O(n) worst case
+    =======Top Down========
+    Check if the node values are same, then recursively check for both left and right subtrees
+    T: O(n)
+    S: O(h)=>O(n) worst case
     */
 public:
     bool isSameTree(TreeNode *p, TreeNode *q)
@@ -181,6 +190,8 @@ public:
 class IsSubTree
 {
     /*
+    =======Top Down========
+        For each node in tree we will check if that node and subtree are same trees
         T:O(n*m) where n and m are size of each tree
         S:O(m) max height of second tree
     */
@@ -203,6 +214,7 @@ public:
 class LevelOrderTraversal
 {
     /*
+    =======Level Order Traversal========
         T:O(n)
         S:O(max size of level)=> O(n) leaves will have n/2 nodes
     */
@@ -239,6 +251,7 @@ public:
 class RightViewOfTree
 {
     /*
+    =======Level Order Traversal========
         Use level order traversal and store the last node of each level
         T:O(n)
         S:O(max size of level)=> O(n) leaves will have n/2 nodes
@@ -277,8 +290,8 @@ public:
 class GoodNodesInTree
 {
     /*
+    =======Top Down========
         pass the maxValue till now to both left and right subtree and use it to compute good node
-        This is top down approach
         T:O(n)
         S:O(height)=>O(n) height worst case can be n
     */
@@ -297,7 +310,7 @@ public:
     int goodNodes(TreeNode *root)
     {
         int goodCount = 0;
-        goodNodes(root, goodCount, INT_MIN);
+        goodNodes_helper(root, goodCount, INT_MIN);
         return goodCount;
     }
 };
@@ -307,9 +320,11 @@ public:
 class LCAInBST
 {
     /*
+    =======Top Down========
         LCA will be the node, where both p and q are divided into 2 diff subtrees
-        In the problem it is given both p and q exists in tree,
-        if not first check if p and q are present in tree
+        *IMPORTANT*
+        In the problem it is given both p and q exists in tree, if not first check if p and q are present in tree
+
         T:O(logn)
         S:O(1)
     */
@@ -317,20 +332,71 @@ public:
     TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *p, TreeNode *q)
     {
         // check first if p and q exists in tree, if not stated that p and q exists in tree
+        // we want p->val to be <= q->val
         if (p->val > q->val)
             return lowestCommonAncestor(root, q, p);
 
         TreeNode *temp = root;
         while (temp)
         {
+            // found the LCA
             if (p->val <= temp->val && temp->val <= q->val)
                 break;
+            // if node is bigger than both p and q go left in BST
             else if (temp->val > q->val)
                 temp = temp->left;
             else
                 temp = temp->right;
         }
         return temp;
+    }
+};
+
+// 2
+class IsValidBST
+{
+    /*
+    Two Ways:
+        1. Inorder Traversal and check if the array is sorted
+        2. Top Down: pass a range between which the value of node should be
+
+    Both Ways:
+        T:O(n)
+        S:O(n)
+    */
+    bool isValidBST_helper(TreeNode *root, long minAllow, long maxAllow)
+    {
+        if (!root)
+            return true;
+
+        // check if current root is valid and then check for subtrees
+        return (root->val > minAllow && root->val < maxAllow) &&
+               isValidBST_helper(root->left, minAllow, root->val) &&
+               isValidBST_helper(root->right, root->val, maxAllow);
+    }
+    void isValidBST_inorder(TreeNode *root, vector<int> &inorder)
+    {
+        if (!root)
+            return;
+
+        isValidBST_inorder(root->left, inorder);
+        inorder.push_back(root->val);
+        isValidBST_inorder(root->right, inorder);
+    }
+
+public:
+    bool isValidBSTTopDown(TreeNode *root)
+    {
+        return isValidBST_helper(root, LONG_MIN, LONG_MAX);
+    }
+    bool isValidBST(TreeNode *root)
+    {
+        vector<int> inorder;
+        isValidBST_inorder(root, inorder);
+        for (int i = 0; i < inorder.size() - 1; i++)
+            if (inorder[i] >= inorder[i + 1])
+                return false;
+        return true;
     }
 };
 //
