@@ -38,6 +38,7 @@ Binary Tree:
 10. Construct Binary Tree from Preorder and Inorder Traversal: https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/
 11. Binary Tree Maximum Path Sum: https://leetcode.com/problems/binary-tree-maximum-path-sum/
 12. Serialize and Deserialize Binary Tree: https://leetcode.com/problems/serialize-and-deserialize-binary-tree/description/
+13. Populating Next Right Pointers in Each Node: https://leetcode.com/problems/populating-next-right-pointers-in-each-node/description/
 
 Binary Search Tree:
 1. Lowest Common Ancestor of a Binary Search Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
@@ -426,6 +427,45 @@ public:
     {
         stringstream tree(data);
         return deserialize_helper(tree);
+    }
+};
+
+// 13
+class Solution
+{
+    /*
+    we will use Level order traversal for any kind of tree to set right pointers
+        T:O(n)
+        S:O(n)
+    */
+public:
+    Node *connect(Node *root)
+    {
+        if (!root)
+            return root;
+        queue<Node *> q;
+        q.push(root);
+
+        while (!q.empty())
+        {
+            int level_size = q.size();
+            for (int i = 0; i < level_size; i++)
+            {
+                auto top = q.front();
+                q.pop();
+                // populating the next pointer
+                if (i == level_size - 1)
+                    top->next = NULL;
+                else
+                    top->next = q.front();
+                // push children
+                if (top->left)
+                    q.push(top->left);
+                if (top->right)
+                    q.push(top->right);
+            }
+        }
+        return root;
     }
 };
 //  ============================================= Binary Search Tree ==============================================
