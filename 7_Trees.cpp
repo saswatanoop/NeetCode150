@@ -36,7 +36,7 @@ Binary Tree:
 8. Binary Tree Right Side View: https://leetcode.com/problems/binary-tree-right-side-view/description/
 9. Count Good Nodes in Binary Tree: https://leetcode.com/problems/count-good-nodes-in-binary-tree/description/
 10. Construct Binary Tree from Preorder and Inorder Traversal: https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/
-
+11. Binary Tree Maximum Path Sum: https://leetcode.com/problems/binary-tree-maximum-path-sum/
 
 Binary Search Tree:
 1. Lowest Common Ancestor of a Binary Search Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
@@ -321,6 +321,7 @@ public:
 class BTFromPreAndIn
 {
     /*
+    =======Top Down========
         We will use preorder to know the root node which we will create and inorder to know the left and right subtrees
         T:O(n)
         S:O(n)
@@ -347,6 +348,39 @@ public:
             inorder_index[inorder[i]] = i;
         int index_preorder = 0;
         return buildTree_helper(preorder, index_preorder, inorder_index, 0, preorder.size() - 1);
+    }
+};
+
+// 11
+class BTMaxPathSum
+{
+    /*
+    The helper function returns the longest path from subtree which can be connected to root
+        T:O(n)
+        S:O(height)=>O(n)
+    */
+    int maxPathSum_helper(TreeNode *root, int &ans)
+    {
+        if (!root)
+            return 0;
+
+        int left_path_sum = maxPathSum_helper(root->left, ans);
+        int right_path_sum = maxPathSum_helper(root->right, ans);
+
+        // path_with_root can be > root+left+right because there can be negative numbers in BT
+        int path_with_root = max({root->val, left_path_sum + root->val, right_path_sum + root->val});
+        // all cases: root, root+left, root+right, root+left+right, first 3 are in path_with_root
+        ans = max({ans, path_with_root, root->val + left_path_sum + right_path_sum});
+
+        return path_with_root;
+    }
+
+public:
+    int maxPathSum(TreeNode *root)
+    {
+        int ans = INT_MIN;
+        maxPathSum_helper(root, ans);
+        return ans;
     }
 };
 
