@@ -39,7 +39,7 @@ Binary Tree:
 Binary Search Tree:
 1. Lowest Common Ancestor of a Binary Search Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
 2. Validate Binary Search Tree: https://leetcode.com/problems/validate-binary-search-tree/description/
-
+3. Kth Smallest Element in a BST: https://leetcode.com/problems/kth-smallest-element-in-a-bst/
 */
 
 // ============================================= Binary Tree ==============================================
@@ -397,6 +397,60 @@ public:
             if (inorder[i] >= inorder[i + 1])
                 return false;
         return true;
+    }
+};
+
+// 3
+class KthSmallestInBST
+{
+    /*
+    Iterative & Recursive
+        T:O(k)=>O(n) worst case k can be n
+        S:O(height)=>O(n) worst case
+    */
+    void isValidBST_inorder(TreeNode *root, int &k, int &ans)
+    {
+        if (!root)
+            return;
+
+        isValidBST_inorder(root->left, k, ans);
+        if (k == 1)
+            ans = root->val;
+        k--;
+        isValidBST_inorder(root->right, k, ans);
+    }
+
+public:
+    int kthSmallest_iterative(TreeNode *root, int k)
+    {
+        stack<TreeNode *> s;
+        while (root)
+        {
+            s.push(root);
+            root = root->left;
+        }
+
+        while (!s.empty())
+        {
+            if (k == 1)
+                return s.top()->val;
+            k--;
+            auto inorder_next_element = s.top();
+            s.pop();
+            auto node = inorder_next_element->right;
+            while (node)
+            {
+                s.push(node);
+                node = node->left;
+            }
+        }
+        return -1;
+    }
+    int kthSmallest(TreeNode *root, int k)
+    {
+        int ans = -1;
+        isValidBST_inorder(root, k, ans);
+        return ans;
     }
 };
 //
