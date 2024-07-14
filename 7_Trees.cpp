@@ -37,6 +37,7 @@ Binary Tree:
 9. Count Good Nodes in Binary Tree: https://leetcode.com/problems/count-good-nodes-in-binary-tree/description/
 10. Construct Binary Tree from Preorder and Inorder Traversal: https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/
 11. Binary Tree Maximum Path Sum: https://leetcode.com/problems/binary-tree-maximum-path-sum/
+12. Serialize and Deserialize Binary Tree: https://leetcode.com/problems/serialize-and-deserialize-binary-tree/description/
 
 Binary Search Tree:
 1. Lowest Common Ancestor of a Binary Search Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
@@ -384,6 +385,48 @@ public:
     }
 };
 
+// 12
+class Codec
+{
+    /*
+        preorder and post order traversal with NULL values will always be unique for each tree
+        We will use prorder to serialize the tree:
+        Serialize:
+        T:O(n) S:O(n)
+        DeSerialize
+        T:O(n) S:O(n)
+    */
+    TreeNode *deserialize_helper(stringstream &tree)
+    {
+        string temp;
+        getline(tree, temp, ',');
+        if (temp == "#")
+            return NULL;
+        TreeNode *root = new TreeNode(stoi(temp));
+        root->left = deserialize_helper(tree);
+        root->right = deserialize_helper(tree);
+
+        return root;
+    }
+
+public:
+    // Encodes a tree to a single string.
+    string serialize(TreeNode *root)
+    {
+        // for leaf nodes
+        if (!root)
+            return "#";
+        // we will use preorder traversal
+        return to_string(root->val) + ',' + serialize(root->left) + ',' + serialize(root->right);
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode *deserialize(string data)
+    {
+        stringstream tree(data);
+        return deserialize_helper(tree);
+    }
+};
 //  ============================================= Binary Search Tree ==============================================
 
 // 1
