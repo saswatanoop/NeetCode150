@@ -35,6 +35,8 @@ Binary Tree:
 7. Binary Tree Level Order Traversal: https://leetcode.com/problems/binary-tree-level-order-traversal/description/
 8. Binary Tree Right Side View: https://leetcode.com/problems/binary-tree-right-side-view/description/
 9. Count Good Nodes in Binary Tree: https://leetcode.com/problems/count-good-nodes-in-binary-tree/description/
+10. Construct Binary Tree from Preorder and Inorder Traversal: https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/
+
 
 Binary Search Tree:
 1. Lowest Common Ancestor of a Binary Search Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
@@ -314,6 +316,40 @@ public:
         return goodCount;
     }
 };
+
+// 10
+class BTFromPreAndIn
+{
+    /*
+        We will use preorder to know the root node which we will create and inorder to know the left and right subtrees
+        T:O(n)
+        S:O(n)
+    */
+    TreeNode *buildTree_helper(vector<int> &preorder, int &index_preorder, unordered_map<int, int> &inorder_index, int inorder_start, int inorder_end)
+    {
+
+        if (inorder_start > inorder_end)
+            return NULL;
+
+        TreeNode *root = new TreeNode(preorder[index_preorder]);
+        index_preorder++;
+        // which values will now go to left and right sutree will depend upon inorder_start, inorder_index[root->val] and
+        root->left = buildTree_helper(preorder, index_preorder, inorder_index, inorder_start, inorder_index[root->val] - 1);
+        root->right = buildTree_helper(preorder, index_preorder, inorder_index, inorder_index[root->val] + 1, inorder_end);
+        return root;
+    }
+
+public:
+    TreeNode *buildTree(vector<int> &preorder, vector<int> &inorder)
+    {
+        unordered_map<int, int> inorder_index;
+        for (int i = 0; i < inorder.size(); i++)
+            inorder_index[inorder[i]] = i;
+        int index_preorder = 0;
+        return buildTree_helper(preorder, index_preorder, inorder_index, 0, preorder.size() - 1);
+    }
+};
+
 //  ============================================= Binary Search Tree ==============================================
 
 // 1
