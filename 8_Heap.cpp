@@ -20,6 +20,7 @@ using namespace std;
 5. Task Scheduler: https://leetcode.com/problems/task-scheduler/description/
 6. Design Twitter: https://leetcode.com/problems/design-twitter/description/
 7. Find Median from Data Stream: https://leetcode.com/problems/find-median-from-data-stream/description/
+8. Smallest Range Covering Elements from K Lists: https://leetcode.com/problems/smallest-range-covering-elements-from-k-lists/description/
 */
 
 // 1
@@ -391,3 +392,60 @@ public:
         return pq_max.top();
     }
 };
+
+// 8
+class Compare
+{
+public:
+    bool operator()(const vector<int> &a, const vector<int> &b)
+    {
+        return a[2] > b[2];
+    }
+};
+class SmallestRange
+{
+    /*
+        get the min k elements from each list and try to find the answer, keep finding the next element from list which has smaller value
+        T:O(nlogk)
+        S:O(k)
+    */
+public:
+    vector<int> smallestRange(vector<vector<int>> &nums)
+    {
+        int n = nums.size();
+        priority_queue<vector<int>, vector<vector<int>>, Compare> pq_min; //[i,j,k] i=>list, j index in that list, k value of nums[i][j]
+
+        int gmin = 0, gmax = INT_MAX; // this will store the actual answer
+        int lmax = INT_MIN;           // this will get us the local maxima and local minima will be top of the heap
+
+        for (int i = 0; i < n; i++)
+        {
+            pq_min.push({i, 0, nums[i][0]});
+            lmax = max(lmax, nums[i][0]);
+        }
+
+        while (pq_min.size() == n)
+        {
+            auto top = pq_min.top();
+            pq_min.pop();
+            // see if we found a better answer
+            if (lmax - top[2] < gmax - gmin)
+            {
+                gmax = lmax;
+                gmin = top[2];
+            }
+
+            int list_pos = top[0];
+            int index_of_list = top[1];
+            if (index_of_list + 1 < nums[list_pos].size()) // if the list has more elements to insert
+            {
+                index_of_list++;
+                pq_min.push({list_pos, index_of_list, nums[list_pos][index_of_list]});
+                lmax = max(lmax, nums[list_pos][index_of_list]);
+            }
+        }
+
+        return {gmin, gmax};
+    }
+};
+//
