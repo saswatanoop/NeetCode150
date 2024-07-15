@@ -25,6 +25,8 @@ struct TreeNode
 struct Node
 {
     int key;
+    int val;
+    int data;
     struct Node *left;
     struct Node *right;
     struct Node *next;
@@ -32,6 +34,8 @@ struct Node
     Node(int x)
     {
         key = x;
+        val = x;
+        data = x;
         left = NULL;
         right = NULL;
         next = NULL;
@@ -59,8 +63,9 @@ Binary Search Tree:
 1. Lowest Common Ancestor of a Binary Search Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
 2. Validate Binary Search Tree: https://leetcode.com/problems/validate-binary-search-tree/description/
 3. Kth Smallest Element in a BST: https://leetcode.com/problems/kth-smallest-element-in-a-bst/
-4. Construct BST from given keys: https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/
-5. Find the inorder predecessor/successor of a given Key in BST: https://www.geeksforgeeks.org/problems/predecessor-and-successor/1
+4. Kth largest element in BST: https://www.geeksforgeeks.org/problems/kth-largest-element-in-bst/1
+5. Construct BST from given keys: https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/
+6. Find the inorder predecessor/successor of a given Key in BST: https://www.geeksforgeeks.org/problems/predecessor-and-successor/1
 */
 
 // ============================================= Binary Tree ==============================================
@@ -447,7 +452,7 @@ public:
 };
 
 // 13
-class Solution
+class PopulateNextPointers
 {
     /*
     we will use Level order traversal for any kind of tree to set right pointers
@@ -625,6 +630,35 @@ public:
 };
 
 // 4
+class KthLargestInBST
+{
+    /*
+    to get elements in decreasing order, we will use reverse inorder RNL
+    T:O(k)
+    S:O(h)=>O(n)
+    */
+    void reverse_inorder(Node *root, int &ans, int &k)
+    {
+        if (!root || ans != -1)
+            return;
+
+        reverse_inorder(root->right, ans, k);
+        if (k == 1)
+            ans = root->data;
+        k--;
+        reverse_inorder(root->left, ans, k);
+    }
+
+public:
+    int kthLargest(Node *root, int k)
+    {
+        int ans = -1;
+        reverse_inorder(root, ans, k);
+        return ans;
+    }
+};
+
+// 5
 class ConstructBalancedBST
 {
     /*
@@ -650,7 +684,7 @@ public:
         return sortedArrayToBST_helper(nums, 0, nums.size() - 1);
     }
 };
-// 4
+// 6
 class InorderPreAndSuc
 {
     /*
