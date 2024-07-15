@@ -22,6 +22,21 @@ struct TreeNode
     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
                                                        right(right) {}
 };
+struct Node
+{
+    int key;
+    struct Node *left;
+    struct Node *right;
+    struct Node *next;
+
+    Node(int x)
+    {
+        key = x;
+        left = NULL;
+        right = NULL;
+        next = NULL;
+    }
+};
 
 /*
 
@@ -45,6 +60,7 @@ Binary Search Tree:
 2. Validate Binary Search Tree: https://leetcode.com/problems/validate-binary-search-tree/description/
 3. Kth Smallest Element in a BST: https://leetcode.com/problems/kth-smallest-element-in-a-bst/
 4. Construct BST from given keys: https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/
+5. Find the inorder predecessor/successor of a given Key in BST: https://www.geeksforgeeks.org/problems/predecessor-and-successor/1
 */
 
 // ============================================= Binary Tree ==============================================
@@ -632,6 +648,43 @@ public:
     TreeNode *sortedArrayToBST(vector<int> &nums)
     {
         return sortedArrayToBST_helper(nums, 0, nums.size() - 1);
+    }
+};
+// 4
+class InorderPreAndSuc
+{
+    /*
+    We can use inorder but that will take O(n) time so We will use BST to our advantage and dicard other half while searching
+        T:O(2*h)
+        S:O(1)
+    */
+public:
+    void findPreSuc(Node *root, Node *&pre, Node *&suc, int key)
+    {
+        auto temp = root;
+        while (temp)
+        {
+            // the temp can be the answer but we will try to find more close value
+            if (temp->key > key)
+            {
+                suc = temp;
+                temp = temp->left;
+            }
+            else
+                temp = temp->right;
+        }
+        temp = root;
+        while (temp)
+        {
+            // the temp can be the answer but we will try to find more close value
+            if (temp->key < key)
+            {
+                pre = temp;
+                temp = temp->right;
+            }
+            else
+                temp = temp->left;
+        }
     }
 };
 //
