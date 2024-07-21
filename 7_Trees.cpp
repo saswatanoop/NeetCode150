@@ -47,6 +47,7 @@ BT Traversals:
 1. Preorder: Recursive, Iterative, Morris: https://leetcode.com/problems/binary-tree-preorder-traversal/description/
 2. Inorder: Recursive, Iterative, Morris: https://leetcode.com/problems/binary-tree-inorder-traversal/
 3. Postorder: Recursive, Iterative: https://leetcode.com/problems/binary-tree-postorder-traversal/
+4. Binary Tree Level Order Traversal: https://leetcode.com/problems/binary-tree-level-order-traversal/description/
 
 Binary Tree:
 1. Invert Binary Tree/Convert a Binary Tree into its Mirror Tree: https://leetcode.com/problems/invert-binary-tree/description/
@@ -70,6 +71,7 @@ Binary Search Tree:
 4. Kth largest element in BST: https://www.geeksforgeeks.org/problems/kth-largest-element-in-bst/1
 5. Construct BST from given keys: https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/
 6. Find the inorder predecessor/successor of a given Key in BST: https://www.geeksforgeeks.org/problems/predecessor-and-successor/1
+7. Insert into a Binary Search Tree: https://leetcode.com/problems/insert-into-a-binary-search-tree/description/
 */
 
 // ============================================= Binary Tree Traversals ==============================================
@@ -346,6 +348,42 @@ public:
         }
         reverse(postorder.begin(), postorder.end());
         return postorder;
+    }
+};
+// 4
+class LevelOrderTraversal
+{
+    /*
+        =======Level Order Traversal========
+        T:O(n)
+        S:O(max size of level)=> O(n) leaves will have n/2 nodes
+    */
+public:
+    vector<vector<int>> levelOrder(TreeNode *root)
+    {
+        if (!root)
+            return {};
+        vector<vector<int>> level_order;
+        queue<TreeNode *> q;
+        q.push(root);
+
+        while (!q.empty())
+        {
+            int level_size = q.size();
+            vector<int> level(level_size);
+            for (int i = 0; i < level_size; i++)
+            {
+                auto temp = q.front();
+                q.pop();
+                level[i] = temp->val;
+                if (temp->left)
+                    q.push(temp->left);
+                if (temp->right)
+                    q.push(temp->right);
+            }
+            level_order.push_back(level);
+        }
+        return level_order;
     }
 };
 
@@ -1001,6 +1039,23 @@ public:
             else
                 temp = temp->left;
         }
+    }
+};
+
+// 7
+class InsertIntoBST
+{
+public:
+    TreeNode *insertIntoBST(TreeNode *root, int val)
+    {
+        if (!root)
+            return new TreeNode(val);
+        // we need to insert in left subtree
+        if (val < root->val)
+            root->left = insertIntoBST(root->left, val);
+        else // we need to insert in right subtree
+            root->right = insertIntoBST(root->right, val);
+        return root;
     }
 };
 //
