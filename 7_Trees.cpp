@@ -43,6 +43,10 @@ struct Node
 };
 
 /*
+BT Traversals:
+1. Preorder: Recursive, Iterative, Morris
+2. Inorder: Recursive, Iterative, Morris
+3. Postorder: Recursive, Iterative
 
 Binary Tree:
 1. Invert Binary Tree/Convert a Binary Tree into its Mirror Tree: https://leetcode.com/problems/invert-binary-tree/description/
@@ -67,6 +71,111 @@ Binary Search Tree:
 5. Construct BST from given keys: https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/
 6. Find the inorder predecessor/successor of a given Key in BST: https://www.geeksforgeeks.org/problems/predecessor-and-successor/1
 */
+
+// ============================================= Binary Tree Traversals ==============================================
+
+// 1
+
+// 2
+
+// 3
+class PostOrder
+{
+    /*
+        Post-order:LRN
+        1. Recursive: T:O(N) S:O(h)
+        2. Iterative: T:O(N) S:O(h)
+        3. Morris: T:O(N) S:O(1)
+    */
+    // 1
+    void postOrderTraversal_rec(TreeNode *root, vector<int> &inorder)
+    {
+        if (!root)
+            return;
+        postOrderTraversal_rec(root->left, inorder);
+        postOrderTraversal_rec(root->right, inorder);
+        inorder.push_back(root->val);
+    }
+
+public:
+    vector<int> postorderTraversalRec(TreeNode *root)
+    {
+
+        vector<int> ans;
+        postOrderTraversal_rec(root, ans);
+        return ans;
+    }
+    vector<int> postorderTraversalIterative(TreeNode *root)
+    {
+        stack<TreeNode *> st;
+        // we will use TreeNode* and not int as there might be multiple same values in tree
+        unordered_set<TreeNode *> right_visited;
+        vector<int> postorder;
+
+        while (root)
+        {
+            st.push(root);
+            root = root->left;
+        }
+        while (!st.empty())
+        {
+            auto top = st.top();
+            if (right_visited.find(top) != right_visited.end())
+            {
+                postorder.push_back(top->val);
+                st.pop();
+                right_visited.erase(top);
+            }
+            else // push right
+            {
+                right_visited.insert(top);
+                auto node = top->right;
+                while (node)
+                {
+                    st.push(node);
+                    node = node->left;
+                }
+            }
+        }
+        return postorder;
+    }
+    // 3
+    // we will use prorder approach where NLR is done and we want LRN so we will do NRL and reverse it
+    vector<int> postorderTraversal(TreeNode *root)
+    {
+        vector<int> postorder;
+        auto cur = root;
+
+        while (cur)
+        {
+            if (cur->right)
+            {
+                auto thread = cur->right;
+                while (thread->left && thread->left != cur)
+                    thread = thread->left;
+                // thread already exist, right subtree traversal is done
+                if (thread->left == cur)
+                {
+                    thread->left = NULL;
+                    cur = cur->left;
+                }
+                else // traverse the right tree and create the thread
+                {
+                    postorder.push_back(cur->val);
+                    thread->left = cur;
+                    cur = cur->right;
+                }
+            }
+            else
+            {
+                postorder.push_back(cur->val);
+                cur = cur->left;
+            }
+        }
+        reverse(postorder.begin(), postorder.end());
+        return postorder;
+    }
+};
 
 // ============================================= Binary Tree ==============================================
 
