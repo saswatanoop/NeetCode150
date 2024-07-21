@@ -72,6 +72,7 @@ Binary Search Tree:
 5. Construct BST from given keys: https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/
 6. Find the inorder predecessor/successor of a given Key in BST: https://www.geeksforgeeks.org/problems/predecessor-and-successor/1
 7. Insert into a Binary Search Tree: https://leetcode.com/problems/insert-into-a-binary-search-tree/description/
+8. Delete Node in a BST: https://leetcode.com/problems/delete-node-in-a-bst/description/
 */
 
 // ============================================= Binary Tree Traversals ==============================================
@@ -1045,6 +1046,10 @@ public:
 // 7
 class InsertIntoBST
 {
+    /*
+        T:O(n)
+        S:O(h)
+    */
 public:
     TreeNode *insertIntoBST(TreeNode *root, int val)
     {
@@ -1055,6 +1060,55 @@ public:
             root->left = insertIntoBST(root->left, val);
         else // we need to insert in right subtree
             root->right = insertIntoBST(root->right, val);
+        return root;
+    }
+};
+
+//
+class DeleteNodeInBST
+{
+    /*
+        T:O(n)
+        S:O(h)
+    */
+public:
+    TreeNode *deleteNode(TreeNode *root, int key)
+    {
+        if (!root)
+            return NULL;
+
+        if (key < root->val)
+            root->left = deleteNode(root->left, key);
+        else if (key > root->val)
+            root->right = deleteNode(root->right, key);
+        // the key is in root we need to delete current node
+        else
+        {
+            // 3 cases: no child, 1 child or 2 child
+            // 1st case: No child
+            if (!root->right && !root->left)
+            {
+                delete root;
+                return NULL;
+            }
+            // 3rd case: two children: we will convert this to either case 1 or 2
+            else if (root->right && root->left)
+            {
+                auto to_exchange = root->right;
+                while (to_exchange->left)
+                    to_exchange = to_exchange->left;
+                root->val = to_exchange->val;
+                // set to exchange value in root and then delete it
+                root->right = deleteNode(root->right, to_exchange->val);
+            }
+            // 2nd case: one child
+            else
+            {
+                auto temp = root;
+                root = root->left ? root->left : root->right;
+                delete temp;
+            }
+        }
         return root;
     }
 };
