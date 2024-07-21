@@ -49,6 +49,10 @@ BT Traversals:
 3. Postorder: Recursive, Iterative: https://leetcode.com/problems/binary-tree-postorder-traversal/
 4. Binary Tree Level Order Traversal: https://leetcode.com/problems/binary-tree-level-order-traversal/description/
 
+ToDo:
+Advanced Traversal with O(1) space problems:
+https://leetcode.com/problems/flatten-binary-tree-to-linked-list/description/
+
 Binary Tree:
 1. Invert Binary Tree/Convert a Binary Tree into its Mirror Tree: https://leetcode.com/problems/invert-binary-tree/description/
 2. Maximum-Depth/Height of Binary Tree: https://leetcode.com/problems/maximum-depth-of-binary-tree/description/
@@ -63,6 +67,7 @@ Binary Tree:
 11. Binary Tree Maximum Path Sum: https://leetcode.com/problems/binary-tree-maximum-path-sum/
 12. Serialize and Deserialize Binary Tree: https://leetcode.com/problems/serialize-and-deserialize-binary-tree/description/
 13. Populating Next Right Pointers in Each Node: https://leetcode.com/problems/populating-next-right-pointers-in-each-node/description/
+14. Lowest Common Ancestor of a Binary Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
 
 Binary Search Tree:
 1. Lowest Common Ancestor of a Binary Search Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
@@ -809,6 +814,37 @@ public:
         return root;
     }
 };
+
+// 14
+class LCAOfBT
+{
+    /*
+        =======Bottom Up========
+        T:O(n)
+        S:O(h)
+    */
+    bool lca_helper(TreeNode *root, TreeNode *p, TreeNode *q, TreeNode *&lca)
+    {
+        if (!root)
+            return false;
+        auto left = lca_helper(root->left, p, q, lca);
+        auto right = lca_helper(root->right, p, q, lca);
+        bool current = root == p || root == q;
+
+        if ((current && (left || right)) || (left && right))
+            lca = root;
+        return current || left || right;
+    }
+
+public:
+    TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *p, TreeNode *q)
+    {
+        TreeNode *lca = NULL;
+        lca_helper(root, p, q, lca);
+        return lca;
+    }
+};
+
 //  ============================================= Binary Search Tree ==============================================
 
 // 1
