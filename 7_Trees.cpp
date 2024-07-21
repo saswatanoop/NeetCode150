@@ -163,7 +163,93 @@ public:
     }
 };
 // 2
+class Inorder
+{
+    /*
+        In-order:LNR
+        1. Recursive: T:O(N) S:O(h)
+        2. Iterative: T:O(N) S:O(h)
+        3. Morris: T:O(N) S:O(1)
+    */
+    // 1
+    void inorderTraversal_rec(TreeNode *root, vector<int> &inorder)
+    {
+        if (!root)
+            return;
+        inorderTraversal_rec(root->left, inorder);
+        inorder.push_back(root->val);
+        inorderTraversal_rec(root->right, inorder);
+    }
 
+public:
+    vector<int> inorderTraversalRec(TreeNode *root)
+    {
+        vector<int> ans;
+        inorderTraversal_rec(root, ans);
+        return ans;
+    }
+    // 2
+    vector<int> inorderTraversalIterative(TreeNode *root)
+    {
+        stack<TreeNode *> st;
+        vector<int> inorder;
+
+        while (root)
+        {
+            st.push(root);
+            root = root->left;
+        }
+
+        while (!st.empty())
+        {
+            auto top = st.top();
+            st.pop();
+            inorder.push_back(top->val);
+            auto node = top->right;
+            while (node)
+            {
+                st.push(node);
+                node = node->left;
+            }
+        }
+        return inorder;
+    }
+    // 3
+    vector<int> inorderTraversal(TreeNode *root)
+    {
+        vector<int> inorder;
+        auto cur = root;
+        while (cur)
+        {
+            if (cur->left)
+            {
+                auto thread = cur->left;
+                while (thread->right && thread->right != cur)
+                    thread = thread->right;
+                // thread already exist we are done with left sub tree of cur
+                if (thread->right == cur)
+                {
+                    thread->right =
+                        NULL; // remove the thread and reset to original tree
+                    inorder.push_back(
+                        cur->val); // left subtree done, push the node
+                    cur = cur->right;
+                }
+                else // make the thread and start traversing left subtree
+                {
+                    thread->right = cur;
+                    cur = cur->left;
+                }
+            }
+            else
+            {
+                inorder.push_back(cur->val);
+                cur = cur->right;
+            }
+        }
+        return inorder;
+    }
+};
 // 3
 class PostOrder
 {
