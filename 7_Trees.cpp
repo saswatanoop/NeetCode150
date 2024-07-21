@@ -44,9 +44,9 @@ struct Node
 
 /*
 BT Traversals:
-1. Preorder: Recursive, Iterative, Morris
-2. Inorder: Recursive, Iterative, Morris
-3. Postorder: Recursive, Iterative
+1. Preorder: Recursive, Iterative, Morris: https://leetcode.com/problems/binary-tree-preorder-traversal/description/
+2. Inorder: Recursive, Iterative, Morris: https://leetcode.com/problems/binary-tree-inorder-traversal/
+3. Postorder: Recursive, Iterative: https://leetcode.com/problems/binary-tree-postorder-traversal/
 
 Binary Tree:
 1. Invert Binary Tree/Convert a Binary Tree into its Mirror Tree: https://leetcode.com/problems/invert-binary-tree/description/
