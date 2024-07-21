@@ -75,7 +75,93 @@ Binary Search Tree:
 // ============================================= Binary Tree Traversals ==============================================
 
 // 1
+class PreOrder
+{
+    /*
+        Pre-order:NLR
+        1. Recursive: T:O(N) S:O(h)
+        2. Iterative: T:O(N) S:O(h)
+        3. Morris: T:O(N) S:O(1)
+    */
+    // 1
+    void preorderTraversal_rec(TreeNode *root, vector<int> &preorder)
+    {
+        if (!root)
+            return;
+        preorder.push_back(root->val);
+        preorderTraversal_rec(root->left, preorder);
+        preorderTraversal_rec(root->right, preorder);
+    }
 
+public:
+    vector<int> preorderTraversalRec(TreeNode *root)
+    {
+        vector<int> ans;
+        preorderTraversal_rec(root, ans);
+        return ans;
+    }
+    // 2
+    vector<int> preorderTraversalIterative(TreeNode *root)
+    {
+        stack<TreeNode *> s;
+        vector<int> preorder;
+        while (root)
+        {
+            s.push(root);
+            preorder.push_back(root->val);
+            root = root->left;
+        }
+
+        while (!s.empty())
+        {
+            auto temp = s.top();
+            s.pop();
+            auto node = temp->right;
+            while (node)
+            {
+                s.push(node);
+                preorder.push_back(node->val);
+                node = node->left;
+            }
+        }
+        return preorder;
+    }
+    // 3
+    vector<int> preorderTraversalMorris(TreeNode *root)
+    {
+
+        vector<int> preorder;
+        TreeNode *cur = root;
+        while (cur)
+        {
+            if (cur->left)
+            {
+                auto thread = cur->left;
+                // stop if the right is null or already a thread is created
+                while (thread->right && thread->right != cur)
+                    thread = thread->right;
+                // thread already exist we are done with left sub tree of cur
+                if (thread->right == cur)
+                {
+                    thread->right = NULL; // remove the thread and reset to original tree
+                    cur = cur->right;
+                }
+                else // make the thread and start traverse the left subtree
+                {
+                    preorder.push_back(cur->val); // push the cur and go to left
+                    thread->right = cur;
+                    cur = cur->left;
+                }
+            }
+            else
+            {
+                preorder.push_back(cur->val);
+                cur = cur->right;
+            }
+        }
+        return preorder;
+    }
+};
 // 2
 
 // 3
