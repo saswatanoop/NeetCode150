@@ -108,24 +108,18 @@ class WordDictionary
     Trie t;
 
 public:
-    WordDictionary()
-    {
-    }
-
-    void addWord(string word)
-    {
-        t.insert(word);
-    }
-
-    bool search(string word)
-    {
-        return t.serach_with_dot_in_string(word);
-    }
+    WordDictionary() {}
+    void addWord(string word) { t.insert(word); }
+    bool search(string word) { return t.serach_with_dot_in_string(word); }
 };
 
 // 3
 class WordSearch2
 {
+    /*
+        T: O(mn(4^10)) max word lenght is 10
+        S: O(all words size) size of each word is max 10 and we will store them in Trie
+    */
     TrieNode *head = new TrieNode();
 
     void insert(string word)
@@ -144,9 +138,11 @@ public:
     // we will use backtracking as in word search and use trie to search for all words
     void find_words_in_grid(vector<vector<char>> &board, int i, int j, string &ans, TrieNode *cur, vector<string> &all_words)
     {
+        // out of bounds, no node, or board[i][j] already used
         if (i < 0 || i >= board.size() || j < 0 || j >= board[i].size() || !cur || board[i][j] == '.')
             return;
 
+        // board[i][j] is not present in Trie node
         if (cur->children.find(board[i][j]) == cur->children.end())
             return;
 
@@ -176,12 +172,12 @@ public:
         board[i][j] = c;
         ans.pop_back();
     }
+
     vector<string> findWords(vector<vector<char>> &board, vector<string> &words)
     {
-        // insert in all words we want to search in trie
+
         for (auto word : words)
             insert(word);
-
         vector<string> all_words;
         string word = "";
 

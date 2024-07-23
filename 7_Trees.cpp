@@ -443,6 +443,7 @@ public:
 class DiameterOfBT
 {
     /*
+    Q: length of the longest path between any two nodes in a tree
     =======Bottom Up========
         We will compute the diameter in each node with bottom up approach,
         The helper function returns the longest path from subtree which can be connected to root
@@ -704,7 +705,9 @@ public:
 class BTMaxPathSum
 {
     /*
+    Q: A path in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them
     The helper function returns the longest path from subtree which can be connected to root
+        we are computing max path sum with each node as the root
         T:O(n)
         S:O(height)=>O(n)
     */
@@ -941,7 +944,8 @@ class KthSmallestInBST
     */
     void isValidBST_inorder(TreeNode *root, int &k, int &ans)
     {
-        if (!root)
+        // avoid extra calls by checking if ans is already set
+        if (!root || ans != -1)
             return;
 
         isValidBST_inorder(root->left, k, ans);

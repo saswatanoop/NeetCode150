@@ -1,0 +1,16 @@
+==================================================== Tries ====================================================
+
+Implement a trie (insertion, search, startsWith functions)
+    Basic Trie Operations:
+        1. insert
+        2. search
+        3. Delete a word from trie
+
+Word Search Problems:
+    1.Word Search II
+
+Prefix-based Problems:
+
+Find longest common prefix among a set of strings
+Find all words with a given prefix
+Design an autocomplete system

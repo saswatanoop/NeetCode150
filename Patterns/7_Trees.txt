@@ -1,0 +1,78 @@
+====================================================Trees====================================================
+
+Patterns:
+1. Modify tree
+2. Bottom-up
+3. Top-Down
+4. Level-Order
+5. Specific Traversal: Inorder
+6. Morris Traversal
+
+1. Modify tree
+    Whenever insert/delete/modify a tree use recursion to update left and right subtrees and return the new modified root 
+    recursively set the left and rigth of the root
+        Psuedo code:
+            root->left=recursive_fun(root->left)
+            root->right=recursive_fun(root->right)
+            return root
+
+2. Bottom-up
+    solve for children first and then use them to compute the value for root;
+        Psuedo code:
+            auto left=recursive_fun(root->left)
+            auto right=recursive_fun(root->right)
+            use left and right to find compute something
+            compute root related values
+
+3. Top-Down
+    solve for root first and then for left and right 
+        Psuedo code:
+            compute root related values
+            auto left=recursive_fun(root->left)
+            auto right=recursive_fun(root->right)
+
+4. Level Order Traversal: we will go level by level    
+        Psuedo code:
+            push root in queue
+            while queue is not empty 
+                get size of each level 
+                for loop on level
+
+5. Specific Traversal: Inorder, Preorder, Postorder
+
+6. Morris Traversal: O(1) space is mentioned
+
+
+Problem Examples:
+    
+    1. Modify tree
+        1. insert in BST
+        2. delete in BST
+        3. delete and return forest
+        4. Invert a BT
+    
+    2. Bottom-up
+        1. Height of BT 
+        2. Diameter of Binary Tree
+        3. Balanced Binary Tree
+        4. LCA in BT
+        5. *Binary Tree Maximum Path Sum
+    
+    3. Top-Down
+        1. Same Tree
+        2. Subtree of Another Tree
+        3. LCA in BST
+        4. Count Good Nodes in Binary Tree
+        5. Validate Binary Search Tree
+        6. *Construct Binary Tree from Preorder and Inorder Traversal
+        7. *Serialize and Deserialize Binary Tree => Deserialize part
+    
+    4. Level-Order
+        1. Binary Tree Right Side View
+    
+    
+    5. Specific Traversal: In,Pre & Post
+        1. Validate Binary Search Tree: Inorder Traversal should be sorted
+        2. Kth Smallest: Inorder till kth value is computed
+
+    6. Morris Traversal
