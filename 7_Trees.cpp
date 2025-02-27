@@ -134,7 +134,7 @@ public:
         }
         return preorder;
     }
-    // 3
+    // 3 NLR
     vector<int> preorderTraversalMorris(TreeNode *root)
     {
 

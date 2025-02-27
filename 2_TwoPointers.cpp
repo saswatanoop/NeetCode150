@@ -15,9 +15,9 @@ using namespace std;
 /*
 1. Valid Palindrome :https://leetcode.com/problems/valid-palindrome/description/
 2. Two Sum II - Input Array Is Sorted: https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/description/
-3. 3Sum: https://leetcode.com/problems/3sum/description/
+3. **3Sum: https://leetcode.com/problems/3sum/description/
 4. Container With Most Water :https://leetcode.com/problems/container-with-most-water/description/
-5. Trapping Rain Water :https://leetcode.com/problems/trapping-rain-water/description/
+5. **Trapping Rain Water :https://leetcode.com/problems/trapping-rain-water/description/
 */
 
 // 1.
@@ -114,8 +114,7 @@ class ThreeSum
     }
 
 public:
-    vector<vector<int>>
-    threeSum(vector<int> &nums)
+    vector<vector<int>> threeSum(vector<int> &nums)
     {
         int target = 0; // it is specified in problem target is 0
         vector<vector<int>> threeSums;
@@ -123,13 +122,14 @@ public:
         int s = 0, e = nums.size() - 1;
         while (s < e)
         {
+            // note: pass s+1 for two sum,so that same number is not used
             auto ans = twoSum(nums, s + 1, e, target - nums[s]);
             if (ans.size() > 0)
                 for (auto v : ans)
                     threeSums.push_back({nums[s], v[0], v[1]});
 
             // nums[s] used,search for new nums[s] value, since all tiplets which has nums[s] are already added, and we need unique ones
-            s++;
+            s++; // important: do not miss this
             while (s < e && nums[s - 1] == nums[s])
                 s++;
         }
