@@ -1,5 +1,20 @@
 from typing import List 
-from collections import defaultdict 
+from collections import defaultdict, Counter
+import heapq 
+
+
+
+# 5. https://leetcode.com/problems/top-k-frequent-elements/description/
+def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+    # T:O(nlogk) and S:O(n) for freq dictionary
+    freq=Counter(nums)
+    min_heap=[] # use min_heap to have the max_freq at the end of heap
+    for key,value in freq.items():
+        heapq.heappush(min_heap,(value,key)) # push (priority, value) in heap
+        if len(min_heap)>k:
+            heapq.heappop(min_heap)
+    
+    return [item[1] for item in min_heap]
 
 # 6. https://neetcode.io/problems/string-encode-and-decode
 class EndodeAndDecode:
