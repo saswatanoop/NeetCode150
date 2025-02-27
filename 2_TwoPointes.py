@@ -30,7 +30,42 @@ def twoSum(self, nums: List[int], target: int) -> List[int]:
         else:
             i+=1
 
-# 3.
+# 3. https://leetcode.com/problems/3sum/description/
+def threeSum(self, nums_orig: List[int]) -> List[List[int]]:
+    # T:O(n^2) and S:O(1) if modifying input is allowed and sorting takes O(1) space
+    def two_sum(start,target):
+        two_sums=[]
+        # Mistake: used s=0 
+        s,e=start,n-1
+
+        while s<e:
+            cur=nums[s]+nums[e]
+            if cur==target:
+                two_sums.append([nums[s],nums[e]])
+                e-=1
+                s+=1
+                while s<e and nums[s]==nums[s-1]:
+                    s+=1
+            elif cur>target:
+                e-=1
+            else:
+                s+=1
+        return two_sums
+    
+    nums=sorted(nums_orig)
+    three_sums=[]
+    i=0
+    n=len(nums)
+    # Three sum logic
+    while i<n:
+        all_pairs=two_sum(i+1,0-nums[i])
+        for p in all_pairs:
+            three_sums.append([nums[i],p[0],p[1]])
+        i+=1
+        while i<n and nums[i]==nums[i-1]:
+            i+=1
+    
+    return three_sums
 
 # 4. https://leetcode.com/problems/container-with-most-water/
 def maxArea(self, height: List[int]) -> int:
