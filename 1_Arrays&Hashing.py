@@ -3,6 +3,23 @@ from collections import defaultdict, Counter
 import heapq 
 
 
+# 4. https://leetcode.com/problems/group-anagrams/description/
+def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+    def createFreq(word):
+        freq = [0] * 26  # Assuming input consists of lowercase English letters
+        for c in word:
+            freq[ord(c) - ord('a')] += 1
+        # Create a unique signature using the character frequencies
+        hash_key = tuple(freq)
+        
+        return hash_key
+    
+    d = defaultdict(list)
+
+    for word in strs:
+        d[createFreq(word)].append(word)
+    return list(d.values())
+
 
 # 5. https://leetcode.com/problems/top-k-frequent-elements/description/
 def topKFrequent(self, nums: List[int], k: int) -> List[int]:
