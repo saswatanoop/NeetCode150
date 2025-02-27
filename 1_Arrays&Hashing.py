@@ -1,6 +1,32 @@
 from typing import List 
 from collections import defaultdict 
 
+# 6. https://neetcode.io/problems/string-encode-and-decode
+class EndodeAndDecode:
+    def encode(self, strs: List[str]) -> str:
+        # T:O(n) and S:O(1)
+        encoded=""
+        for s in strs:
+            encoded+=f"{len(s)}:{s}"
+        return encoded
+
+    def decode(self, s: str) -> List[str]:
+        # T:O(n) and S:O(1)
+        decoded=[]
+        i=0
+        while i <len(s):
+            str_size=""
+            while s[i]!=":":
+                str_size+=s[i]
+                i+=1
+            str_size=int(str_size)
+            i=i+1 # will move to start of string after ":"
+            j=i+str_size # will have the end of string +1 position
+            decoded.append(s[i:j])
+            i=j
+        return decoded
+
+
 
 # 7. https://leetcode.com/problems/product-of-array-except-self/description/
 def productExceptSelf(self, nums: List[int]) -> List[int]:
