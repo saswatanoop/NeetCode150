@@ -2,7 +2,22 @@ from typing import List
 from collections import defaultdict 
 
 
-
+# 7. https://leetcode.com/problems/product-of-array-except-self/description/
+def productExceptSelf(self, nums: List[int]) -> List[int]:
+    # T:O(n) and S:O(1) excluding the ans array
+    prefix_mul=[]
+    pre=1
+    # prefix_mul at ith index will have nums[0]*nums[1]..*nums[i-1]
+    for num in nums:
+        prefix_mul.append(pre)
+        pre*=num
+    suf=1
+    # ans[i]=pref[i]*suf, i.e 0 to i-1 and i+1 to n-1
+    for i in range(len(nums)-1,-1,-1):
+        prefix_mul[i]=prefix_mul[i]*suf
+        suf*=nums[i]
+    return prefix_mul
+    
 # 8. https://leetcode.com/problems/valid-sudoku/description/
 class CheckSudoku:
     # T:O(n*n) and S:O(n)
