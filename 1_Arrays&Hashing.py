@@ -2,10 +2,41 @@ from typing import List
 from collections import defaultdict, Counter
 import heapq 
 
+# 1. https://leetcode.com/problems/contains-duplicate/description/
+def containsDuplicate(self, nums: List[int]) -> bool:
+    # T:O(n) and S:O(n) for set
+    seen=set()
+    for n in nums:
+        if n in seen:
+            return True
+        seen.add(n)
+    return False
+
+# 2. https://leetcode.com/problems/valid-anagram/description/
+def isAnagram(self, s: str, t: str) -> bool:
+    # T:O(n) and S:O(n) for freq dictionary
+    if len(s) != len(t):
+        return False
+    freq = defaultdict(int)
+    for i in range(len(s)):
+        freq[s[i]]+=1
+        freq[t[i]]-=1
+
+    return all(v==0 for v in freq.values())
+
+# 3. https://leetcode.com/problems/two-sum/description/
+def twoSum(self, nums: List[int], target: int) -> List[int]:
+    # T:O(n) and S:O(n) for index_of_num dictionary
+    index_of_num={}
+    for i in range(len(nums)):
+        if target-nums[i] in index_of_num:
+            return [index_of_num[target-nums[i]],i]
+        index_of_num[nums[i]]=i
 
 # 4. https://leetcode.com/problems/group-anagrams/description/
 def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
-    def createFreq(word):
+    # T:O(n) and S:O(n) for dictionary
+    def create_hash_key(word):
         freq = [0] * 26  # Assuming input consists of lowercase English letters
         for c in word:
             freq[ord(c) - ord('a')] += 1
@@ -17,7 +48,7 @@ def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
     d = defaultdict(list)
 
     for word in strs:
-        d[createFreq(word)].append(word)
+        d[create_hash_key(word)].append(word)
     return list(d.values())
 
 
