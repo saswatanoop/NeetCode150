@@ -1,3 +1,5 @@
+from typing import List
+
 
 # 1. https://leetcode.com/problems/valid-palindrome/description/
 def isPalindrome(self, s: str) -> bool:
@@ -30,6 +32,36 @@ def twoSum(self, nums: List[int], target: int) -> List[int]:
 
 # 3.
 
-# 4.
+# 4. https://leetcode.com/problems/container-with-most-water/
+def maxArea(self, height: List[int]) -> int:
+    # T:O(n) and S:O(1)
+    s,e=0,len(height)-1
+    water=0
 
-# 5.
+    while s<e:
+        h=min(height[s],height[e])
+        water=max(water,h*(e-s))
+        if height[s]>height[e]:
+            e-=1
+        else:
+            s+=1
+        
+    return water
+
+# 5. https://leetcode.com/problems/trapping-rain-water/
+def trap(self, height: List[int]) -> int:
+    # T:O(n) and S:O(1)
+    max_l=max_r=0
+    trapped_water=0
+    s,e=0,len(height)-1
+
+    while s<=e:
+        if max_l<max_r:
+            trapped_water+=max(0,max_l-height[s])
+            max_l=max(max_l,height[s])
+            s+=1
+        else:
+            trapped_water+=max(0,max_r-height[e])
+            max_r=max(max_r,height[e])
+            e-=1
+    return trapped_water
