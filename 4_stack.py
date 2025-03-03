@@ -40,6 +40,28 @@ class MinStack:
     def getMin(self) -> int:
         # T:O(1) 
         return self.min_stack[-1]
+
+# 3. https://leetcode.com/problems/evaluate-reverse-polish-notation/
+def evalRPN(self, tokens: List[str]) -> int:
+    # T:O(n) and S:O(n) for stack
+    stack = []
+    for c in tokens:
+        if c not in ['+','-','*','/']:
+            stack.append(int(c))
+        else:
+            second, first = stack.pop(), stack.pop()
+            if c == "+":
+                ans=first+second
+            elif c == "-":
+                ans=first-second
+            elif c == "*":
+                ans=first*second
+            elif c == "/":
+                #Mistake: ans=first//second, python truncates towards -infinity and cpp towards 0
+                ans=int(first/second)
+            stack.append(ans)
+
+    return stack[0]
     
 # 5. https://leetcode.com/problems/daily-temperatures/
 def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
