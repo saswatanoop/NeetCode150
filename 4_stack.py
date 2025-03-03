@@ -15,6 +15,32 @@ def isValid(self, s: str) -> bool:
             st.pop()
     return len(st)==0
 
+# 2. https://leetcode.com/problems/min-stack/
+class MinStack:
+    def __init__(self):
+        self.stack=[]
+        self.min_stack=[]
+
+    def push(self, val: int) -> None:
+        # T:O(1) 
+        if not self.min_stack or self.min_stack[-1]>=val:
+            self.min_stack.append(val)
+        self.stack.append(val)
+
+    def pop(self) -> None:
+        # T:O(1) 
+        if self.stack[-1]==self.min_stack[-1]:
+            self.min_stack.pop()
+        self.stack.pop()
+
+    def top(self) -> int:
+        # T:O(1) 
+        return self.stack[-1]
+
+    def getMin(self) -> int:
+        # T:O(1) 
+        return self.min_stack[-1]
+    
 # 5. https://leetcode.com/problems/daily-temperatures/
 def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
     # T:O(n) and S:O(n) for stack
