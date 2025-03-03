@@ -1,6 +1,20 @@
 
 from typing import List
 
+# 1. https://leetcode.com/problems/valid-parentheses/description/
+def isValid(self, s: str) -> bool:
+    # T:O(n) and S:O(n) for stack
+    valid_pairs={'(':')','{':'}','[':']'}
+    st=[]
+    for c in s:
+        if c in valid_pairs:
+            st.append(c)
+        else:
+            if not st or c!=valid_pairs[st[-1]]:
+                return False
+            st.pop()
+    return len(st)==0
+
 # 5. https://leetcode.com/problems/daily-temperatures/
 def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
     # T:O(n) and S:O(n) for stack
