@@ -1,6 +1,22 @@
 
 from typing import List
 
+# 5. https://leetcode.com/problems/daily-temperatures/
+def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+    # T:O(n) and S:O(n) for stack
+    # monotonic decreasing stack, and store index in stack
+    # next greater element to the right
+    n=len(temperatures)
+    stack=[]
+    ans=[0]*n
+    for i in range(n-1,-1,-1):
+        # Mistake: temperatures[stack[-1]]<temperatures[i]
+        while stack and temperatures[stack[-1]]<=temperatures[i]:
+            stack.pop()
+        ans[i]=stack[-1]-i if stack else 0
+        stack.append(i)
+    return ans
+
 # 6. https://leetcode.com/problems/car-fleet/
 def carFleet(self, target: int, position: List[int], speed: List[int]) -> int:
     # T:O(nlogn) and S:O(n)
