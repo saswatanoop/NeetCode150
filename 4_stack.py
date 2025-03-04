@@ -94,3 +94,37 @@ def carFleet(self, target: int, position: List[int], speed: List[int]) -> int:
             time_queue.append(time_required)
     
     return len(time_queue)
+
+# 7. https://leetcode.com/problems/largest-rectangle-in-histogram/
+
+def largestRectangleArea(self, heights: List[int]) -> int:
+    # T:O(n) and S:O(n) for stack
+    # we will compute height for each index using height[i]*(nse-pse-1)
+    # nse=next smaller element position
+    # pse=prev smaller element position
+    st=[]
+    i=max_area=0
+    n=len(heights)
+
+    while i < n or st:
+        # create a stack with increasing height(same height also allowed)
+        if i < n and st and heights[st[-1]]<=heights[i]:
+            st.append(i)
+        else:
+            # we have reached end or found next smaller element for element at top of stack
+            current_pos_height=heights[i] if i<n else 0
+            # keep computing if current element is nse for top of stack
+            while st and heights[st[-1]]>=current_pos_height:
+                height_of_element_on_top_of_stack=heights[st.pop()]
+                nse_pos=i
+                pse_pos=st[-1] if st else -1
+                area=height_of_element_on_top_of_stack*(nse_pos-pse_pos-1)
+                max_area=max(max_area,area)
+            # push the current element after removing all the greater elments then it from stack
+            if i <n:
+                st.append(i)                    
+        i+=1
+    
+    return max_area
+
+        
