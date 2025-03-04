@@ -4,7 +4,7 @@ from collections import Counter
 from collections import deque
 
 # 1. https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/
-def maxProfit(self, prices: List[int]) -> int:
+def maxProfit( prices: List[int]) -> int:
     # T:O(n) and S:O(1)
     max_profit=0
     min_stock_value=float("inf")
@@ -16,7 +16,7 @@ def maxProfit(self, prices: List[int]) -> int:
 
 # 2. https://leetcode.com/problems/longest-substring-without-repeating-characters/
 # Keep adding to window as soon as it becomes invalid, start removing from start of window to make it valid
-def lengthOfLongestSubstring(self, s: str) -> int:
+def lengthOfLongestSubstring( s: str) -> int:
     # T:O(n) and S:O(n) for freq dictionary
     win_s=win_e=0
     ans=0
@@ -33,7 +33,7 @@ def lengthOfLongestSubstring(self, s: str) -> int:
     return ans
 
 # 5. https://leetcode.com/problems/minimum-window-substring/description/
-def minWindow(self, s: str, t: str) -> str:
+def minWindow( s: str, t: str) -> str:
     # T:O(n) and S:O(n) for freq dictionary
     # 1. find a valid window first with all chars in t
     # 2. Once found, remove from left as much as possible and keep window valid  
@@ -61,7 +61,7 @@ def minWindow(self, s: str, t: str) -> str:
 
 
 # 6. https://leetcode.com/problems/sliding-window-maximum/description/
-def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+def maxSlidingWindow(nums: List[int], k: int) -> List[int]:
     # T:O(n) and S:O(n) for deque
     wine=0
     deq=deque() # will store index, and maintain nums[index] in decreasing order of value
