@@ -63,8 +63,45 @@ def minEatingSpeed(self, piles: List[int], h: int) -> int:
             min_speed=mid+1
     return ans
 
-# 6. https://leetcode.com/problems/time-based-key-value-store/description/
+# 4. https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
+def findMin(self, nums: List[int]) -> int:
+    # T: O(logn) S:O(1)
+    s,e=0,len(nums)-1
 
+    while s<=e:
+        if nums[s]>nums[e]: # there is rotation present between [s,e]
+            mid=s+(e-s)//2
+            if nums[mid]>=nums[s]: #we are in 1st rotated section
+                s=mid+1
+            else:# nums[mid]<nums[s] we are in 2nd rotated section
+                e=mid
+        else: # there is no rotation remaining and [s,e] is sorted
+            return nums[s]
+            
+        
+# 5. https://leetcode.com/problems/search-in-rotated-sorted-array/
+def search(self, nums: List[int], target: int) -> int:
+    # T:O(logn) and S:O(1)
+    # 1,2 and 3rd will work as normal binary search when [s,e] is sorted
+    # use the knowledge, if mid falls in 1st half, [s,mid] is sorted, if mid falls in 2nd half, [mid,e] is sorted
+    s,e=0,len(nums)-1
+    while s<=e:
+        mid=s+(e-s)//2
+        if nums[mid]==target: #1
+            return mid
+        elif nums[s]<=target<nums[mid]: #2
+            e=mid-1
+        elif nums[mid]<target<=nums[e]: #3
+            s=mid+1
+        # Mistake: nums[s]<nums[mid], even if it is equal we know it is not there in s
+        elif nums[s]<=nums[mid]: #4 the target is definitely not b/w [s,mid] , confirmed in 2nd
+            s=mid+1
+        else: #5 
+            e=mid-1
+    return -1 
+
+        
+# 6. https://leetcode.com/problems/time-based-key-value-store/description/
 class TimeMap:
 
     def __init__(self):
