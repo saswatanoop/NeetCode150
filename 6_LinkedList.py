@@ -95,3 +95,24 @@ def reorderList(self, head: Optional[ListNode]) -> None:
     l1=head 
     l2=reverse_list(l2)
     head=merge_lists(l1,l2)
+
+
+# 5. https://leetcode.com/problems/remove-nth-node-from-end-of-list/
+def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+    # T:O(n) and S:O(1)
+    # Adding dummy will help remove the nth node, that is the head node itself easily
+    dummy=ListNode()
+    dummy.next=head
+    prev_to_delete=fast=dummy
+    while n and fast.next:
+        fast=fast.next
+        n-=1
+    # the n provided is higher than list size 
+    if n!=0: 
+        return False
+    while fast.next:
+        fast=fast.next
+        prev_to_delete=prev_to_delete.next
+    
+    prev_to_delete.next=prev_to_delete.next.next
+    return dummy.next
