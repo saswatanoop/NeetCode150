@@ -1,5 +1,11 @@
 from typing import Optional
+from collections import defaultdict, OrderedDict
 
+class Node:
+    def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):
+        self.val = int(x)
+        self.next = next
+        self.random = random
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
@@ -116,3 +122,105 @@ def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNod
     
     prev_to_delete.next=prev_to_delete.next.next
     return dummy.next
+
+# 6. https://leetcode.com/problems/copy-list-with-random-pointer/
+class Solution: 
+    def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':
+        # T:O(3*n) S:O(1)
+        if not head:
+            return None
+        # 1st iteration: create a copy adjacent to the orignial node
+        l1=head
+        while l1:
+            copy=Node(l1.val)
+            copy.next=l1.next # remember what was next to l1 first and add copy->l2
+            l1.next=copy      # l1->copy, so it becomes l1->copy->l2
+            l1=copy.next      # Move l1 to next element after copy
+        
+        # 2nd iteration: match the random pointers
+        l1=head
+        while l1:
+            copy=l1.next
+            # Mistake: missed the if condition
+            if l1.random:
+                copy.random=l1.random.next
+            l1=copy.next
+        
+        # 3rd Iteration: separate into 2 lists, orignal and copy
+        l1=head
+        l2=head.next # l2 has the head of copied linked list
+        while l1:
+            copy=l1.next
+            l1.next=copy.next
+            l1=l1.next
+            # Mistake: missed the if condition
+            if l1:
+                copy.next=l1.next
+        return l2
+
+    def copyRandomList_one_pass_n_space(self, head: 'Optional[Node]') -> 'Optional[Node]':
+        # T:O(n) S:O(n)
+        dic=defaultdict(Node)
+        temp=head
+        while temp:
+            if temp not in dic:
+                dic[temp]=Node(temp.val)
+            if temp.next:
+                if temp.next not in dic:
+                    dic[temp.next]=Node(temp.next.val)
+                dic[temp].next=dic[temp.next]
+            if temp.random:
+                if temp.random not in dic:
+                    dic[temp.random]=Node(temp.random.val)
+                dic[temp].random=dic[temp.random]
+            temp=temp.next
+        
+        return dic[head] if head else None
+
+# 7. https://leetcode.com/problems/add-two-numbers/
+def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
+    # T:O(n) S:O(1)
+    dummy=ListNode()
+    temp=dummy
+    carry=0
+
+    while l1 or l2 or carry:
+        if l1:
+            carry+=l1.val 
+            l1=l1.next
+        if l2:
+            carry+=l2.val 
+            l2=l2.next
+        temp.next=ListNode(carry%10)
+        temp=temp.next
+        carry=carry//10
+
+    return dummy.next
+
+# 9. https://leetcode.com/problems/lru-cache/
+class LRUCache:
+
+    def __init__(self, capacity: int):
+        # most recent one will be at the start and oldest willl be at the end
+        self.ordered_dic=OrderedDict()
+        self.capacity=capacity
+
+    def get(self, key: int) -> int:
+        # T:O(1) and S:O(capacity)
+        if key not in self.ordered_dic:
+            return -1
+        # move key to front
+        self.ordered_dic.move_to_end(key, last=False)
+        return self.ordered_dic[key]
+
+    def put(self, key: int, value: int) -> None:
+        # T:O(1) and S:O(capacity)
+        # if capacity reached and we need to insert new element remove from the end
+        if key not in self.ordered_dic and len(self.ordered_dic)==self.capacity:
+            self.ordered_dic.popitem(last=True)
+        self.ordered_dic[key]=value
+        # move key to front
+        self.ordered_dic.move_to_end(key, last=False)
+
+
+# 
