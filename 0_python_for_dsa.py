@@ -214,6 +214,30 @@ for value in d.values():
 sorted_dict = dict(sorted(d.items()))  # Sort by keys, we pass sorted list of (key,value) to dict
 sorted_by_value = dict(sorted(d.items(), key=lambda x: x[1]))  # Sort by values
 
+
+from collections import OrderedDict
+
+# Initialize an OrderedDict
+ordered_dict = OrderedDict([("a", 1), ("b", 2), ("c", 3)])
+print(ordered_dict)  # OrderedDict([('a', 1), ('b', 2), ('c', 3)])
+
+# Adding a key-value pair (O(1))
+ordered_dict["d"] = 4
+
+# Moving a key to the end (O(1))
+ordered_dict.move_to_end("a")
+print(ordered_dict)  # OrderedDict([('b', 5), ('c', 3), ('d', 4), ('a', 1)])
+
+# Moving a key to the beginning (O(1))
+ordered_dict.move_to_end("d", last=False)
+print(ordered_dict)  # OrderedDict([('d', 4), ('b', 5), ('c', 3), ('a', 1)])
+
+del ordered_dict["b"] # Removing a key using del (O(1))
+value = ordered_dict.pop("c") # Removing a key using pop (O(1))
+ordered_dict.popitem()  # Removing the last item (O(1))
+ordered_dict.popitem(last=False) # Removing the first item (O(1))
+
+
 ####################################   Linked List and Doubly-LL  ####################################
 class DoublyListNode:
     def __init__(self, val=0, prev=None, next=None):

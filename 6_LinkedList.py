@@ -1,5 +1,6 @@
-from typing import Optional
+from typing import Optional, List
 from collections import defaultdict, OrderedDict
+import heapq
 
 class Node:
     def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):
@@ -222,5 +223,26 @@ class LRUCache:
         # move key to front
         self.ordered_dic.move_to_end(key, last=False)
 
-
+# 10. https://leetcode.com/problems/merge-k-sorted-lists/description/
+def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
+    # T:O(nlogk) and S:O(k)
+    dummy=ListNode()
+    min_heap=[]
+    temp=dummy
+    counter=0
+    for l in lists:
+        if l:
+            heapq.heappush(min_heap,(l.val,counter,l))
+            counter+=1
+    
+    while min_heap:
+        l=heapq.heappop(min_heap)[2]
+        temp.next=l
+        l=l.next
+        if l:
+            heapq.heappush(min_heap,(l.val,counter,l))
+            counter+=1
+        temp=temp.next
+    
+    return dummy.next
 # 
