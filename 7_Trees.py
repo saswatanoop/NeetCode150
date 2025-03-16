@@ -280,4 +280,71 @@ def maxPathSum(self, root: Optional[TreeNode]) -> int:
     self.ans=None
     max_path(root)
     return self.ans    
-#  
+
+# 15. https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
+class Codec:
+    # T:O(n) and S:O(n)
+    def serialize_bfs(self, root):
+        if not root:
+            return "#"
+        q=deque([root])
+        data=[]
+        while q:
+            node=q.popleft()
+            if not node:
+                data.append("#")
+            if node:
+                data.append(str(node.val))
+                q.append(node.left)
+                q.append(node.right)
+        
+        return ",".join(data)
+    
+    def deserialize_bfs(self, data):
+        data=data.split(",")
+        if data[0]=="#":
+            return None
+
+        root=TreeNode(int(data[0]))
+        q=deque([root])
+        index=1
+        while q:
+            node=q.popleft()
+            # set left child and push to queue if it exists
+            if data[index]!="#":
+                node.left=TreeNode(int(data[index]))
+                q.append(node.left)
+            index+=1
+            # set right child and push to queue if it exists
+            if data[index]!="#":
+                node.right=TreeNode(int(data[index]))
+                q.append(node.right)
+            index+=1
+
+        return root
+    
+    
+    def serialize_dfs(self, root):
+        if not root:
+            return "#"
+
+        data = str(root.val)+","+self.serialize(root.left)+","+self.serialize(root.right)
+        return data
+
+    def deserialize_dfs(self, data):
+        def deserialize_helper():
+            nonlocal pos
+            if data[pos]=="#":
+                pos+=1
+                return None
+            node=TreeNode(int(data[pos]))
+            pos+=1
+            node.left=deserialize_helper()
+            node.right=deserialize_helper()
+            return node
+
+        pos=0
+        data=data.split(',')
+        return deserialize_helper()
+
+  
