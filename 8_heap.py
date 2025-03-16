@@ -54,3 +54,88 @@ def findKthLargest(self, nums: List[int], k: int) -> int:
         if len(min_heap)>k:
             heapq.heappop(min_heap)
     return min_heap[0]
+
+# 6. https://leetcode.com/problems/design-twitter/description/
+class Twitter:
+
+    def __init__(self):
+        self.tweet_time=0
+        self.following=defaultdict(set)
+        self.tweets=defaultdict(list)
+
+
+    def postTweet(self, userId: int, tweetId: int) -> None:
+        # T:O(1)
+        self.tweets[userId].append((self.tweet_time,tweetId))
+        self.tweet_time+=1
+        
+
+    def _merge_k_sorted_list_from_end(self,find_tweets_from_users,size=10):
+        # T:O(k+size*logk)
+        max_heap=[]
+        latest_posts=[]
+        # insert latest tweet from each user
+        for user in find_tweets_from_users:
+            if self.tweets[user]:
+                index=len(self.tweets[user])-1
+                tweet=self.tweets[user][index]
+                max_heap.append((-tweet[0],tweet[1],index,user))
+        # T:O(k) heapify
+        heapq.heapify(max_heap)
+        
+        # T:O(size*logk) push and pop from heap
+        while len(latest_posts)!=size and max_heap:
+            top=heapq.heappop(max_heap)
+            _,post,index,user=top
+            latest_posts.append(post)
+            if index-1>=0:
+                index=index-1
+                tweet=self.tweets[user][index]
+                heapq.heappush(max_heap,(-tweet[0],tweet[1],index,user))
+        
+        return latest_posts
+
+    def getNewsFeed(self, userId: int) -> List[int]:
+        # T:O(k+size*logk)
+        find_tweets_from_users=list(self.following[userId])
+        find_tweets_from_users.append(userId)
+        return self._merge_k_sorted_list_from_end(find_tweets_from_users)
+
+    def follow(self, followerId: int, followeeId: int) -> None:
+        # T:O(1)
+        self.following[followerId].add(followeeId)
+
+    def unfollow(self, followerId: int, followeeId: int) -> None:
+        # T:O(1)
+        self.following[followerId].discard(followeeId)
+
+# 7. https://leetcode.com/problems/find-median-from-data-stream/
+class MedianFinder:
+
+    def __init__(self):
+        self.max_heap=[] #first half
+        self.min_heap=[] #second half
+        
+
+    def addNum(self, num: int) -> None:
+        # T:O(log(n)) S:O(n)
+        # the below 3 lines, increases size of max_heap by 1
+        heapq.heappush(self.min_heap,num)
+        min_v=heapq.heappop(self.min_heap)
+        heapq.heappush(self.max_heap,-min_v)
+
+        # rebalance the heap so that size difference at max is 1
+        if len(self.max_heap)-len(self.min_heap)>1:
+            max_v=-heapq.heappop(self.max_heap)
+            heapq.heappush(self.min_heap,max_v)
+
+    def findMedian(self) -> float:
+        # T:O(log(n)) S:O(n)
+        if len(self.max_heap)>len(self.min_heap):
+            return -self.max_heap[0]
+        # return the average, sum of top of both heaps
+        v=-self.max_heap[0]
+        v+=self.min_heap[0]
+        return v/2
+
+# 
