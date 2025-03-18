@@ -256,7 +256,27 @@ def kthSmallest(self, root: Optional[TreeNode], k: int) -> int:
             return node.val
         node=node.right
 
-# 13. 
+# 13. https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+    # T:O(n) and S:O(h) where h is the height of the tree
+    def constuct_tree(start,end):
+        nonlocal index_in_preorder
+        if start>end:
+            return None
+
+        value=preorder[index_in_preorder]
+        node=TreeNode(value)
+        index_in_preorder+=1
+
+        node.left=constuct_tree(start,pos_in_inorder[value]-1)
+        node.right=constuct_tree(pos_in_inorder[value]+1,end)
+        return node
+    
+    pos_in_inorder={}
+    for i in range(len(inorder)):
+        pos_in_inorder[inorder[i]]=i
+    index_in_preorder=0
+    return constuct_tree(0, len(preorder)-1)
 
 # 14. https://leetcode.com/problems/binary-tree-maximum-path-sum/description/
 def maxPathSum(self, root: Optional[TreeNode]) -> int:

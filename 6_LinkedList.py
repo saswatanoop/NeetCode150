@@ -198,6 +198,22 @@ def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optio
 
     return dummy.next
 
+# 8. https://leetcode.com/problems/find-the-duplicate-number/
+def findDuplicate(self, nums: List[int]) -> int:
+    # T:O(n) and S:O(1)
+    slow=fast=0
+    while True:
+        slow=nums[slow]
+        fast=nums[nums[fast]]
+        if slow==fast:
+            break
+    slow2=0
+    while True:
+        slow=nums[slow]
+        slow2=nums[slow2]
+        if slow==slow2:
+            return slow
+
 # 9. https://leetcode.com/problems/lru-cache/
 class LRUCache:
 
@@ -245,4 +261,42 @@ def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
         temp=temp.next
     
     return dummy.next
-# 
+
+# 11. https://leetcode.com/problems/reverse-nodes-in-k-group/
+class Solution:
+    def _reverse_list(self,node):
+        prev=None
+        list_end=node
+
+        while node:
+            next_node=node.next
+            node.next=prev
+            prev=node
+            node=next_node
+        return (prev,list_end)
+
+    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        # T:O(n) and S:O(1)
+        dummy=ListNode(next=head)
+        last_group_end=dummy
+
+        while head:
+            gs=head
+            size=k-1 #since we are already at first node, it is already counted
+            while size and head:
+                size-=1
+                head=head.next
+            # nothing to do as group of k size not found, as we do not have an end of group of size k
+            if not head:
+                last_group_end.next=gs
+                break
+
+            ge=head
+            head=head.next #move to remaining list
+            ge.next=None #break the group [gs,ge] from remaining list
+            gs,ge=self._reverse_list(gs)
+            last_group_end.next=gs
+            last_group_end=ge
+
+        return dummy.next
+ 

@@ -42,11 +42,9 @@ def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
             freq[ord(c) - ord('a')] += 1
         # Create a unique signature using the character frequencies
         hash_key = tuple(freq)
-        
         return hash_key
     
     d = defaultdict(list)
-
     for word in strs:
         d[create_hash_key(word)].append(word)
     return list(d.values())
@@ -165,7 +163,7 @@ def countBadPairs(self, nums: List[int]) -> int:
         good_pairs+=count[num-i]
         count[num-i]+=1
     n=len(nums)
-    #Wrong: I was using (n*(n+1))//2 for total pairs
+    #Wrong: I was using (n*(n+1))//2 for total pairs, nC2 is n*(n-1)//2
     total_pairs=(n*(n-1))//2
     bad_pairs=total_pairs-good_pairs
     return bad_pairs

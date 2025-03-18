@@ -39,8 +39,8 @@ def minWindow( s: str, t: str) -> str:
     # 2. Once found, remove from left as much as possible and keep window valid  
     wins=wine=0
     freq=Counter(t)
-    gs=ge=-1
     rem=len(t)
+    res=None
     while wine<len(s):
         if s[wine] in freq:
             if freq[s[wine]]>0:
@@ -48,15 +48,16 @@ def minWindow( s: str, t: str) -> str:
             freq[s[wine]]-=1
         
         if rem==0:
+            # Mistake: if the char is not part of freq then also we need to remove it from left side
             while s[wins] not in freq or freq[s[wins]]<0:
                 if s[wins] in freq:
                     freq[s[wins]]+=1
                 wins+=1
-            if gs==-1 or  ge-gs>wine-wins:
-                gs,ge=wins,wine
+            if res is None or len(res)>wine-wins+1:
+                res=s[wins:wine+1]  
         wine+=1
     
-    return "" if gs==-1 else s[gs:ge+1]
+    return res if res else ""
 
 
 
@@ -70,12 +71,14 @@ def maxSlidingWindow(nums: List[int], k: int) -> List[int]:
     while wine<len(nums):
 
         # remove the out of window elements from left, using index stored in deq
-        while deq and wine-k>=0 and deq[0]<=wine-k:
+        # size k=2 wine=3 then 3-2=1, allowed are 2 and 3, so allowed >= wine-k+1 
+        while deq and deq[0]<wine-k+1:
             deq.popleft()
         # add element from the right, and maintain decreasing order
         while deq and nums[deq[-1]]<=nums[wine]:
             deq.pop()
         deq.append(wine)
+        
         # add to the answers, if k size window is ready
         if wine>=k-1:
             ans.append(nums[deq[0]])
