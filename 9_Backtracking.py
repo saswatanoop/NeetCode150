@@ -95,6 +95,7 @@ def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]
 
 # 7. https://leetcode.com/problems/word-search/description/
 def exist(self, board: List[List[str]], word: str) -> bool:
+    # T: O(n*m*(4^w) and S:O(w) where w is length of word   
     # check at each board pos i,j for word
     # if the letter matches mark the board[i][j] and move to next 4, when combing back unmark it
     # return True if found in anyone
