@@ -40,8 +40,7 @@ def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
 # 3. https://leetcode.com/problems/koko-eating-bananas/
 def minEatingSpeed(self, piles: List[int], h: int) -> int:
     # T: O(n*log(max_pile_value)) S:O(1)
-    def possible_to_eat():
-        speed=mid
+    def possible_to_eat(speed):
         time_needed=0
         for p in piles:
             time_needed+=p//speed
@@ -56,7 +55,7 @@ def minEatingSpeed(self, piles: List[int], h: int) -> int:
 
     while min_speed<=max_speed:
         mid=min_speed+(max_speed-min_speed)//2
-        if possible_to_eat():
+        if possible_to_eat(mid):
             ans=mid
             max_speed=mid-1
         else:
