@@ -163,7 +163,7 @@ def validTree(self, n: int, edges: List[List[int]]) -> bool:
             connected componenets should be 1
         2. No cycles: A graph that is connected but has a cycle is not a tree.
     '''
-    # T:O(n) S:O(n)
+    # T:O(V+E) S:O(V)
     dsu=DSU(n)
     for u,v in edges:
         if dsu.find_parent(u)!=dsu.find_parent(v):
@@ -175,4 +175,22 @@ def validTree(self, n: int, edges: List[List[int]]) -> bool:
     return dsu.component_count==1
 
 
+# 11. https://neetcode.io/problems/count-connected-components
+def countComponents(self, n: int, edges: List[List[int]]) -> int:
+    # T:O(V+E) S:O(V)
+    dsu=DSU(n)
+    for u,v in edges:
+        if dsu.find_parent(u)!= dsu.find_parent(v):
+            dsu.union(u,v)
+    return dsu.component_count
+
+# 12. https://leetcode.com/problems/redundant-connection/
+def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
+    # T:O(V+E) S:O(V)
+    dsu=DSU()
+    for u,v in edges:
+        if dsu.find_parent(u)==dsu.find_parent(v):
+            return [u,v]
+        else:
+            dsu.union(u,v)
 # 

@@ -1,5 +1,4 @@
 
-
 class DSU:
     def __init__(self,n=None):
         self.parent = {}
@@ -7,6 +6,7 @@ class DSU:
         self.component_count = 0
         
         if n:
+            # nodes will be 0 to n-1
             for i in range(n):
                 self.parent[i] = i
                 self.rank[i] = 1
