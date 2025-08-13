@@ -39,3 +39,23 @@ def minCostClimbingStairs(self, cost: List[int]) -> int:
         return memo[index]
 
     return reaching_cost(n)
+
+
+# 3. https://leetcode.com/problems/house-robber/description/
+def rob(nums: List[int]) -> int:
+    n = len(nums)
+    memo = {}
+
+    def robbed_amount(n):
+        # No house
+        if n < 0:
+            return 0
+        # Only one house, then steal it
+        if n == 0:
+            return nums[0]
+        if n in memo:
+            return memo[n]
+        memo[n] = max(robbed_amount(n - 1), robbed_amount(n - 2) + nums[n])
+        return memo[n]
+
+    return robbed_amount(n - 1)
