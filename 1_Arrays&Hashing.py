@@ -36,8 +36,11 @@ def twoSum(self, nums: List[int], target: int) -> List[int]:
 # 4. https://leetcode.com/problems/group-anagrams/description/
 def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
     # T:O(n) and S:O(n) for dictionary
+    
     def create_hash_key(word):
-        freq = [0] * 26  # Assuming input consists of lowercase English letters
+        # T:O(word_size) and S:O(26)=>O(1)
+        # Assuming input consists of lowercase English letters
+        freq = [0] * 26  
         for c in word:
             freq[ord(c) - ord('a')] += 1
         # Create a unique signature using the character frequencies
@@ -49,7 +52,6 @@ def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
         d[create_hash_key(word)].append(word)
     return list(d.values())
 
-
 # 5. https://leetcode.com/problems/top-k-frequent-elements/description/
 def topKFrequent(self, nums: List[int], k: int) -> List[int]:
     # T:O(nlogk) and S:O(n) for freq dictionary
@@ -59,7 +61,7 @@ def topKFrequent(self, nums: List[int], k: int) -> List[int]:
         heapq.heappush(min_heap,(value,key)) # push (priority, value) in heap
         if len(min_heap)>k:
             heapq.heappop(min_heap)
-    
+
     return [item[1] for item in min_heap]
 
 # 6. https://neetcode.io/problems/string-encode-and-decode
@@ -87,8 +89,6 @@ class EndodeAndDecode:
             i=j
         return decoded
 
-
-
 # 7. https://leetcode.com/problems/product-of-array-except-self/description/
 def productExceptSelf(self, nums: List[int]) -> List[int]:
     # T:O(n) and S:O(1) excluding the ans array
@@ -104,7 +104,7 @@ def productExceptSelf(self, nums: List[int]) -> List[int]:
         prefix_mul[i]=prefix_mul[i]*suf
         suf*=nums[i]
     return prefix_mul
-    
+
 # 8. https://leetcode.com/problems/valid-sudoku/description/
 class CheckSudoku:
     # T:O(n*n) and S:O(n)

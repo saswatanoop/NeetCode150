@@ -126,6 +126,51 @@ def orangesRotting(self, grid: List[List[int]]) -> int:
     
     return -1 if fresh else time
 
+# 6. https://leetcode.com/problems/pacific-atlantic-water-flow/
+def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
+    # T:O(n*m) S:O(n*m) q is used for BFS and visited array
+    # Solve separately for both oceans 
+    def bfs(start_points, ocean):
+        q=deque(start_points)
+        for x,y in start_points:
+            ocean[x][y]=True
+        while q:
+            i,j=q.popleft()
+            for d in directions:
+                x,y=i+d[0],j+d[1]
+                if x>=0 and x<rows and y>=0 and y<cols and not ocean[x][y] and heights[x][y]>=heights[i][j]:
+                    ocean[x][y]=True
+                    q.append((x,y))
+
+    
+    directions=[[0,1],[1,0],[0,-1],[-1,0]]
+    rows, cols = len(heights),len(heights[0])
+    atlantic=[[False] * cols for _ in range(rows)]
+    pacific=[[False] * cols for _ in range(rows)]
+
+    atl_start=[]
+    pac_start=[]
+    for i in range(rows):
+        atl_start.append((i,cols-1))
+        pac_start.append((i,0))
+    
+    for i in range(cols):
+        atl_start.append((rows-1,i))
+        pac_start.append((0,i))
+    
+    bfs(atl_start,atlantic)
+    bfs(pac_start,pacific)
+
+    res=[]
+    for i in range(rows):
+        for j in range(cols):
+            if atlantic[i][j] and pacific[i][j]:
+                res.append([i,j])
+    
+    return res
+
+
+
 # 7. https://leetcode.com/problems/surrounded-regions/
 def solve(self, board: List[List[str]]) -> None:
     # T:O(n*m) S:O(n*m) modified the same grid to mark it as visited, but dfs stack is there
@@ -193,4 +238,6 @@ def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
             return [u,v]
         else:
             dsu.union(u,v)
+
+
 # 
