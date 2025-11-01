@@ -1,16 +1,16 @@
 # Misc
-    # ASCII value
-ascii_of_a= ord('a')
+# ASCII value
+ascii_of_a = ord("a")
 print(ascii_of_a)
 
 # Algorithms in STL
-'''
+"""
 1. Sorting
 2. Binary Search
-'''
+"""
 
 # Data Structures
-'''
+"""
 1. List 
 2. Tuples
 3. Stack
@@ -23,104 +23,113 @@ print(ascii_of_a)
 10. Graph
 11. Trie/Prefix Tree
 
-'''
+"""
 ####################### Algos ######################
 
 # Sorting
-nums=[1,2,1,2,2,2,2,2]
-    # Reverse
-new_list_reversed = nums[::-1] #or list(reversed(nums))
-reversed_nums=nums.reverse() #in-place
-    # Sorting
-new_sorted_list=sorted(nums)
-nums.sort() # in place sort
+nums = [1, 2, 1, 2, 2, 2, 2, 2]
+# Reverse
+new_list_reversed = nums[::-1]  # or list(reversed(nums))
+reversed_nums = nums.reverse()  # in-place
+# Sorting
+new_sorted_list = sorted(nums)
+nums.sort()  # in place sort
 arr = [-3, 2, -5, 1]
-        # Reversed order
+# Reversed order
 arr.sort(key=abs, reverse=True)
-        #custom sorting logic, key parameter expects a function
+# custom sorting logic, key parameter expects a function
 nums.sort(key=lambda x: x % 10)
 
 
 # Binary Search
 import bisect
+
 arr = [1, 2, 2, 3, 4, 4, 4, 5, 6]
+
+
 def exists(arr, target):
     pos = bisect.bisect_left(arr, target)  # Find the leftmost position
     return pos < len(arr) and arr[pos] == target  # Check if target exists at pos
 
+
 # Function to count the occurrences of a number in a sorted list
 def count_occurrences(arr, target):
-    left = bisect.bisect_left(arr, target)  # First position where target can be inserted
-    right = bisect.bisect_right(arr, target)  # Position just after the last occurrence of target
+    left = bisect.bisect_left(
+        arr, target
+    )  # First position where target can be inserted
+    right = bisect.bisect_right(
+        arr, target
+    )  # Position just after the last occurrence of target
     return right - left  # The count is the difference between the two positions
 
+
 # Example usage
-
-
 
 
 ####################### Data structures ######################
 
 ####################################   List   ####################################
 
-nums=[2,3,4,5,5,1,2]
+nums = [2, 3, 4, 5, 5, 1, 2]
 nums.append(123)
 size_of_nums = len(nums)
 last_without_removing = nums[-1]
-last_with_removing_it=nums.pop()
+last_with_removing_it = nums.pop()
 
 
-new_list= [0]*5     #initialize with Default value 0 of size 5
-M, N = 3, 4 
-matrix = [[0] * N for _ in range(M)] 
-#Wrong way: matrix = [[0] * N] * M  # This creates M references to the same row!
-    
-#Deep copy for nested list
-copy_list = nums[:] #This will create a new list as items inside it are immutable 
+new_list = [0] * 5  # initialize with Default value 0 of size 5
+M, N = 3, 4
+matrix = [[0] * N for _ in range(M)]
+# Wrong way: matrix = [[0] * N] * M  # This creates M references to the same row!
+
+# Deep copy for nested list
+copy_list = nums[:]  # This will create a new list as items inside it are immutable
 import copy
-deep_copy_list = copy.deepcopy(matrix) 
 
-#Iterate through list
+deep_copy_list = copy.deepcopy(matrix)
+
+# Iterate through list
 fruits = ["apple", "banana", "cherry"]
 for index, fruit in enumerate(fruits):
-    print(fruit,index)
+    print(fruit, index)
 for fruit in fruits:
     print(fruit)
 for index in range(len(fruits)):
-    print(fruits[index],index)
+    print(fruits[index], index)
 
 ####################################    Tuples  ####################################
 # immutable and cannot add new elements to Tuple
 # used as keys in dictionaries, or data in set, list can't be used in set or key in hashmap
 
 fruits = ("apple", "banana", "cherry")
-print(fruits[1]) 
+print(fruits[1])
 for fruit in fruits:
     print(fruit)
 
-tuple_dict={}
-tuple_dict[fruits]=2
+tuple_dict = {}
+tuple_dict[fruits] = 2
 
 ####################################   Stack    ####################################
 
-stack = []                      #Create
-stack.append(10)                #Push
-popped_element = stack.pop()    #Pop
-top_element = stack[-1] if stack else None #Top
-size = len(stack)               #Size of Stack
+stack = []  # Create
+stack.append(10)  # Push
+popped_element = stack.pop()  # Pop
+top_element = stack[-1] if stack else None  # Top
+size = len(stack)  # Size of Stack
 
 ####################################   Deque and Queue    ####################################
 from collections import deque
-dll = deque()           # Create
-dll.append(10)          # Add to the right
-dll.appendleft(5)       # Add to the left
-dll.pop()               # Removes 10, Removes from the right
-dll.popleft()           # Removes 5, Remove from the left
+
+dll = deque()  # Create
+dll.append(10)  # Add to the right
+dll.appendleft(5)  # Add to the left
+dll.pop()  # Removes 10, Removes from the right
+dll.popleft()  # Removes 5, Remove from the left
 size = len(dll)
 
 # View first or last element in deque
-front = dll[0] if dll else None 
-back = dll[-1] if dll else None 
+front = dll[0] if dll else None
+back = dll[-1] if dll else None
 
 
 ####################################   Heap/Always min-heap    ####################################
@@ -129,36 +138,36 @@ back = dll[-1] if dll else None
 
 import heapq
 
-lst = [1,5,6,12,2,5]
-heapq.heapify(lst) # Convert a list into a min-heap
+lst = [1, 5, 6, 12, 2, 5]
+heapq.heapify(lst)  # Convert a list into a min-heap
 
-min_heap = [] # Initialize a Min-Heap	
-heapq.heappush(min_heap, 4) # Push an element onto the heap
-min_elem = min_heap[0] if min_heap else None # top value
-min_elem = heapq.heappop(min_heap) # Pop from top
-size=len(min_heap)
+min_heap = []  # Initialize a Min-Heap
+heapq.heappush(min_heap, 4)  # Push an element onto the heap
+min_elem = min_heap[0] if min_heap else None  # top value
+min_elem = heapq.heappop(min_heap)  # Pop from top
+size = len(min_heap)
 
 # Push a negative value to simulate a max-heap
 max_heap = []
 heapq.heappush(max_heap, -2)
-max_elem = -heapq.heappop(max_heap) # Pop and negate the result for max-heap behavior
+max_elem = -heapq.heappop(max_heap)  # Pop and negate the result for max-heap behavior
 
 # Custom Priority (using tuples), (priority, value)
-max_heap_2=[]
+max_heap_2 = []
 heapq.heappush(max_heap_2, (-2, 2))
 
 
 ####################################   Set    ####################################
 
-s = set()                   # Empty set
-s = {1, 2, 3}               # Set with values
-hset2=set([1,2,3,3,3,3])    #Set from a list
-s.add(4)                    # Add element to set
-s.remove(2)                 # Remove (raises error if missing)
-s.discard(5)                # Remove (safe, no error if missing)
-exists = 3 in s             # True if 3 exists in set
-s.clear()                   # Set becomes empty {}
-size = len(s)               # size of set
+s = set()  # Empty set
+s = {1, 2, 3}  # Set with values
+hset2 = set([1, 2, 3, 3, 3, 3])  # Set from a list
+s.add(4)  # Add element to set
+s.remove(2)  # Remove (raises error if missing)
+s.discard(5)  # Remove (safe, no error if missing)
+is_present = 3 in s  # True if 3 exists in set
+s.clear()  # Set becomes empty {}
+size = len(s)  # size of set
 
 # Iterate Over a Set
 for num in s:
@@ -167,10 +176,11 @@ for num in s:
 
 ####################################   Hash-Map/Dictionary and Counter  ####################################
 
-# To get freq of elements 
+# To get freq of elements
 from collections import Counter
-list_temp = [1,2,1,3,4,1]
-freq_count= Counter(list_temp)
+
+list_temp = [1, 2, 1, 3, 4, 1]
+freq_count = Counter(list_temp)
 
 
 normal_dict = {}
@@ -179,8 +189,9 @@ d = dict(a=1, b=2)  # Another way to initialize
 
 # Default Values with defaultdict (Avoid KeyError)
 from collections import defaultdict
-freq = defaultdict(int) # initialize with 0 value for all keys
-default_list = defaultdict(list) # Each key will have an empty list
+
+freq = defaultdict(int)  # initialize with 0 value for all keys
+default_list = defaultdict(list)  # Each key will have an empty list
 
 
 # Insert / Update
@@ -196,7 +207,7 @@ del d["a"]  # Remove key "a" (Error if missing)
 value = d.pop("b")  # Remove key "b" and return its value
 value = d.pop("x", "default")  # Remove key "x", return "default" if missing
 
-exists = "c" in d  # True if key "c" exists in dictionary
+key_exists = "c" in d  # True if key "c" exists in dictionary
 size = len(d)
 
 # Iterate Over Dictionary
@@ -211,14 +222,16 @@ for value in d.values():
 
 
 # Sorting Dictionary by Key and Value
-sorted_dict = dict(sorted(d.items()))  # Sort by keys, we pass sorted list of (key,value) to dict
+sorted_dict = dict(
+    sorted(d.items())
+)  # Sort by keys, we pass sorted list of (key,value) to dict
 sorted_by_value = dict(sorted(d.items(), key=lambda x: x[1]))  # Sort by values
 
 
 from collections import OrderedDict
 
-# Initialize an OrderedDict
-ordered_dict = OrderedDict([("a", 1), ("b", 2), ("c", 3)])
+# Initialize an OrderedDict with str keys and int values
+ordered_dict: "OrderedDict[str, int]" = OrderedDict([("a", 1), ("b", 2), ("c", 3)])
 print(ordered_dict)  # OrderedDict([('a', 1), ('b', 2), ('c', 3)])
 
 # Adding a key-value pair (O(1))
@@ -232,10 +245,10 @@ print(ordered_dict)  # OrderedDict([('b', 5), ('c', 3), ('d', 4), ('a', 1)])
 ordered_dict.move_to_end("d", last=False)
 print(ordered_dict)  # OrderedDict([('d', 4), ('b', 5), ('c', 3), ('a', 1)])
 
-del ordered_dict["b"] # Removing a key using del (O(1))
-value = ordered_dict.pop("c") # Removing a key using pop (O(1))
+del ordered_dict["b"]  # Removing a key using del (O(1))
+value = ordered_dict.pop("c")  # Removing a key using pop (O(1))
 ordered_dict.popitem()  # Removing the last item (O(1))
-ordered_dict.popitem(last=False) # Removing the first item (O(1))
+ordered_dict.popitem(last=False)  # Removing the first item (O(1))
 
 
 ####################################   Linked List and Doubly-LL  ####################################
@@ -256,13 +269,16 @@ class TreeNode:
 
 ####################################     Graph    ####################################
 graph = defaultdict(list)
+
+
 def build_graph_from_edges(edges, directed=False):
-      # Use defaultdict to simplify list creation
+    # Use defaultdict to simplify list creation
     for u, v in edges:
         graph[u].append(v)  # Add edge u -> v
         if not directed:
             graph[v].append(u)  # Add edge v -> u for undirected graph
     return graph
+
 
 ####################################     Trie(Prefix Tree)   ####################################
 class TrieNode:
@@ -270,33 +286,32 @@ class TrieNode:
         self.children = {}
         self.isWordEnd = False
 
+
 class Trie:
 
     def __init__(self):
         self.head = Node()
 
     def insert(self, word: str) -> None:
-        temp=self.head
+        temp = self.head
         for c in word:
             if c not in temp.children:
-                temp.children[c]=TrieNode()
-            temp=temp.children[c]
-        temp.isWordEnd=True
+                temp.children[c] = TrieNode()
+            temp = temp.children[c]
+        temp.isWordEnd = True
 
     def search(self, word: str) -> bool:
-        temp=self.head
+        temp = self.head
         for c in word:
             if c not in temp.children:
                 return False
-            temp=temp.children[c]
+            temp = temp.children[c]
         return temp.isWordEnd
 
     def startsWith(self, prefix: str) -> bool:
-        temp=self.head
+        temp = self.head
         for c in prefix:
             if c not in temp.children:
                 return False
-            temp=temp.children[c]
+            temp = temp.children[c]
         return True
-
-
