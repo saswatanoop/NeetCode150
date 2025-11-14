@@ -51,6 +51,14 @@ def exists(arr, target):
     pos = bisect.bisect_left(arr, target)  # Find the leftmost position
     return pos < len(arr) and arr[pos] == target  # Check if target exists at pos
 
+nums = [4, 6, 7]
+x = 5
+
+pos = bisect.bisect_left(nums, x)
+
+left = nums[pos - 1] if pos > 0 else None
+right = nums[pos] if pos < len(nums) else None
+print(f"For {x}: left = {left}, right = {right}")
 
 # Function to count the occurrences of a number in a sorted list
 def count_occurrences(arr, target):

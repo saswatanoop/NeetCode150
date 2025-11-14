@@ -32,6 +32,7 @@ def twoSum(self, nums: List[int], target: int) -> List[int]:
         if target-nums[i] in index_of_num:
             return [index_of_num[target-nums[i]],i]
         index_of_num[nums[i]]=i
+    return [-1,-1]
 
 # 4. https://leetcode.com/problems/group-anagrams/description/
 def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
