@@ -79,12 +79,11 @@ class EndodeAndDecode:
         decoded=[]
         i=0
         while i <len(s):
-            str_size=""
-            while s[i]!=":":
-                str_size+=s[i]
-                i+=1
-            str_size=int(str_size)
-            i=i+1 # will move to start of string after ":"
+            j=i
+            while s[j]!=":":
+                j+=1
+            str_size=int(s[i:j])
+            i=j+1 # will move to start of string after ":"
             j=i+str_size # will have the end of string +1 position
             decoded.append(s[i:j])
             i=j
@@ -93,18 +92,17 @@ class EndodeAndDecode:
 # 7. https://leetcode.com/problems/product-of-array-except-self/description/
 def productExceptSelf(self, nums: List[int]) -> List[int]:
     # T:O(n) and S:O(1) excluding the ans array
-    prefix_mul=[]
-    pre=1
-    # prefix_mul at ith index will have nums[0]*nums[1]..*nums[i-1]
-    for num in nums:
-        prefix_mul.append(pre)
-        pre*=num
-    suf=1
-    # ans[i]=pref[i]*suf, i.e 0 to i-1 and i+1 to n-1
-    for i in range(len(nums)-1,-1,-1):
-        prefix_mul[i]=prefix_mul[i]*suf
-        suf*=nums[i]
-    return prefix_mul
+    n=len(nums)
+    res=[0]*n
+    left=1
+    for i in range(n):
+        res[i]=left
+        left=left*nums[i]
+    right=1
+    for j in range(n-1,-1,-1):
+        res[j]=res[j]*right
+        right*=nums[j]
+    return res
 
 # 8. https://leetcode.com/problems/valid-sudoku/description/
 class CheckSudoku:
