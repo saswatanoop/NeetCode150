@@ -1,6 +1,7 @@
 
 from typing import List, Optional
-from collections import deque
+from collections import deque, defaultdict
+
 # 1. https://leetcode.com/problems/number-of-islands/description/
 def numIslands(self, grid: List[List[str]]) -> int:
     # T:O(n*m) S:O(n*m) modified the same grid to mark it as visited, but dfs stack is there
@@ -169,8 +170,6 @@ def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
     
     return res
 
-
-
 # 7. https://leetcode.com/problems/surrounded-regions/
 def solve(self, board: List[List[str]]) -> None:
     # T:O(n*m) S:O(n*m) modified the same grid to mark it as visited, but dfs stack is there
@@ -198,6 +197,51 @@ def solve(self, board: List[List[str]]) -> None:
             elif board[i][j]=="S":
                 board[i][j]="O"
 
+# 8. 
+class Solution:
+    def findOrder_DFS(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        
+        def dfs_check_cycle(node):
+            state[node]=1 #it is in path
+            
+            for nbr in adjList[node]:
+                if state[nbr]==1: #nbr is in current path
+                    return True
+                elif state[nbr]==0: #check cycle in nbr
+                    if dfs_check_cycle(nbr):
+                        return True
+
+            state[node]=2 #mark as visited
+            return False
+        
+        def dfs_topo(node):
+            visited.add(node)
+            for nbr in adjList[node]:
+                if nbr not in visited:
+                    dfs_topo(nbr)
+            topo_order.append(node)
+        
+        # construct graph
+        adjList=defaultdict(list)
+        for a,b in prerequisites:
+            adjList[b].append(a)
+
+        # check cycle, 0: unvisited, 1: path, 2: visited
+        state=defaultdict(int)
+        for i in range(numCourses):
+            if state[i]==0:
+                if dfs_check_cycle(i):
+                    return []
+
+        # topological order
+        topo_order=[]
+        visited=set()
+        for i in range(numCourses):
+            if i not in visited:
+                dfs_topo(i)
+        topo_order.reverse()
+
+        return topo_order
 
 # 10. https://neetcode.io/problems/valid-tree
 from additional_data_structures import DSU
