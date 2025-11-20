@@ -132,3 +132,60 @@ def find_ap_and_bridges(n, edges):
     return articulation_points, bridges
 
 # Strongly Connected Components (SCC) in Directed Graph using Tarjan's Algorithm
+from collections import defaultdict
+
+def find_sccs_tarjan(n, edges):
+    def dfs_helper(node):
+        nonlocal timer
+        disc[node] = low[node] = timer
+        timer += 1
+        
+        # Add to stack and mark as present
+        stack.append(node)
+        on_stack[node] = True
+        
+        for nbr in adj[node]:
+            if disc[nbr] == -1:
+                dfs_helper(nbr)
+                # use nbr's low value to update node's low value
+                low[node] = min(low[node], low[nbr])
+                
+            # Back Edge: nbr is visited AND is currently in the recursion stack: This determines the cycle
+            elif on_stack[nbr]:
+                # update low value for back edge
+                low[node] = min(low[node], disc[nbr])
+            
+            # NOTE: If nbr was visited but NOT on_stack, it's a Cross Edge to a completed SCC. We simply ignore it.
+
+        # Check if 'node' is the root of an SCC
+        if low[node] == disc[node]:
+            current_scc = []
+            while True:
+                top = stack.pop()
+                on_stack[top] = False
+                current_scc.append(top)
+                # Stop once we pop the root (node)
+                if top == node:
+                    break
+            all_sccs.append(current_scc)
+
+    # Graph Setup (Directed)
+    adj = defaultdict(list)
+    for u, v in edges:
+        adj[u].append(v) 
+
+    disc = [-1] * n
+    low = [-1] * n
+    timer = 0
+    
+    # Stack for tracking nodes in the current path
+    stack = []
+    on_stack = [False] * n # O(1) lookup to check if node is in stack
+    
+    all_sccs = []
+
+    for i in range(n):
+        if disc[i] == -1:
+            dfs_helper(i)
+            
+    return all_sccs
