@@ -6,6 +6,12 @@ MST:
 1. Kruskal's Algorithm: DSU + greedy T:O(ElogE) S:O(V)
 2. Prim's Algorithm: Greedy + min-heap T:O(ElogV) S:O(V) as E=V^2 in dense graph, O(ElogE) = O(ElogV^2) = O(2ElogV) = O(ElogV)
 
+
+Tarjan’s Algorithm:
+1. Articulation Points
+2. Bridges
+3. Strongly Connected Components (SCC)
+
 '''
 
 from additional_data_structures import DSU
@@ -67,5 +73,62 @@ class MST:
             return -1  # Graph is disconnected, MST not possible
         
         return mst_sum
-                    
-                
+
+# 2. Tarjan’s Algorithm:
+ 
+# Articulation Points and Bridges in an undirected graph: https://leetcode.com/problems/critical-connections-in-a-network/                
+def find_ap_and_bridges(n, edges):
+    def dfs_helper(node, parent):
+        nonlocal timer
+        disc[node] = low[node] = timer
+        timer += 1
+
+        children = 0 # for root Articulation Point check
+
+        for nbr in adj[node]:
+            # unvisited child
+            if disc[nbr] == -1:               
+                children += 1
+                dfs_helper(nbr, node)
+
+                # use nbr's low value to update node's low value
+                low[node] = min(low[node], low[nbr])
+
+                # for node->nbr check articulation point and bridge
+                # bridge condition
+                if low[nbr] > disc[node]:
+                    bridges.append((node, nbr))
+
+                # Check articulation point for non-root nodes
+                if parent != -1 and low[nbr] >= disc[node]:
+                    articulation_points.add(node)
+
+            # back edge
+            elif nbr != parent:
+                # update low value for back edge
+                low[node] = min(low[node], disc[nbr])
+
+        # check if root is an articulation point
+        if parent == -1 and children > 1:
+            articulation_points.add(node)
+
+    from collections import defaultdict
+    adj = defaultdict(list)
+    for u, v in edges:
+        adj[u].append(v)
+        adj[v].append(u)
+
+    disc = [-1] * n        # -1 means unvisited
+    low  = [-1] * n
+    timer = 0
+
+    articulation_points = set()
+    bridges = []
+
+    for i in range(n):
+        if disc[i] == -1:
+            dfs_helper(i, -1)
+
+    return articulation_points, bridges
+
+# Strongly Connected Components (SCC) in Directed Graph using Tarjan's Algorithm
