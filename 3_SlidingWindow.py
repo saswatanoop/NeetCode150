@@ -32,6 +32,7 @@ def lengthOfLongestSubstring( s: str) -> int:
         # include current character
         seen.add(s[end])
         max_len = max(max_len, end - start + 1)
+        # move to next character
         end += 1
 
     return max_len
@@ -89,20 +90,24 @@ def checkInclusion(self, s1: str, s2: str) -> bool:
     
     start=end=0
     while end<len(s2):
-        # char is not in s1, clear out the whole window
+        # char is not in s1, whole window is invalid, rebuild the dictionary
         if s2[end] not in freq:
             while start!=end:
                 freq[s2[start]]+=1
                 start+=1
+            # move to next character
             start=end=end+1
         # char is part of s1 and window can be valid
         else:
-            while freq[s2[end]]==0:
+            # make window valid before adding new element
+            while freq[s2[end]]<1:
                 freq[s2[start]]+=1
                 start+=1
+            # s2[end] can be added safely
             freq[s2[end]]-=1
             if len(s1)==end-start+1:
                 return True
+            # move to next character
             end+=1
     return False
 
