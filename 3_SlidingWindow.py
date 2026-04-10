@@ -7,9 +7,10 @@ from collections import deque
 def maxProfit( prices: List[int]):
     # T:O(n) and S:O(1)
     max_profit=0
-    min_stock_value=float("inf")
+    min_stock_value=prices[0]
     # we will try to sell each day with maximum profit and use the best day 
-    for price in prices:
+    for i in range(1,len(prices)):
+        price=prices[i]
         max_profit=max(max_profit,price-min_stock_value)
         min_stock_value=min(min_stock_value,price)
     return max_profit
