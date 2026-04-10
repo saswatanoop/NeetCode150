@@ -8,7 +8,7 @@ def maxProfit( prices: List[int]):
     # T:O(n) and S:O(1)
     max_profit=0
     min_stock_value=prices[0]
-    # we will try to sell each day with maximum profit and use the best day 
+    # finding max possible profit each day and storing the best profit so far, and also updating the min stock value so far
     for i in range(1,len(prices)):
         price=prices[i]
         max_profit=max(max_profit,price-min_stock_value)
@@ -24,7 +24,7 @@ def lengthOfLongestSubstring( s: str) -> int:
     seen = set()
 
     while end < len(s):
-        # shrink window if duplicate found
+        # keep shrinking window if adding new char makes the window invalid
         while s[end] in seen:
             seen.remove(s[start])
             start += 1
