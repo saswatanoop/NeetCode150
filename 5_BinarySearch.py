@@ -1,6 +1,11 @@
 from typing import List
 from collections import defaultdict
 
+import bisect
+
+# bisect_left(arr, x)  -> first index where value >= x
+# bisect_right(arr, x) -> first index where value > x
+# x exists if i < len(arr) and arr[i] == x where i = bisect_left(arr, x)
 
 # 1. https://leetcode.com/problems/binary-search/
 def search(nums: List[int], target: int) -> int:
@@ -20,8 +25,6 @@ def search(nums: List[int], target: int) -> int:
 
 
 # 2. https://leetcode.com/problems/search-a-2d-matrix/description/
-import bisect
-
 
 def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
     # T:O(logn + logm) and S:O(1)
@@ -85,7 +88,7 @@ def findMin(self, nums: List[int]) -> int:
 
 
 # 5. https://leetcode.com/problems/search-in-rotated-sorted-array/
-def search(self, nums: List[int], target: int) -> int:
+def search_in_rotated_array(self, nums: List[int], target: int) -> int:
     # T:O(logn) and S:O(1)
     # 1,2 and 3rd will work as normal binary search when [s,e] is sorted
     # use the knowledge, if mid falls in 1st half, [s,mid] is sorted, if mid falls in 2nd half, [mid,e] is sorted
