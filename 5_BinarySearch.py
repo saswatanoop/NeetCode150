@@ -3,9 +3,9 @@ from collections import defaultdict
 
 import bisect
 
-# bisect_left(arr, x)  -> first index where value >= x
-# bisect_right(arr, x) -> first index where value > x
-# x exists if i < len(arr) and arr[i] == x where i = bisect_left(arr, x)
+# bisect.bisect_left(arr, x)  -> first index where value >= x
+# bisect.bisect_right(arr, x) -> first index where value > x
+# x exists if i < len(arr) and arr[i] == x where i = bisect.bisect_left(arr, x)
 
 # 1. https://leetcode.com/problems/binary-search/
 def search(nums: List[int], target: int) -> int:
@@ -25,22 +25,25 @@ def search(nums: List[int], target: int) -> int:
 
 
 # 2. https://leetcode.com/problems/search-a-2d-matrix/description/
-
 def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
-    # T:O(logn + logm) and S:O(1)
+    # T:O(logn + logm)= O(log(n*m)) and S:O(1)
+    
     # compare with smallest and largest element in matrix first
     if target < matrix[0][0] or target > matrix[-1][-1]:
         return False
 
     s, e = 0, len(matrix) - 1
-    while s < e:
-        mid = s + (e - s) // 2
-        if matrix[mid][-1] < target:
-            s = mid + 1
-        # matrix[mid][-1]>=target, it might be in mid row so we can't set e=mid-1
+    while s<e: #when s==e we need to search in that row
+        mid=s+(e-s)//2
+        row_last_value=matrix[mid][-1]
+        if row_last_value == target:
+            return True
+        elif row_last_value<target:
+            s=mid+1
         else:
-            e = mid
-    # when s==e, we need to search in that row for the element
+            e=mid #it could be in same mid row, we can not remove it
+
+    # now s==e
     pos = bisect.bisect_left(matrix[s], target)
     return pos < len(matrix[s]) and matrix[s][pos] == target
 
