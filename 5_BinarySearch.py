@@ -71,21 +71,27 @@ def minEatingSpeed(self, piles: List[int], h: int):
             min_speed = mid + 1
     return ans 
 
-
 # 4. https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
-def findMin(self, nums: List[int]) -> int:
+def findMin(self, nums: List[int]):
     # T: O(logn) S:O(1)
-    s, e = 0, len(nums) - 1
 
-    while s <= e:
-        if nums[s] > nums[e]:  # there is rotation present between [s,e]
-            mid = s + (e - s) // 2
-            if nums[mid] >= nums[s]:  # we are in 1st rotated section
-                s = mid + 1
-            else:  # nums[mid]<nums[s] we are in 2nd rotated section
-                e = mid
-        else:  # there is no rotation remaining and [s,e] is sorted
+    s,e=0,len(nums)-1
+    while s<=e:
+        
+        mid=s+(e-s)//2
+        
+        # Goal achieved:sorted array return leftmost
+        if nums[s]<=nums[e]:
             return nums[s]
+
+        # check mid is in which sorted subarray: and use the 1st or 2nd half accordingly 
+        
+        # mid first sorted subarray
+        elif nums[mid]>nums[e]: 
+            s=mid+1
+        # mid in second sorted subarray
+        else:
+            e=mid # should not loose mid, don't use mid-1
 
 
 # 5. https://leetcode.com/problems/search-in-rotated-sorted-array/
