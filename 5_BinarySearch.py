@@ -23,7 +23,6 @@ def search(nums: List[int], target: int) -> int:
 
     return -1
 
-
 # 2. https://leetcode.com/problems/search-a-2d-matrix/description/
 def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
     # T:O(logn + logm)= O(log(n*m)) and S:O(1)
@@ -47,22 +46,21 @@ def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
     pos = bisect.bisect_left(matrix[s], target)
     return pos < len(matrix[s]) and matrix[s][pos] == target
 
-
 # 3. https://leetcode.com/problems/koko-eating-bananas/
-def minEatingSpeed(self, piles: List[int], h: int) -> int:
+def minEatingSpeed(self, piles: List[int], h: int):
     # T: O(n*log(max_pile_value)) S:O(1)
+    
     def possible_to_eat(speed):
         time_needed = 0
         for p in piles:
             time_needed += p // speed
-            if p % speed != 0:
-                time_needed += 1
+            time_needed += 1 if p % speed != 0 else 0
         return time_needed <= h
 
     # ans space in between min_speed and max_speed, use binary search
     min_speed = 1
     max_speed = max(piles)
-    ans = max_speed
+    ans = None
 
     while min_speed <= max_speed:
         mid = min_speed + (max_speed - min_speed) // 2
@@ -71,7 +69,7 @@ def minEatingSpeed(self, piles: List[int], h: int) -> int:
             max_speed = mid - 1
         else:
             min_speed = mid + 1
-    return ans
+    return ans 
 
 
 # 4. https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
@@ -124,7 +122,7 @@ class TimeMap:
         # T:O(1) and S:O(n*m) where n is number of keys and m is number of values
         self.dict[key].append([timestamp, value])
 
-    def get(self, key: str, timestamp: int) -> str:
+    def get(self, key: str, timestamp: int):
         # T:O(logm) and S:O(1) where m is number of values for the key
         if key not in self.dict or timestamp < self.dict[key][0][0]:
             return ""
