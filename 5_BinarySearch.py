@@ -123,16 +123,16 @@ def search_in_rotated_array(self, nums: List[int], target: int) -> int:
 class TimeMap:
 
     def __init__(self):
-        self.store=defaultdict(list)
+        self.store = defaultdict(list)
 
     def set(self, key: str, value: str, timestamp: int) -> None:
         # T:O(1) and S:O(n*m) where n is number of keys and m is number of values
-        self.store[key].append((timestamp,value))
+        self.store[key].append((timestamp, value))
 
     def get(self, key: str, timestamp: int):
         # T:O(logm) and S:O(1) where m is number of values for the key
-        if key not in self.store or timestamp<self.store[key][0][0]:
+        if key not in self.store or timestamp < self.store[key][0][0]:
             return ""
         # find list[idx][0]>timestamp so list[idx-1][0] will definitely be <=timestamp
         idx = bisect.bisect_right(self.store[key], timestamp, key=lambda x: x[0])
-        return self.store[key][idx-1][1]
+        return self.store[key][idx - 1][1]
