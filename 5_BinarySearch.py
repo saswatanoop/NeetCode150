@@ -7,6 +7,7 @@ import bisect
 # bisect.bisect_right(arr, x) -> first index where value > x
 # x exists if i < len(arr) and arr[i] == x where i = bisect.bisect_left(arr, x)
 
+
 # 1. https://leetcode.com/problems/binary-search/
 def search(nums: List[int], target: int) -> int:
     # T:O(logn) and S:O(1)
@@ -23,33 +24,35 @@ def search(nums: List[int], target: int) -> int:
 
     return -1
 
+
 # 2. https://leetcode.com/problems/search-a-2d-matrix/description/
 def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
     # T:O(logn + logm)= O(log(n*m)) and S:O(1)
-    
+
     # compare with smallest and largest element in matrix first
     if target < matrix[0][0] or target > matrix[-1][-1]:
         return False
 
     s, e = 0, len(matrix) - 1
-    while s<e: #when s==e we need to search in that row
-        mid=s+(e-s)//2
-        row_last_value=matrix[mid][-1]
+    while s < e:  # when s==e we need to search in that row
+        mid = s + (e - s) // 2
+        row_last_value = matrix[mid][-1]
         if row_last_value == target:
             return True
-        elif row_last_value<target:
-            s=mid+1
+        elif row_last_value < target:
+            s = mid + 1
         else:
-            e=mid #it could be in same mid row, we can not remove it
+            e = mid  # it could be in same mid row, we can not remove it
 
     # now s==e
     pos = bisect.bisect_left(matrix[s], target)
     return pos < len(matrix[s]) and matrix[s][pos] == target
 
+
 # 3. https://leetcode.com/problems/koko-eating-bananas/
 def minEatingSpeed(self, piles: List[int], h: int):
     # T: O(n*log(max_pile_value)) S:O(1)
-    
+
     def possible_to_eat(speed):
         time_needed = 0
         for p in piles:
@@ -69,52 +72,50 @@ def minEatingSpeed(self, piles: List[int], h: int):
             max_speed = mid - 1
         else:
             min_speed = mid + 1
-    return ans 
+    return ans
+
 
 # 4. https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
 def findMin(self, nums: List[int]):
     # T: O(logn) S:O(1)
 
-    s,e=0,len(nums)-1
-    while s<=e:
-        
-        mid=s+(e-s)//2
-        
-        # Goal achieved:sorted array return leftmost
-        if nums[s]<=nums[e]:
+    s, e = 0, len(nums) - 1
+    while s <= e:
+
+        mid = s + (e - s) // 2
+        if nums[s] <= nums[e]:  # Goal achieved: sorted array return leftmost
             return nums[s]
 
-        # check mid is in which sorted subarray: and use the 1st or 2nd half accordingly 
-        
-        # mid first sorted subarray
-        elif nums[mid]>nums[e]: 
-            s=mid+1
-        # mid in second sorted subarray
-        else:
-            e=mid # should not loose mid, don't use mid-1
+        # check mid is in which sorted subarray: and use the 1st or 2nd half accordingly
+        elif nums[mid] > nums[e]:  # mid first sorted subarray
+            s = mid + 1
+        else:  # mid in second sorted subarray
+            e = mid  # should not loose mid, don't use mid-1
 
 
 # 5. https://leetcode.com/problems/search-in-rotated-sorted-array/
 def search_in_rotated_array(self, nums: List[int], target: int) -> int:
     # T:O(logn) and S:O(1)
-    # 1,2 and 3rd will work as normal binary search when [s,e] is sorted
-    # use the knowledge, if mid falls in 1st half, [s,mid] is sorted, if mid falls in 2nd half, [mid,e] is sorted
+
     s, e = 0, len(nums) - 1
     while s <= e:
+
         mid = s + (e - s) // 2
-        if nums[mid] == target:  # 1
+        if nums[mid] == target:  # Goal achieved: found target
             return mid
-        elif nums[s] <= target < nums[mid]:  # 2
-            e = mid - 1
-        elif nums[mid] < target <= nums[e]:  # 3
-            s = mid + 1
-        # Mistake: nums[s]<nums[mid], even if it is equal we know it is not there in s
-        elif (
-            nums[s] <= nums[mid]
-        ):  # 4 the target is definitely not b/w [s,mid] , confirmed in 2nd
-            s = mid + 1
-        else:  # 5
-            e = mid - 1
+
+        # check mid is in which sorted subarray: and use the 1st or 2nd half accordingly
+        elif nums[mid] > nums[e]:  # mid in first sorted subarray
+            if nums[s] <= target < nums[mid]:
+                e = mid - 1
+            else:
+                s = mid + 1
+        else:  # mid in second sorted subarray
+            if nums[mid] < target <= nums[e]:
+                s = mid + 1
+            else:
+                e = mid - 1
+
     return -1
 
 
