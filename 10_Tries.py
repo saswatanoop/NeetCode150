@@ -21,7 +21,7 @@ class Trie:
         temp.isWordEnd=True
 
     def search(self, word: str) -> bool:
-        #T:O(word_length)
+        # T:O(word_length)
         temp=self.head
         for c in word:
             if c not in temp.children:
@@ -30,7 +30,7 @@ class Trie:
         return temp.isWordEnd
         
     def startsWith(self, prefix: str) -> bool:
-        #T:O(prefix_length)
+        # T:O(prefix_length)
         temp=self.head
         for c in prefix:
             if c not in temp.children:
@@ -56,7 +56,7 @@ class WordDictionary:
         # T: O((26^d)*(n-d)) where d is the number of '.' in word of size n
         
         def search_helper(index,node):
-            # '.' means search in all chidren of the current TrieNode
+            # '.' means search in all children of the current TrieNode
             if index==len(word):
                 return node.isWordEnd
             
@@ -105,14 +105,14 @@ class WordSearch2:
                 ans.append(node.word)
                 node.isWordEnd=False
             
-            board[pos_x][pos_y]='#'
+            board[pos_x][pos_y]='#' # Mark as visited
             for d in directions:
                 x=pos_x+d[0]
                 y=pos_y+d[1]
                 if 0<=x<rows and 0<=y<cols and board[x][y]!='#':
                     find_word_helper(x,y,node)
             
-            board[pos_x][pos_y]=char_at_pos
+            board[pos_x][pos_y]=char_at_pos # Backtrack / Unmark
         
         #### forgot to add words to Trie
         for word in words:

@@ -47,7 +47,7 @@ class Solution:
         while end<len(s):
             freq[s[end]]+=1
             # make the window valid so that at max k replacements are needed
-            while end-start+1-max(freq.values())>k:
+            while end-start+1-max(freq.values())>k: #total length - max freq char count > k, then window is invalid we need to remove from left
                 freq[s[start]]-=1
                 start+=1
             ans=max(ans,end-start+1)
@@ -121,7 +121,8 @@ def minWindow( s: str, t: str) -> str:
     
     freq=Counter(t)
     rem=len(t)
-    res=None
+    res=(0,0)
+    min_len=float("inf")
     
     start=end=0
     while end<len(s):
@@ -132,15 +133,17 @@ def minWindow( s: str, t: str) -> str:
         
         if rem==0:
             # Mistake: if the char is not part of freq then also we need to remove it from left side
-            while s[start] not in freq or freq[s[start]]<0:
+            while (s[start] not in freq) or (freq[s[start]]<0):
                 if s[start] in freq:
                     freq[s[start]]+=1
                 start+=1
-            if res is None or len(res)>end-start+1:
-                res=s[start:end+1]  
+            
+            if end - start + 1 < min_len:
+                min_len = end - start + 1
+                res = (start, end)  
         end+=1
-    
-    return res if res else ""
+        
+    return s[res[0]:res[1]+1]  if min_len != float("inf") else ""
 
 # 6. https://leetcode.com/problems/sliding-window-maximum/description/
 def maxSlidingWindow(nums: List[int], k: int) -> List[int]:

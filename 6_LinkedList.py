@@ -4,7 +4,7 @@ import heapq
 
 
 class Node:
-    def __init__(self, x: int, next: "Node" = None, random: "Node" = None):
+    def __init__(self, x: int, next = None, random = None):
         self.val = int(x)
         self.next = next
         self.random = random
@@ -142,7 +142,7 @@ class Solution:
         # T:O(3*n) S:O(1)
         if not head:
             return None
-        # 1st iteration: create a copy adjacent to the orignial node
+        # 1st iteration: create a copy adjacent to the original node
         l1 = head
         while l1:
             copy = Node(l1.val)

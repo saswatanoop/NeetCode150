@@ -13,8 +13,8 @@ class InvertBinaryTree:
         # T:O(n) and S:O(h) where h is the height of the tree
         if not root:
             return None
-        temp_left= self.invertTree(root.right)
-        root.right=self.invertTree(root.left)
+        temp_left= self.invertTree_dfs(root.right)
+        root.right=self.invertTree_dfs(root.left)
         root.left=temp_left
         return root
     

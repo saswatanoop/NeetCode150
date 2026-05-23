@@ -58,8 +58,9 @@ def evalRPN(self, tokens: List[str]) -> int:
                 ans = first - second
             elif c == "*":
                 ans = first * second
-            elif c == "/":
-                # Mistake: ans=first//second, python truncates towards -infinity and cpp towards 0
+            else:
+                # Mistake: ans=first//second, python truncates towards -infinity and cpp towards 0, 
+                # question mentioned: The division between two integers always truncates toward zero.
                 ans = int(first / second)
             stack.append(ans)
 
