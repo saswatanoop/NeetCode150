@@ -50,87 +50,63 @@ class Trie:
 
 # 2. https://leetcode.com/problems/design-add-and-search-words-data-structure/description/
 class WordDictionary: 
+    
     def __init__(self):
-        self.head=TrieNode()
+        self.head = TrieNode() 
 
     def addWord(self, word: str) -> None:
-        temp=self.head
+        temp = self.head
         for c in word:
             if c not in temp.children:
-                temp.children[c]=TrieNode()
-            temp=temp.children[c]
-        temp.isWordEnd=True
-    
-    # Trie + DFS: T: O((26^d)*n) where d is the number of '.' in word of size n 
-    def search(self, word: str) -> bool:
-        def search_helper(index,node):
-            if index==len(word):
-                return node.isWordEnd
-            
-            c=word[index]
-            if c != '.':
-                if c not in node.children:
-                    return False
-                return search_helper(index+1,node.children[c])
-            # '.' means search in all children of the current TrieNode
-            else:
-                for child in node.children:
-                    if search_helper(index+1,node.children[child]):
-                        return True
-                return False
-        
-        return search_helper(0,self.head)
-
-# 3. https://leetcode.com/problems/word-search-ii/description/
-class WordSearch2:
-    def __init__(self):
-        self.head=TrieNode()
-    
-    def add_word(self,word):
-        temp=self.head
-        for c in word:
-            if c not in temp.children:
-                temp.children[c]=TrieNode()
-            temp=temp.children[c]
-        temp.isWordEnd=True
-        temp.word=word
+                temp.children[c] = TrieNode()
+            temp = temp.children[c]
+        temp.word = word
     
     def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
         '''
             Word Search: T:O(N*M*(4^L)) 
             W = Number of words, L = Average word length,  N = Rows in board,  M = Columns in board,  4^L = Worst-case DFS calls per word.
         '''
-        def find_word_helper(pos_x,pos_y,node):
-            char_at_pos=board[pos_x][pos_y]
-            if char_at_pos not in node.children:
+        def search_for_word(node, i, j):
+            # check i, j are in range and if board[i][j] is already used
+            if not (0 <= i < n and 0 <= j < m) or board[i][j] == '0':
                 return
             
-            #### Forgot: to modify the node
-            node=node.children[char_at_pos]
-            #### I added this at the start which will fail for case: ["a"]
-            if node.isWordEnd:
+            # check if char exists in trie, only if present then continue
+            char = board[i][j]
+            if char not in node.children:
+                return
+            
+            # mark the board pos as used
+            board[i][j] = '0'
+            node = node.children[char]
+            
+            # if word exists save it
+            if node.word:
                 ans.append(node.word)
-                node.isWordEnd=False
+                node.word = None
             
-            board[pos_x][pos_y]='#' # Mark as visited
-            for d in directions:
-                x=pos_x+d[0]
-                y=pos_y+d[1]
-                if 0<=x<rows and 0<=y<cols and board[x][y]!='#':
-                    find_word_helper(x,y,node)
-            
-            board[pos_x][pos_y]=char_at_pos # Backtrack / Unmark
-        
-        #### forgot to add words to Trie
-        for word in words:
-            self.add_word(word)
+            for dx, dy in directions:
+                search_for_word(node, i + dx, j + dy)
 
-        rows,cols=len(board),len(board[0])
-        directions=[[0,1],[1,0],[-1,0],[0,-1]]
-        ans=[]
-        for i in range(rows):
-            for j in range(cols):
-                find_word_helper(i,j,self.head)
+            # unmark 
+            board[i][j] = char    
+        
+        
+        # Reset the head for clean execution across multiple runs for same function
+        self.head = TrieNode()
+        
+        n, m = len(board), len(board[0])
+        directions = ((0, 1), (0, -1), (1, 0), (-1, 0))    
+        ans = [] 
+        
+        # add words to Trie
+        for word in words: 
+            self.addWord(word)
+        
+        # search for words in board using Trie
+        for i in range(n):
+            for j in range(m):
+                search_for_word(self.head, i, j)
                 
         return ans
-  
