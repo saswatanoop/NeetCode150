@@ -1,5 +1,5 @@
 
-#1. https://leetcode.com/problems/implement-trie-prefix-tree/description/
+from typing import List
 class TrieNode:
     
     # __slots__ avoids per-object __dict__, reducing memory usage and speeding up attribute access for each object.
@@ -15,6 +15,7 @@ class TrieNode:
         self.isWordEnd=False
         self.word=None # is used in 3rd problem
 
+#1. https://leetcode.com/problems/implement-trie-prefix-tree/description/
 class Trie:
 
     def __init__(self):
@@ -48,8 +49,7 @@ class Trie:
         return True
 
 # 2. https://leetcode.com/problems/design-add-and-search-words-data-structure/description/
-class WordDictionary:
-
+class WordDictionary: 
     def __init__(self):
         self.head=TrieNode()
 
@@ -60,12 +60,10 @@ class WordDictionary:
                 temp.children[c]=TrieNode()
             temp=temp.children[c]
         temp.isWordEnd=True
-        
+    
+    # Trie + DFS: T: O((26^d)*n) where d is the number of '.' in word of size n 
     def search(self, word: str) -> bool:
-        # T: O((26^d)*(n-d)) where d is the number of '.' in word of size n
-        
         def search_helper(index,node):
-            # '.' means search in all children of the current TrieNode
             if index==len(word):
                 return node.isWordEnd
             
@@ -74,6 +72,7 @@ class WordDictionary:
                 if c not in node.children:
                     return False
                 return search_helper(index+1,node.children[c])
+            # '.' means search in all children of the current TrieNode
             else:
                 for child in node.children:
                     if search_helper(index+1,node.children[child]):
@@ -83,7 +82,6 @@ class WordDictionary:
         return search_helper(0,self.head)
 
 # 3. https://leetcode.com/problems/word-search-ii/description/
-
 class WordSearch2:
     def __init__(self):
         self.head=TrieNode()
