@@ -38,7 +38,26 @@ class Trie:
                 return False
             temp=temp.children[c]
         return temp.isWordEnd
+    
+    def delete(self,word):
+        # T:O(word_length)
         
+        def delete_helper(node, idx):
+            if len(word)==idx:
+                node.isWordEnd=False
+                return len(node.children) == 0 # if no children then delete this node by returning True to parent, else return False to parent to not delete this node  
+            
+            char=word[idx]
+            if char not in node.children:
+                return False # Word doesn't exist in the Trie
+
+            delete_key=delete_helper(node.children[char],idx+1)
+            if delete_key:
+                node.children.pop(char)
+            return not node.isWordEnd and len(node.children)==0
+        
+        delete_helper(self.head,0)     
+    
     def startsWith(self, prefix: str) -> bool:
         # T:O(prefix_length)
         temp=self.head
