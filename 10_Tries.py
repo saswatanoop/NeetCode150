@@ -1,6 +1,11 @@
 
 #1. https://leetcode.com/problems/implement-trie-prefix-tree/description/
 class TrieNode:
+    
+    # __slots__ avoids per-object __dict__, reducing memory usage and speeding up attribute access.
+    # Only attributes listed in __slots__ can exist; creating new dynamic attributes raises AttributeError.
+    __slots__ = ['children', 'isWordEnd', 'word']   
+    
     def __init__(self):
         self.children={}
         self.isWordEnd=False
