@@ -115,6 +115,7 @@ def search_in_rotated_array(self, nums: List[int], target: int) -> int:
                 s = mid + 1
             else:
                 e = mid - 1
+        # Value is definitely not in mid index, we can remove it from search space no need for e=mid or s=mid, we can do e=mid-1 or s=mid+1
 
     return -1
 
