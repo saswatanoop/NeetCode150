@@ -17,7 +17,7 @@ def maxSubArray( nums: List[int]) -> int:
 # 2. https://leetcode.com/problems/jump-game/
 def canJump(self, nums: List[int]) -> bool:
     # T:O(n) and S:O(1)
-    # Track a growing reachable interval [0, farthest]; every reachable position can extend the interval further.
+    # Greedy Reachability: Maintain the farthest reachable position.
     i=0
     max_reach=0
     n=len(nums)
@@ -27,3 +27,20 @@ def canJump(self, nums: List[int]) -> bool:
             return True
         i+=1
     return False
+
+# 3. https://leetcode.com/problems/jump-game-ii/description/
+def jump(self, nums: List[int]) -> int:
+    # T:O(n) and S:O(1)
+    # Greedy Level Expansion: Treat the current reachable range as one jump; expand it to the farthest next range and count expansions.
+    l=r=0
+    max_reach=0
+    n=len(nums)
+    jumps=0
+
+    while max_reach<n-1: #once n-1 is reached we achieved the goal
+        for i in range(l,r+1):
+            max_reach=max(max_reach,i+nums[i])
+        jumps+=1
+        l=r+1
+        r=max_reach
+    return jumps
