@@ -45,7 +45,7 @@ def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
             e = mid  # it could be in same mid row, we can not remove it
 
     # now s==e
-    pos = bisect.bisect_left(matrix[s], target)
+    pos = bisect.bisect_left(matrix[s], target) # >= target, so check if pos has target or not
     return pos < len(matrix[s]) and matrix[s][pos] == target
 
 
@@ -129,26 +129,25 @@ class TimeMap:
         # T:O(1) and S:O(n*m) where n is number of keys and m is number of values
         self.store[key].append([timestamp, value])
 
-    def get(self, key: str, timestamp: int):
-        # T:O(logm) and S:O(1) where m is number of values for the key
-        if key not in self.store or timestamp < self.store[key][0][0]:
-            return ""
-        ans = None
-        s, e = 0, len(self.store[key]) - 1
-        while s <= e:
-            mid = s + (e - s) // 2
-            if self.store[key][mid][0] <= timestamp:
-                ans = self.store[key][mid][1]
-                s = mid + 1
-            else:
-                e = mid - 1
-        return ans
-
-    
     def get_using_bisect(self, key: str, timestamp: int):
         # T:O(logm) and S:O(1) where m is number of values for the key
         if key not in self.store or timestamp < self.store[key][0][0]:
             return ""
         # find list[idx][0]>timestamp so list[idx-1][0] will definitely be <=timestamp
-        idx = bisect.bisect_right(self.store[key], timestamp, key=lambda x: x[0])
+        idx = bisect.bisect_right(self.store[key], timestamp, key=lambda x: x[0]) # > timestamp, so check idx-1 for <=timestamp
         return self.store[key][idx - 1][1]
+    
+    # def get(self, key: str, timestamp: int):
+    #     # T:O(logm) and S:O(1) where m is number of values for the key
+    #     if key not in self.store or timestamp < self.store[key][0][0]:
+    #         return ""
+    #     ans = None
+    #     s, e = 0, len(self.store[key]) - 1
+    #     while s <= e:
+    #         mid = s + (e - s) // 2
+    #         if self.store[key][mid][0] <= timestamp:
+    #             ans = self.store[key][mid][1]
+    #             s = mid + 1
+    #         else:
+    #             e = mid - 1
+    #     return ans
