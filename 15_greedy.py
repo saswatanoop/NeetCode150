@@ -13,3 +13,17 @@ def maxSubArray( nums: List[int]) -> int:
         lsum = max(lsum + nums[i], nums[i])
         gsum = max(gsum, lsum)
     return gsum
+
+# 2. https://leetcode.com/problems/jump-game/
+def canJump(self, nums: List[int]) -> bool:
+    # T:O(n) and S:O(1)
+    # Track a growing reachable interval [0, farthest]; every reachable position can extend the interval further.
+    i=0
+    max_reach=0
+    n=len(nums)
+    while i<=max_reach:
+        max_reach=max(max_reach,i+nums[i])
+        if max_reach>=n-1:
+            return True
+        i+=1
+    return False
