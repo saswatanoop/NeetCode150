@@ -44,3 +44,35 @@ def jump(self, nums: List[int]) -> int:
         l=r+1
         r=max_reach
     return jumps
+
+# 4: https://leetcode.com/problems/gas-station/description/
+# T:O(n) and S:O(1)
+def canCompleteCircuit(self, gas_available: List[int], gas_consumption: List[int]) -> int:
+    n = len(gas_available)
+
+    # If total consumption exceeds total available, no solution exists
+    if sum(gas_available) - sum(gas_consumption) < 0:
+        return -1
+
+    res = 0
+    cur_gas = 0
+    for i in range(n):
+        cur_gas += gas_available[i] - gas_consumption[i]
+
+        if cur_gas < 0:
+            # Proof that no station in (res, i] can be a valid start:
+            # Assume some m in (res, i] is valid, then it must survive to i:
+            #   sum(diff[k] for k in [m, i]) >= 0  ...(1)
+            #
+            # But we started at res and survived until m-1, so:
+            #   sum(diff[k] for k in [res, m-1]) >= 0  ...(2)
+            #
+            # Adding (1) and (2):
+            #   sum(diff[k] for k in [res, i]) >= 0
+            #
+            # Contradiction — cur_gas < 0 means this sum is negative.
+            # So no m in (res, i] is valid → next candidate is i + 1.
+            cur_gas = 0
+            res = i + 1
+
+    return res
