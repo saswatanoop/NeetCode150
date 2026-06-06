@@ -140,29 +140,41 @@ front = dll[0] if dll else None
 back = dll[-1] if dll else None
 
 
-####################################   Heap/Always min-heap    ####################################
-# Python heap is always min heap, if we want to create max heap, push negative of the value
-# Or we can push a tuple, where the tuple values will be used for comparision in the same order (priority1,priority2, value)
+####################################   Heap (Python heapq)   ####################################
+
+# Python heapq is ALWAYS a min-heap.
+# Smallest element is at heap[0].
 
 import heapq
 
-lst = [1, 5, 6, 12, 2, 5]
-heapq.heapify(lst)  # Convert a list into a min-heap
+lst = [5, 2, 8, 1]
+heap=max_heap=[]
+heapq.heapify(lst)          # O(n)
+heapq.heappush(heap, x)     # O(log n)
+heapq.heappop(heap)         # O(log n)
+top = heap[0]               # O(1)
 
-min_heap = []  # Initialize a Min-Heap
-heapq.heappush(min_heap, 4)  # Push an element onto the heap
-min_elem = min_heap[0] if min_heap else None  # top value
-min_elem = heapq.heappop(min_heap)  # Pop from top
-size = len(min_heap)
+# Max heap: push negative values
+heapq.heappush(max_heap, -x)
+x = -heapq.heappop(max_heap)
 
-# Push a negative value to simulate a max-heap
-max_heap = []
-heapq.heappush(max_heap, -2)
-max_elem = -heapq.heappop(max_heap)  # Pop and negate the result for max-heap behavior
+# Custom Priority (Tuple)
+# Heap compares tuples lexicographically (left -> right).
+# First differing element determines the order.
+# (priority1, priority2, ..., value)
+priority=value=10
+heapq.heappush(heap, (priority, value))
+heapq.heappush(heap, (-priority, value))  # max-heap with tie-breaker
 
-# Custom Priority (using tuples), (priority, value)
-max_heap_2 = []
-heapq.heappush(max_heap_2, (-2, 2))
+# Custom Class Comparator
+# Define __lt__ for custom ordering.
+class Node:
+    def __init__(self, priority, value):
+        self.priority = priority
+        self.value = value  
+
+    def __lt__(self, other):
+        return self.priority < other.priority
 
 
 ####################################   Set    ####################################
@@ -171,8 +183,8 @@ s = set()  # Empty set
 s = {1, 2, 3}  # Set with values
 hset2 = set([1, 2, 3, 3, 3, 3])  # Set from a list
 s.add(4)  # Add element to set
-s.remove(2)  # Remove (raises error if missing)
 s.discard(5)  # Remove (safe, no error if missing)
+s.remove(2)  # Remove (raises error if missing)
 is_present = 3 in s  # True if 3 exists in set
 s.clear()  # Set becomes empty {}
 size = len(s)  # size of set
