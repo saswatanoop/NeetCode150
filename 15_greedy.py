@@ -76,3 +76,31 @@ def canCompleteCircuit(self, gas_available: List[int], gas_consumption: List[int
             res = i + 1
 
     return res
+
+# 5. https://leetcode.com/problems/hand-of-straights/description/
+from collections import Counter
+from sortedcontainers import SortedDict # type: ignore
+
+def isNStraightHand(self, hand: List[int], groupSize: int) -> bool:
+    # T:O(nlogn) and S:O(n)
+    # Pattern: Greedy Frequency Counting with Sorted Access, 
+    # pick the smallest card and try to form a group of size groupSize with consecutive cards, if not possible return False. 
+    n=len(hand)
+    if n%groupSize != 0:
+        return False
+    
+    no_of_groups = n//groupSize
+    freq = Counter(hand)
+    sorted_dic = SortedDict(freq.items())
+
+    for _ in range(no_of_groups):
+        key,value=sorted_dic.peekitem(0) # smallest card must start a group
+        for _ in range(groupSize):
+            if key not in sorted_dic:
+                return False
+            sorted_dic[key]-=1
+            if sorted_dic[key]==0:
+                sorted_dic.pop(key)
+            key+=1 # There should be groupSize continous items, starting with smallest
+
+    return True
