@@ -40,6 +40,7 @@ def threeSum(self, nums: List[int]) -> List[List[int]]:
         two_sum=0-nums[i]
         s=i+1
         e=len(nums)-1
+        # Two sum with two pointers
         while s<e:
             cur_sum=nums[s]+nums[e]
             if cur_sum>two_sum:
@@ -48,13 +49,12 @@ def threeSum(self, nums: List[int]) -> List[List[int]]:
                 s+=1
             else:
                 triplets.append([nums[i],nums[s],nums[e]])
-                s+=1
-                # Don't use same value as nums[s] again as first number of pair
-                while s<e and nums[s]==nums[s-1]:
+                s+=1 # increase s by 1 to find next pair
+                while s<e and nums[s]==nums[s-1]: # Don't use same value as nums[s] again as first number of pair
                     s+=1
-        # Don't use same value as nums[i] again as first number of triplet
-        i+=1
-        while i<len(nums) and nums[i]==nums[i-1]:
+        
+        i+=1 # increase i by 1 to find next triplet
+        while i<len(nums) and nums[i]==nums[i-1]: # Don't use same value as nums[i] again as first number of triplet
             i+=1
     return triplets
 
@@ -69,6 +69,7 @@ def maxArea(self, height: List[int]) -> int:
         cur_water_capacity=allowed_height*(e-s)
         max_water=max(max_water,cur_water_capacity)
         # keep the higher height as it can be useful later
+        # we already use the lower height with max width, so we can not get more water with that lower height
         if height[s]>height[e]:
             e-=1
         else:
@@ -79,22 +80,22 @@ def maxArea(self, height: List[int]) -> int:
 # 5. https://leetcode.com/problems/trapping-rain-water/
 def trap(self, height: List[int]) -> int:
     # T:O(n) and S:O(1)
-    total_water=0
-    maxh_left=maxh_right=0 #max height on both sides
     
-    # compute water collected at one of the ends and keep moving inwards
+    # Let's compute the max water we can store at each end, whichever max_end is smaller compute there and move the pointer inwards from there, as that end can increase the wall hegiht for inner index
+    water=0
+    left_wall=right_wall=0 #max height on both sides
+    
     s,e=0,len(height)-1
     while s<=e:
-        if maxh_left<maxh_right:
-            water=max(0,maxh_left-height[s])
-            maxh_left=max(maxh_left,height[s])
+        if left_wall<right_wall:
+            water+=max(0,left_wall-height[s])
+            left_wall=max(left_wall,height[s])
             s+=1
         else:
-            water=max(0,maxh_right-height[e])
-            maxh_right=max(maxh_right,height[e])
+            water+=max(0,right_wall-height[e])
+            right_wall=max(right_wall,height[e])
             e-=1
-        total_water+=water
     
-    return total_water
+    return water
 
 # 

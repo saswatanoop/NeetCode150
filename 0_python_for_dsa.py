@@ -310,7 +310,7 @@ class TrieNode:
 class Trie:
 
     def __init__(self):
-        self.head = Node()
+        self.head = TrieNode()
 
     def insert(self, word: str) -> None:
         temp = self.head

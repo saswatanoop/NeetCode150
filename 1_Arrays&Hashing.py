@@ -44,8 +44,7 @@ def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
         freq = [0] * 26  
         for c in word:
             freq[ord(c) - ord('a')] += 1
-        # Create a unique signature using the character frequencies
-        hash_key = tuple(freq)
+        hash_key = tuple(freq) # Create a unique signature using the character frequencies
         return hash_key
     
     d = defaultdict(list)
