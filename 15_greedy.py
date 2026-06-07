@@ -104,3 +104,49 @@ def isNStraightHand(self, hand: List[int], groupSize: int) -> bool:
             key+=1 # There should be groupSize continous items, starting with smallest
 
     return True
+
+# 6. https://leetcode.com/problems/merge-triplets-to-form-target-triplet/description/
+def mergeTriplets(self, triplets: List[List[int]], target: List[int]) -> bool:
+    # T:O(n) and S:O(1)
+    res = [0, 0, 0]
+    for a, b, c in triplets:
+        # not creating the res list again, just updating the max values for each position if the current triplet can contribute to the target
+        if a <= target[0] and b <= target[1] and c <= target[2]:
+            res[0] = max(res[0], a)
+            res[1] = max(res[1], b)
+            res[2] = max(res[2], c)
+
+    return res == target
+
+
+# 8. https://leetcode.com/problems/valid-parenthesis-string/description/
+def checkValidString(self, s: str) -> bool:
+    # T:O(n) and S:O(n)
+    # Pattern: Greedy Stack Simulation with Two Stacks, first satisfy ) using ( or *, then check if remaining ( can be satisfied by remaining *.
+    stack_left=[]
+    stack_star=[]
+
+    for i,c in enumerate(s): # this is used to match right brackets
+        if c == '(':
+            stack_left.append(i)
+        elif c=='*':
+            stack_star.append(i)
+        else:
+            if not (stack_left or stack_star):
+                return False
+            if stack_left:
+                stack_left.pop()
+            else: #there are no open brackets remaining
+                stack_star.pop()
+
+    # ) is satisfied, now check for (
+    if len(stack_left)>len(stack_star):
+        return False
+    while stack_left: # Try to close every remaining open bracket
+        open_pos=stack_left.pop()
+        star_pos=stack_star.pop()
+        if open_pos>star_pos: #star should be right of ( to close it
+            return False
+    
+    return True
+        

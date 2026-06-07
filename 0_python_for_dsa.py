@@ -271,6 +271,27 @@ ordered_dict.popitem()  # Removing the last item (O(1))
 ordered_dict.popitem(last=False)  # Removing the first item (O(1))
 
 
+####################################   SortedDict, SortedSet (sortedcontainers)  ####################################
+# pip install sortedcontainers
+from sortedcontainers import SortedDict, SortedSet # type: ignore
+
+# SortedDict: Sorted keys, O(log n) insert/delete
+sd = SortedDict({"c": 3, "a": 1, "b": 2})
+sd["d"] = 4  # Add/update
+del sd["a"]  # Delete
+value = sd.get("c", -1)  # Read
+exists = "c" in sd  # Check exists 
+min_key, max_key = sd.keys()[0], sd.keys()[-1]  # Smallest/largest
+
+# SortedSet: Sorted elements, O(log n) add/discard
+ss = SortedSet([3, 1, 2])
+ss.add(4)  # Add
+ss.discard(1)  # Delete
+exists = 2 in ss  # Check exists
+min_elem, max_elem = ss[0], ss[-1]  # Smallest/largest
+index = ss.bisect_left(2)  # O(log n)
+
+
 ####################################   Linked List and Doubly-LL  ####################################
 class DoublyListNode:
     def __init__(self, val=0, prev=None, next=None):
