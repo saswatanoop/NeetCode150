@@ -482,3 +482,75 @@ def constructFromPrePost(self, preorder: List[int], postorder: List[int]) -> Opt
     self.preorder_index = 0
 
     return dfs(0, len(postorder) - 1)
+
+
+class IterativeTraversals:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+
+        st = []
+        inorder = []
+
+        # Enter subtree: push entire left boundary
+        while root:
+            st.append(root)
+            root = root.left
+
+        while st:
+            node = st.pop()  # Current node becomes available after left subtree is done
+            inorder.append(node.val)  # N
+
+            node = node.right  # Move to right subtree
+            while node:  # Enter right subtree: push its left boundary
+                st.append(node)
+                node = node.left
+
+        return inorder
+
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+
+        st = []
+        preorder = []
+
+        # Enter subtree: visit node, then push left boundary
+        while root:
+            preorder.append(root.val)  # N
+            st.append(root)
+            root = root.left
+
+        while st:
+            node = st.pop()  # Left subtree finished
+            node = node.right  # Move to right subtree
+
+            while node:  # Enter right subtree: visit node, then push left boundary
+                preorder.append(node.val)  # N
+                st.append(node)
+                node = node.left
+
+        return preorder
+
+    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+
+        st = []
+        postorder = []
+        last_visited = None
+
+        # Enter subtree: push entire left boundary
+        while root:
+            st.append(root)
+            root = root.left
+
+        while st:
+            node = st[-1] # Do not pop yet, we need to check if right subtree is done
+            
+            # Visit node only after both L and R subtrees done, right is done if no right child, or right child was last popped
+            if node.right is None or last_visited == node.right:
+                st.pop()
+                postorder.append(node.val)  # N
+                last_visited = node
+            else:
+                node = node.right  # Move to right subtree
+                while node:  # Enter right subtree: push its left boundary
+                    st.append(node)
+                    node = node.left
+
+        return postorder
