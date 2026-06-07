@@ -117,28 +117,11 @@ def isBalanced(self, root: Optional[TreeNode]) -> bool:
     return self.is_balanced
 
 
-# 5. https://leetcode.com/problems/same-tree/description/
-
-
-def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
-    # T:O(n) and S:O(h) where h is the height of the tree
-    if not p and not q:
-        return True
-    elif p and q:
-        return (
-            p.val == q.val
-            and self.isSameTree(p.left, q.left)
-            and self.isSameTree(p.right, q.right)
-        )
-    else:  # one of the tree is empty but other one is not
-        return False
-
-
-# 6. https://leetcode.com/problems/subtree-of-another-tree/
-
+# 5. and 6. https://leetcode.com/problems/same-tree/description/  https://leetcode.com/problems/subtree-of-another-tree/
 
 class SubTreeOfAnotherTree:
-    # T:O(n*m) and S:O(h) where h is the height of the tree
+
+    # T:O(n) and S:O(h) where h is the height of the tree
     def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
         if not p and not q:
             return True
@@ -150,7 +133,8 @@ class SubTreeOfAnotherTree:
             )
         # one of the tree is empty but other one is not
         return False
-
+    
+    # T:O(n*m) and S:O(h) where h is the height of the tree
     def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:
         if not root and not subRoot:
             return True
@@ -202,17 +186,16 @@ class LCA:
 
             in_left = is_any_node_found(node.left)
             in_right = is_any_node_found(node.right)
-            # If both nodes are found in the left and right subtrees, or
-            # one is at the current node and the other is in a subtree, set LCA
+
+            # both nodes present in left and right subtrees, or one is at current node and other is in a subtree, set LCA
             if (in_left and in_right) or (at_current and (in_left or in_right)):
                 self.lca = node
 
-            # Return True if either of the nodes is found in the current subtree
+            # Return True if either of the nodes is found in the current subtree, for LCA computation in parent nodes
             return in_left or in_right or at_current
 
         self.lca = None
-        # handles case where p and q, might not be in tree
-        is_any_node_found(root)
+        is_any_node_found(root)  # handles case where p and q, might not be in tree
         return self.lca
 
 
@@ -344,7 +327,7 @@ def kthSmallest(self, root: Optional[TreeNode], k: int):
 def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
     # T:O(n) and S:O(h) where h is the height of the tree
     
-    def dfs(s, e):
+    def dfs(s, e): #Range of inorder traversal to consider for current subtree
         if s > e:
             return None
 
@@ -395,6 +378,41 @@ def maxPathSum(self, root: Optional[TreeNode]):
 
 
 class Codec:
+
+    def serialize_dfs(self, root):  # use node,left and right
+        # T:O(n) and S:O(h) where h is the height of the tree
+        def dfs(node):
+            if not node:
+                preorder.append("#")
+                return
+
+            preorder.append(str(node.val))
+            dfs(node.left)
+            dfs(node.right)
+
+        preorder = []
+        dfs(root)
+        return ",".join(preorder) # convert to string only when we have the complete preorder list, to avoid string concatenation at each step which is costly  
+
+    def deserialize_dfs(self, data):
+        # T:O(n) and S:O(h) where h is the height of the tree
+        def dfs():
+            # whenever we consume a token, we need to move the index forward, so that next time we consume the next token
+            token = data[self.idx]
+            self.idx += 1
+
+            if token == "#":
+                return None
+
+            node = TreeNode(int(token))
+            node.left = dfs()
+            node.right = dfs()
+            return node
+
+        data = data.split(",")
+        self.idx = 0
+        return dfs()
+
     # T:O(n) and S:O(n)
     def serialize_bfs(self, root):
         if not root:
@@ -435,37 +453,32 @@ class Codec:
 
         return root
 
+# 16. https://leetcode.com/problems/construct-binary-tree-from-preorder-and-postorder-traversal/description/
+def constructFromPrePost(self, preorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
 
-    def serialize_dfs(self, root):  # use node,left and right
-        # T:O(n) and S:O(h) where h is the height of the tree
-        def dfs(node):
-            if not node:
-                preorder.append("#")
-                return
+    def dfs(s, e): #Range of postorder traversal to consider for current subtree
+        if s > e:
+            return None
 
-            preorder.append(str(node.val))
-            dfs(node.left)
-            dfs(node.right)
+        # consumed index, so move the index forward for next call
+        node = TreeNode(preorder[self.preorder_index])
+        self.preorder_index += 1
 
-        preorder = []
-        dfs(root)
-        return ",".join(preorder) # convert to string only when we have the complete preorder list, to avoid string concatenation at each step which is costly  
-
-    def deserialize_dfs(self, data):
-        # T:O(n) and S:O(h) where h is the height of the tree
-        def dfs():
-            # whenever we consume a token, we need to move the index forward, so that next time we consume the next token
-            token = data[self.idx]
-            self.idx += 1
-
-            if token == "#":
-                return None
-
-            node = TreeNode(int(token))
-            node.left = dfs()
-            node.right = dfs()
+        # leaf node, there is left node for it to check
+        if s == e:  
             return node
 
-        data = data.split(",")
-        self.idx = 0
-        return dfs()
+        # next preorder value is the root of the left subtree
+        left_root_val = preorder[self.preorder_index]
+        index = postorder_pos[left_root_val]  # position of left subtree root in postorder traversal
+
+        # build left and right subtree
+        node.left = dfs(s, index)
+        node.right = dfs(index + 1, e - 1)  # e is the root, so don't use it
+
+        return node
+
+    postorder_pos = {v: i for i, v in enumerate(postorder)}
+    self.preorder_index = 0
+
+    return dfs(0, len(postorder) - 1)
