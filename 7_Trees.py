@@ -168,7 +168,7 @@ class SubTreeOfAnotherTree:
 # 7. https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
 
 
-class Solution:
+class LCA:
 
     # FOR BST: T:O(h) and S:O(1) where h is the height of the tree
     def lowestCommonAncestor_bst(
@@ -320,7 +320,7 @@ def isValidBST(self, root: Optional[TreeNode]) -> bool:
 # 12. https://leetcode.com/problems/kth-smallest-element-in-a-bst/
 
 
-def kthSmallest(self, root: Optional[TreeNode], k: int) -> int:
+def kthSmallest(self, root: Optional[TreeNode], k: int):
     # T:O(n) and S:O(h) where h is the height of the tree
     st = []
     while root:
@@ -343,24 +343,26 @@ def kthSmallest(self, root: Optional[TreeNode], k: int) -> int:
 # 13. https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
 def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
     # T:O(n) and S:O(h) where h is the height of the tree
-    def constuct_tree(start, end):
-        nonlocal index_in_preorder
-        if start > end:
+    
+    def dfs(s, e):
+        if s > e:
             return None
 
-        value = preorder[index_in_preorder]
-        node = TreeNode(value)
-        index_in_preorder += 1
-
-        node.left = constuct_tree(start, pos_in_inorder[value] - 1)
-        node.right = constuct_tree(pos_in_inorder[value] + 1, end)
+        # consumed index, so move the index forward for next call
+        node = TreeNode(preorder[self.preorder_index])
+        self.preorder_index += 1
+        
+        # updated s,e for left and right subtree using the position of node in inorder traversal
+        index = inorder_pos[node.val]
+        node.left = dfs(s, index - 1)
+        node.right = dfs(index + 1, e)
+        
         return node
 
-    pos_in_inorder = {}
-    for i in range(len(inorder)):
-        pos_in_inorder[inorder[i]] = i
-    index_in_preorder = 0
-    return constuct_tree(0, len(preorder) - 1)
+    inorder_pos = {v: i for i, v in enumerate(inorder)} # Dictionary to store the position of each value in inorder traversal for O(1) access
+    self.preorder_index = 0
+    
+    return dfs(0, len(preorder) - 1)
 
 
 # 14. https://leetcode.com/problems/binary-tree-maximum-path-sum/description/
@@ -433,31 +435,37 @@ class Codec:
 
         return root
 
-    def serialize_dfs(self, root):
-        if not root:
-            return "#"
 
-        data = (
-            str(root.val)
-            + ","
-            + self.serialize(root.left)
-            + ","
-            + self.serialize(root.right)
-        )
-        return data
+    def serialize_dfs(self, root):  # use node,left and right
+        # T:O(n) and S:O(h) where h is the height of the tree
+        def dfs(node):
+            if not node:
+                preorder.append("#")
+                return
+
+            preorder.append(str(node.val))
+            dfs(node.left)
+            dfs(node.right)
+
+        preorder = []
+        dfs(root)
+        return ",".join(preorder) # convert to string only when we have the complete preorder list, to avoid string concatenation at each step which is costly  
 
     def deserialize_dfs(self, data):
-        def deserialize_helper():
-            nonlocal pos
-            if data[pos] == "#":
-                pos += 1
+        # T:O(n) and S:O(h) where h is the height of the tree
+        def dfs():
+            # whenever we consume a token, we need to move the index forward, so that next time we consume the next token
+            token = data[self.idx]
+            self.idx += 1
+
+            if token == "#":
                 return None
-            node = TreeNode(int(data[pos]))
-            pos += 1
-            node.left = deserialize_helper()
-            node.right = deserialize_helper()
+
+            node = TreeNode(int(token))
+            node.left = dfs()
+            node.right = dfs()
             return node
 
-        pos = 0
         data = data.split(",")
-        return deserialize_helper()
+        self.idx = 0
+        return dfs()
