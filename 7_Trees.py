@@ -27,8 +27,8 @@ class InvertBinaryTree:
         q.append(root)
 
         while q:
-            node=q.popleft()
-            node.left,node.right=node.right,node.left
+            node=q.popleft() 
+            node.left,node.right=node.right,node.left # swap left and right child
             if node.left:
                 q.append(node.left)
             if node.right:
@@ -41,7 +41,7 @@ class DepthOfBinaryTree:
         # T:O(n) and S:O(h) where h is the height of the tree
         if not root:
             return 0
-        return 1+max(self.maxDepth(root.left),self.maxDepth(root.right))
+        return 1+max(self.maxDepth_dfs(root.left),self.maxDepth_dfs(root.right))
     
     def maxDepth_bfs(self, root: Optional[TreeNode]) -> int:
         # T:O(n) and S:O(W) where W is the width of the tree
@@ -69,48 +69,47 @@ def diameterOfBinaryTree(self, root: Optional[TreeNode]) -> int:
         if not node:
             return 0
         
-        nonlocal max_diameter
         left=compute_height(node.left)
         right=compute_height(node.right)
-        max_diameter=max(max_diameter,left+right)
+        self.max_diameter=max(self.max_diameter,left+right)
         
         return max(left,right)+1
     
-    max_diameter=0
+    self.max_diameter=0
     compute_height(root)
     
-    return max_diameter
+    return self.max_diameter
 
 # 4. https://leetcode.com/problems/balanced-binary-tree/
 def isBalanced(self, root: Optional[TreeNode]) -> bool:
     # T:O(n) and S:O(h) where h is the height of the tree
     # at each node of tree compute height of left and right subtree, and check if the tree is balanced
+    
     def compute_height(node):
-        if not node:
+        if not node or not self.is_balanced: # do not compute if already found unbalanced
             return 0
 
         left=compute_height(node.left)
         right=compute_height(node.right)
 
         if abs(left-right)>1:
-            nonlocal is_balanced
-            is_balanced=False
+            self.is_balanced=False
 
         return max(left,right)+1  
             
-    is_balanced=True
+    self.is_balanced=True
     compute_height(root)
-    return is_balanced
+    return self.is_balanced
 
 # 5. https://leetcode.com/problems/same-tree/description/
 def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
     # T:O(n) and S:O(h) where h is the height of the tree
     if not p and not q:
         return True
-    if p and q:
+    elif p and q:
         return p.val==q.val and self.isSameTree(p.left, q.left) and self.isSameTree(p.right,q.right)
-    # one of the tree is empty but other one is not
-    return False
+    else:               # one of the tree is empty but other one is not
+        return False
   
 # 6. https://leetcode.com/problems/subtree-of-another-tree/
 class SubTreeOfAnotherTree:
@@ -124,11 +123,13 @@ class SubTreeOfAnotherTree:
         return False
     
     def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:
-        if not root and subRoot:
-            return False
-        if self.isSameTree(root,subRoot):
+        if not root and not subRoot:
             return True
-        return self.isSubtree(root.left,subRoot) or self.isSubtree(root.right,subRoot) 
+        elif root and subRoot:
+            # Try parent node, then left subtree and right subtree
+            return self.isSameTree(root,subRoot) or self.isSubtree(root.left,subRoot) or self.isSubtree(root.right,subRoot)
+        else:
+            return False
    
 # 7. https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
 def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
