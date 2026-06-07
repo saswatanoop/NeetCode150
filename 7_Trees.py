@@ -366,26 +366,27 @@ def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNod
 # 14. https://leetcode.com/problems/binary-tree-maximum-path-sum/description/
 
 
-def maxPathSum(self, root: Optional[TreeNode]) -> int:
+def maxPathSum(self, root: Optional[TreeNode]):
     # T:O(n) S:O(h) where h is the height of the tree
+    
     # At each node compute, best path containing that node, and compute max path sum with that node as root
-    def max_path(node):
+    def max_path_with_node(node):
         if not node:
             return 0
-        left_sum = max_path(node.left)
-        right_sum = max_path(node.right)
 
-        best_path = max(left_sum + node.val, right_sum + node.val, node.val)
-        max_path_sum = max(best_path, left_sum + right_sum + node.val)
+        left_path = max_path_with_node(node.left)
+        right_path = max_path_with_node(node.right)
 
-        if self.ans is None or self.ans < max_path_sum:
-            self.ans = max_path_sum
+        path_with_node = max(left_path + node.val, right_path + node.val, node.val)
+        self.max_path = max( 
+            self.max_path, path_with_node, node.val + left_path + right_path # path with node as root, and left and right path as branches
+        )
 
-        return best_path
+        return path_with_node
 
-    self.ans = None
-    max_path(root)
-    return self.ans
+    self.max_path = float("-inf")
+    max_path_with_node(root)
+    return self.max_path
 
 
 # 15. https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
