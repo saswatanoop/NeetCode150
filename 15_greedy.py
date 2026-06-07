@@ -118,6 +118,32 @@ def mergeTriplets(self, triplets: List[List[int]], target: List[int]) -> bool:
 
     return res == target
 
+# 7. https://leetcode.com/problems/partition-labels/description/
+def partitionLabels(self, s: str) -> List[int]:
+    # T:O(n) and S:O(1) for last_pos dictionary
+    # Pattern: Jump Game 2, similar max reachable concept
+    n=len(s)
+    last_pos={}
+    for i in range(n):
+        last_pos[s[i]]=i
+    
+    i=0
+    max_reachable=0
+    splits=[]
+
+    while i < n:
+        start=i # new split starts at i
+        max_reachable = last_pos[s[i]] #update make reachable to the last position of the current char
+        
+        while i<=max_reachable:
+            max_reachable=max(max_reachable,last_pos[s[i]])
+            i+=1
+        
+        splits.append(max_reachable-start+1)
+        i=max_reachable+1 # next split starts after the current split
+    
+    return splits
+
 
 # 8. https://leetcode.com/problems/valid-parenthesis-string/description/
 def checkValidString(self, s: str) -> bool:
