@@ -14,7 +14,7 @@ Tarjan’s Algorithm:
 
 '''
 
-from additional_data_structures import DSU
+from DS_DSU import DSU
 from collections import defaultdict
 import heapq
 

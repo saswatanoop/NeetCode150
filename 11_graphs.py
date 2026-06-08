@@ -1,4 +1,3 @@
-
 from typing import List, Optional
 from collections import deque, defaultdict
 
@@ -53,7 +52,6 @@ def maxAreaOfIsland(self, grid: List[List[int]]) -> int:
             if grid[i][j]==2:
                 grid[i][j]==1
     return maxArea
-
 
 # 3. https://leetcode.com/problems/clone-graph/
 class Node:
@@ -130,48 +128,52 @@ def orangesRotting(self, grid: List[List[int]]) -> int:
 # 6. https://leetcode.com/problems/pacific-atlantic-water-flow/
 def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
     # T:O(n*m) S:O(n*m) q is used for BFS and visited array
-    # Solve separately for both oceans 
-    def bfs(start_points, ocean):
-        q=deque(start_points)
-        for x,y in start_points:
-            ocean[x][y]=True
+    # Solve separately for both oceans
+    def bfs(start_points, visited):
+        q = deque(start_points)
+        visited.update(start_points)
         while q:
-            i,j=q.popleft()
-            for d in directions:
-                x,y=i+d[0],j+d[1]
-                if x>=0 and x<rows and y>=0 and y<cols and not ocean[x][y] and heights[x][y]>=heights[i][j]:
-                    ocean[x][y]=True
-                    q.append((x,y))
+            i, j = q.popleft()
+            for dx, dy in directions:
+                x, y = i + dx, j + dy
+                if (
+                    0 <= x < rows
+                    and 0 <= y < cols
+                    and (x, y) not in visited
+                    and heights[x][y] >= heights[i][j]
+                ):
+                    visited.add((x, y))
+                    q.append((x, y))
 
-    
-    directions=[[0,1],[1,0],[0,-1],[-1,0]]
-    rows, cols = len(heights),len(heights[0])
-    atlantic=[[False] * cols for _ in range(rows)]
-    pacific=[[False] * cols for _ in range(rows)]
+    rows, cols = len(heights), len(heights[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
-    atl_start=[]
-    pac_start=[]
-    for i in range(rows):
-        atl_start.append((i,cols-1))
-        pac_start.append((i,0))
-    
-    for i in range(cols):
-        atl_start.append((rows-1,i))
-        pac_start.append((0,i))
-    
-    bfs(atl_start,atlantic)
-    bfs(pac_start,pacific)
+    pac_start = []
+    atl_start = []
+    for r in range(rows):
+        pac_start.append((r, 0))
+        atl_start.append((r, cols - 1))
+    for c in range(cols):
+        pac_start.append((0, c))
+        atl_start.append((rows - 1, c))
 
-    res=[]
+    pacific = set()
+    atlantic = set()
+
+    bfs(pac_start, pacific)
+    bfs(atl_start, atlantic)
+
+    res = []
     for i in range(rows):
         for j in range(cols):
-            if atlantic[i][j] and pacific[i][j]:
-                res.append([i,j])
-    
+            if (i, j) in pacific and (i, j) in atlantic:
+                res.append([i, j])
+
     return res
 
+
 # 7. https://leetcode.com/problems/surrounded-regions/
-def solve(self, board: List[List[str]]) -> None:
+def surroundedRegions(self, board: List[List[str]]) -> None:
     # T:O(n*m) S:O(n*m) modified the same grid to mark it as visited, but dfs stack is there
     def dfs(i,j):
         board[i][j]="S"
@@ -188,8 +190,8 @@ def solve(self, board: List[List[str]]) -> None:
         for j in range(cols):
             if (i==0 or j==0 or i==rows-1 or j==cols-1) and board[i][j]=="O":
                 dfs(i,j)
-    
-    #** we once check for value O at i,j so once we set it to O in elif conditon it won't be changed back
+
+    # ** we once check for value O at i,j so once we set it to O in elif conditon it won't be changed back
     for i in range(rows):
         for j in range(cols):
             if board[i][j]=="O":
@@ -197,13 +199,39 @@ def solve(self, board: List[List[str]]) -> None:
             elif board[i][j]=="S":
                 board[i][j]="O"
 
-# 8. 
+# 8. and 9. https://leetcode.com/problems/course-schedule-ii/ and https://leetcode.com/problems/course-schedule-i/
 class Solution:
+    def findOrder_bfs(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        # T:O(V+E) S:O(V) for indegree array and adj list, q is used for BFS
+        # Kahn's Algorithm with cycle check
+        # if there is a cycle then topo order won't be possible and we won't be able to add all the courses in the topo order list
+        indegree = [0] * numCourses
+        adjList=defaultdict(list)
+        for a,b in prerequisites:
+            indegree[a]+=1
+            adjList[b].append(a)
+
+        q=deque()
+        for i in range(numCourses):
+            if indegree[i]==0:
+                q.append(i)
+
+        courses=[]
+        while q:
+            front=q.popleft()
+            courses.append(front)
+
+            for nbr in adjList[front]:
+                indegree[nbr]-=1
+                if indegree[nbr]==0:
+                    q.append(nbr)
+        return courses if len(courses)==numCourses else []
+
     def findOrder_DFS(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
-        
+
         def dfs_check_cycle(node):
             state[node]=1 #it is in path
-            
+
             for nbr in adjList[node]:
                 if state[nbr]==1: #nbr is in current path
                     return True
@@ -213,14 +241,14 @@ class Solution:
 
             state[node]=2 #mark as visited
             return False
-        
+
         def dfs_topo(node):
             visited.add(node)
             for nbr in adjList[node]:
                 if nbr not in visited:
                     dfs_topo(nbr)
             topo_order.append(node)
-        
+
         # construct graph
         adjList=defaultdict(list)
         for a,b in prerequisites:
@@ -243,8 +271,36 @@ class Solution:
 
         return topo_order
 
+
 # 10. https://neetcode.io/problems/valid-tree
-from additional_data_structures import DSU
+class DSU:
+    def __init__(self, nodes):
+        self.parent = [-1] * nodes
+        self.rank = [1] * nodes
+        self.components = nodes
+
+    def find_parent(self, x):
+        if self.parent[x] == -1:
+            return x
+        # Path compression
+        self.parent[x] = self.find_parent(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        parent_x = self.find_parent(x)
+        parent_y = self.find_parent(y)
+
+        if parent_x != parent_y:
+            if self.rank[parent_x] > self.rank[parent_y]:
+                self.parent[parent_y] = parent_x
+                self.rank[parent_x] += self.rank[parent_y]
+                self.rank[parent_y] = 0
+            else:
+                self.parent[parent_x] = parent_y
+                self.rank[parent_y] += self.rank[parent_x]
+                self.rank[parent_x] = 0
+            self.components -= 1
+
 def validTree(self, n: int, edges: List[List[int]]) -> bool:
     
     '''
@@ -261,27 +317,23 @@ def validTree(self, n: int, edges: List[List[int]]) -> bool:
         else:
             return False
     # Check if all nodes are connected
-    return dsu.component_count==1
-
+    return dsu.components == 1
 
 # 11. https://neetcode.io/problems/count-connected-components
 def countComponents(self, n: int, edges: List[List[int]]) -> int:
     # T:O(V+E) S:O(V)
     dsu=DSU(n)
     for u,v in edges:
-        if dsu.find_parent(u)!= dsu.find_parent(v):
-            dsu.union(u,v)
-    return dsu.component_count
+        dsu.union(u,v) #if parent already same, then it won't change the component count, otherwise it will decrease by 1
+    return dsu.components
 
 # 12. https://leetcode.com/problems/redundant-connection/
-def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
+def findRedundantConnection(self, edges: List[List[int]]):
     # T:O(V+E) S:O(V)
-    dsu=DSU()
+    
+    n=len(edges)+1 #nodes start from 1 to n, so total n nodes, but edges are n-1, so n = len(edges)+1, ignore the 0th index in DSU
+    dsu=DSU(n)
     for u,v in edges:
         if dsu.find_parent(u)==dsu.find_parent(v):
             return [u,v]
-        else:
-            dsu.union(u,v)
-
-
-# 
+        dsu.union(u,v)
