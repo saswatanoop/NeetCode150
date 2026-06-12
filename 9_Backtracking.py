@@ -4,17 +4,19 @@ from collections import Counter
 
 # 1. https://leetcode.com/problems/subsets/
 def subsets(self, nums: List[int]) -> List[List[int]]:
-    # T:O(2^n) and S:O(n)
+    # T:O(2^n) and S:O(n) T:O(n*2^n) if we consider the time to copy the subset to all_subsets as well
+
     def find_subset(index):
         if index == len(nums):
             all_subsets.append(cur_set[:])
-        else:
-            # ignore current index
-            find_subset(index + 1)
-            # chooses the current index
-            cur_set.append(nums[index])
-            find_subset(index + 1)
-            cur_set.pop()
+            return
+
+        # ignore current index
+        find_subset(index + 1)
+        # chooses the current index
+        cur_set.append(nums[index])  # use it in cur subset
+        find_subset(index + 1)
+        cur_set.pop() # remove it from cur subset to as all combinations with num[index] in subset are already explored in above call
 
     all_subsets = []
     cur_set = []
@@ -24,7 +26,8 @@ def subsets(self, nums: List[int]) -> List[List[int]]:
 
 # 2. https://leetcode.com/problems/subsets-ii/
 def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
-    # T:O(2^n) and S:O(n)
+    # T:O(2^n) and S:O(n) => T:(n*2^n) if we consider the time to copy the subset to all_subsets as well
+    
     def find_subset(index):
         if index == len(freq_list):
             all_subsets.append(cur_subset[:])
@@ -39,8 +42,8 @@ def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
                 freq_list[index][1] += 1
                 cur_subset.pop()
 
-    freq_list = Counter(nums)
-    freq_list = [[k, v] for k, v in freq_list.items()]
+    # freq list, each element is [num, freq] and we will use the freq to decide how many times we can use the num in subset
+    freq_list = [[k, v] for k, v in Counter(nums).items()]
     cur_subset = []
     all_subsets = []
     find_subset(0)
@@ -50,54 +53,61 @@ def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
 # 3. https://leetcode.com/problems/combination-sum/
 def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
     # T:O(2^(n)) and S:O(n)
-    # choose number one by one if choosen remain at same index
-    # if target==0 found one answer
-    # if reached end of list no comb found for cur list
-    def find_combination(target, index):
+    def dfs(idx, target):
         if target == 0:
-            all_combs.append(cur_comb[:])
-        elif index == len(candidates):
+            all_comb.append(cur_comb[:])
             return
-        else:
-            # ignore current
-            find_combination(target, index + 1)
-            # use current index, if eligible and remain at same index to choose again
-            if target >= candidates[index]:
-                cur_comb.append(candidates[index])
-                find_combination(target - candidates[index], index)
-                cur_comb.pop()
+        if idx == len(candidates):
+            return
 
+        # **numbers are sorted all nums at >=idx are greater than target so can't be used
+        if candidates[idx] > target:
+            return
+
+        # skip cur idx
+        dfs(idx + 1, target)
+        # choose cur idx and remain at same index to choose again
+        cur_comb.append(candidates[idx])
+        dfs(idx, target - candidates[idx]) 
+        cur_comb.pop()
+
+    candidates.sort()
     cur_comb = []
-    all_combs = []
-    find_combination(target, 0)
-    return all_combs
+    all_comb = []
+    dfs(0, target)
+    return all_comb
 
 
 # 4. https://leetcode.com/problems/combination-sum-ii/
 def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
     # T:O(2^(n)) and S:O(n)
-    def find_combination(target, index):
-        if target == 0:
-            all_combs.append(cur_comb[:])
-        elif index == len(freq_list):
+    def dfs(idx,target):
+        if target==0:
+            all_comb.append(cur_comb[:])
             return
-        else:
-            # ignore current index
-            find_combination(target, index + 1)
-            # use current index, if eligible according to freq and target value and then remain at same index to choose again
-            if target >= freq_list[index][0] and freq_list[index][1] > 0:
-                freq_list[index][1] -= 1
-                cur_comb.append(freq_list[index][0])
-                find_combination(target - freq_list[index][0], index)
-                freq_list[index][1] += 1
-                cur_comb.pop()
+        if idx==len(freq):
+            return 
+        
+        # ** numbers are sorted all nums at >=idx are greater than target so can't be used
+        if freq[idx][0] > target: 
+            return 
 
-    freq_list = Counter(candidates)
-    freq_list = [[k, v] for k, v in freq_list.items()]
-    cur_comb = []
-    all_combs = []
-    find_combination(target, 0)
-    return all_combs
+        # skip cur idx
+        dfs(idx+1,target)
+        # choose cur idx if there are still some left, and remain at same index to choose again
+        if freq[idx][1]>0:
+            cur_comb.append(freq[idx][0])
+            freq[idx][1]-=1
+            dfs(idx,target-freq[idx][0])
+            freq[idx][1]+=1
+            cur_comb.pop()
+    
+    freq=[[k,v] for k,v in Counter(candidates).items()]
+    freq.sort()
+    cur_comb=[]
+    all_comb=[]
+    dfs(0,target)
+    return all_comb
 
 
 # 5. https://leetcode.com/problems/permutations/
@@ -303,25 +313,32 @@ def solveNQueens(self, n: int) -> List[List[str]]:
 
 # 11. https://leetcode.com/problems/generate-parentheses/description/
 def generateParenthesis(self, n: int) -> List[str]:
-    # T:O(4^n/sqrt(n)) and S:O(n)
-    def find_paranthesis(left, right):
+    """
+    # T:O(4^n/sqrt(n)) and S:O(n) auxiliary (recursion + current path), excluding output.
+    Time:   O(Cn * n), where Cn is the nth Catalan number (number of valid parentheses strings).
+            Since Cn ≈ 4^n / (n^(3/2)), time can also be written as O(4^n / sqrt(n)).
+    """
+
+    def dfs(left, right):
         if left == right == n:
             all_combs.append("".join(cur))
             return
+
         # if left bracket is remaining use it
         if left < n:
             cur.append("(")
-            find_paranthesis(left + 1, right)
+            dfs(left + 1, right)
             cur.pop()
+
         # if left bracket more than right then we can close it, and it is valid
         if left > right:
             cur.append(")")
-            find_paranthesis(left, right + 1)
+            dfs(left, right + 1)
             cur.pop()
 
     cur = []
     all_combs = []
-    find_paranthesis(0, 0)
+    dfs(0, 0)
     return all_combs
 
 
