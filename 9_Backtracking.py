@@ -249,36 +249,25 @@ def partition(self, s: str) -> List[List[str]]:
 
 
 # 9. https://leetcode.com/problems/letter-combinations-of-a-phone-number/
-def letterCombinations(digits: str) -> List[str]:
+def letterCombinations(self, digits: str) -> List[str]:
     # T:O(4^n) and S:O(n)
-    def find_combination(index):
-        if index == len(digits):
-            all_combs.append("".join(cur_comb))
-        else:
-            for c in keypad[digits[index]]:
-                cur_comb.append(c)
-                find_combination(index + 1)
-                cur_comb.pop()
+    # We have 4 choices for each digit and n digits so 4^n combinations, and n for each combination to copy to all_combs as well, so T:O(n*4^n)
+    def dfs(idx):
+        if idx==len(digits):
+            all_combs.append("".join(cur))
+            return
+        
+        for c in mapping[int(digits[idx])]:
+            cur.append(c)
+            dfs(idx+1)
+            cur.pop()
 
-    if not digits:
-        return []
-
-    keypad = {
-        "2": "abc",
-        "3": "def",
-        "4": "ghi",
-        "5": "jkl",
-        "6": "mno",
-        "7": "pqrs",
-        "8": "tuv",
-        "9": "wxyz",
-    }
-    all_combs = []
-    cur_comb = []
-    find_combination(0)
+    mapping=["","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"]
+    all_combs=[]
+    cur=[]
+    dfs(0)
     return all_combs
-
-
+    
 # 10. https://leetcode.com/problems/n-queens/
 def solveNQueens(self, n: int) -> List[List[str]]:
     # T:O(n!) and S:O(n^2) for board
