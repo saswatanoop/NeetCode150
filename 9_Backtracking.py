@@ -23,7 +23,6 @@ def subsets(self, nums: List[int]) -> List[List[int]]:
     find_subset(0)
     return all_subsets
 
-
 # 2. https://leetcode.com/problems/subsets-ii/
 def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
     # T:O(2^n) and S:O(n) => T:(n*2^n) if we consider the time to copy the subset to all_subsets as well
@@ -77,7 +76,6 @@ def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
     dfs(0, target)
     return all_comb
 
-
 # 4. https://leetcode.com/problems/combination-sum-ii/
 def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
     # T:O(2^(n)) and S:O(n)
@@ -113,73 +111,43 @@ def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]
 # 5. https://leetcode.com/problems/permutations/
 def permute(self, nums: List[int]) -> List[List[int]]:
     # T:O(n*n!) and S:O(n) n! permutations and n for each perm to copy to all_perm
-    def find_perm_with_swap(index):
-        if index == len(nums):
-            all_perm.append(nums[:])
-        else:
-            for i in range(index, len(nums)):
-                nums[index], nums[i] = nums[i], nums[index]
-                find_perm_with_swap(index + 1)
-                nums[index], nums[i] = nums[i], nums[index]
+    def dfs(idx): #set num at pos idx
+        if idx==n:
+            all_perms.append(nums[:])
+            return
+        
+        # for all nums idx to n, try all of them
+        for i in range(idx,n):
+            nums[idx],nums[i]=nums[i],nums[idx] #swap nums
+            dfs(idx+1) #idx is set go for next index
+            nums[idx],nums[i]=nums[i],nums[idx] #swap back to same state
 
-    def find_perm_without_swap():
-        if len(perm) == len(nums):
-            all_perm.append(perm[:])
-        else:
-            for i in range(len(visited)):
-                if not visited[i]:
-                    visited[i] = True
-                    perm.append(nums[i])
-                    find_perm_without_swap()
-                    perm.pop()
-                    visited[i] = False
-
-    all_perm = []
-    find_perm_with_swap(0)
-    # below 3 are needed for without swap
-    perm = []
-    visited = [False] * len(nums)
-    # find_perm_without_swap()
-    return all_perm
-
+    n=len(nums)
+    all_perms=[]
+    dfs(0)
+    return all_perms
 
 # 6. https://leetcode.com/problems/permutations-ii/
 def permuteUnique(self, nums: List[int]) -> List[List[int]]:
-    # T:O(n*n!) and S:O(n) n! permutations and n for each perm to copy to all_perm
-    def find_perm_with_swap(index):
-        if index == len(nums):
-            all_perm.append(nums[:])
-        else:
-            seen = (
-                set()
-            )  # to avoid duplicates, once a number is swapped with index, dont do it again
-            for i in range(index, len(nums)):
-                if nums[i] not in seen:
-                    seen.add(nums[i])
-                    nums[index], nums[i] = nums[i], nums[index]
-                    find_perm_with_swap(index + 1)
-                    nums[index], nums[i] = nums[i], nums[index]
+    # T:O(n*n!) and S:O(n) n! permutations and n for each perm to copy to all_perm    
+    def dfs(idx): #set num at pos idx
+        if idx==n:
+            all_perms.append(nums[:])
+            return
+        
+        # for all nums idx to n, try all of them
+        seen=set()
+        for i in range(idx,n):
+            if nums[i] not in seen: #don't try all permutations by setting same no twice at idx
+                seen.add(nums[i])
+                nums[idx],nums[i]=nums[i],nums[idx] #swap nums
+                dfs(idx+1) #idx is set go for next index
+                nums[idx],nums[i]=nums[i],nums[idx] #swap back to same state
 
-    def find_perm():
-        if len(perm) == len(nums):
-            all_perm.append(perm[:])
-        else:
-            #  in perm list, we have to make sure at each index we are not repeating the same number, so we choose from freq list
-            for i in range(len(freq)):
-                if freq[i][1] > 0:
-                    freq[i][1] -= 1
-                    perm.append(freq[i][0])
-                    find_perm()
-                    perm.pop()
-                    freq[i][1] += 1
-
-    all_perm = []
-    find_perm_with_swap(0)
-    # below 3 are needed for without swap
-    freq = [[k, v] for k, v in Counter(nums).items()]
-    perm = []
-    # find_perm()
-    return all_perm
+    n=len(nums)
+    all_perms=[]
+    dfs(0)
+    return all_perms
 
 
 # 7. https://leetcode.com/problems/word-search/description/
