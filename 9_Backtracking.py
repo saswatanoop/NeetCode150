@@ -185,41 +185,26 @@ def permuteUnique(self, nums: List[int]) -> List[List[int]]:
 # 7. https://leetcode.com/problems/word-search/description/
 def exist(self, board: List[List[str]], word: str) -> bool:
     # T: O(n*m*(4^w) and S:O(w) where w is length of word
-    # check at each board pos i,j for word
-    # if the letter matches mark the board[i][j] and move to next 4 directions, when combing back unmark it
-    # return True if found in anyone
-
-    def find_word(i, j, index):
-        if index == len(word):
+    def dfs(i,j,idx):
+        if idx==len(word): # Found the word
             return True
-        if (
-            i < 0
-            or i >= rows
-            or j < 0
-            or j >= cols
-            or board[i][j] == "#"
-            or board[i][j] != word[index]
-        ):
+        if not (0<=i<n and 0<=j<m) or (i,j) in visited or word[idx]!=board[i][j]: # skip all invalid cases
             return False
-        # ther is a match
-        board[i][j] = "#"
-        for d in directions:
-            x, y = i + d[0], j + d[1]
-            if find_word(x, y, index + 1):
-                board[i][j] = word[index]  # restore before returning True as well
+        
+        visited.add((i,j)) # mark the board[i][j] as visited
+        for dx,dy in directions: # Try all 4 directions 
+            if dfs(i+dx,j+dy,idx+1):
                 return True
-        # restore the board[i][j] value, using the word, we don't need to store the char of board[i][j]
-        board[i][j] = word[index]
-        return False
+        visited.discard((i,j)) # unmark the board[i][j] as visited to use it in other combinations as well
 
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    rows, cols = len(board), len(board[0])
-    for i in range(rows):
-        for j in range(cols):
-            if find_word(i, j, 0):
+    visited=set()
+    n,m=len(board),len(board[0])
+    directions=[[1,0],[-1,0],[0,1],[0,-1]]
+    for i in range(n):
+        for j in range(m):
+            if dfs(i,j,0):
                 return True
     return False
-
 
 # 8. https://leetcode.com/problems/palindrome-partitioning/
 def partition(self, s: str) -> List[List[str]]:
