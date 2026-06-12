@@ -314,23 +314,26 @@ def solveNQueens(self, n: int) -> List[List[str]]:
 # 11. https://leetcode.com/problems/generate-parentheses/description/
 def generateParenthesis(self, n: int) -> List[str]:
     """
-    # T:O(4^n/sqrt(n)) and S:O(n) auxiliary (recursion + current path), excluding output.
+    Correct: T:O(4^n/sqrt(n)) and S:O(n) auxiliary (recursion + current path), excluding output.
+    
+    from basic recursion: 2^2n = 4^n as we have 2n positions and at each position we have 2 choices
+    
     Time:   O(Cn * n), where Cn is the nth Catalan number (number of valid parentheses strings).
             Since Cn ≈ 4^n / (n^(3/2)), time can also be written as O(4^n / sqrt(n)).
     """
 
     def dfs(left, right):
-        if left == right == n:
+        if left == right == n: #computed one valid Parentheses
             all_combs.append("".join(cur))
             return
 
-        # if left bracket is remaining use it
+        # if left still remaining, choose it and generate from it
         if left < n:
             cur.append("(")
             dfs(left + 1, right)
             cur.pop()
 
-        # if left bracket more than right then we can close it, and it is valid
+        # if left>right, choose right as it is valid and generate from it
         if left > right:
             cur.append(")")
             dfs(left, right + 1)
