@@ -177,6 +177,8 @@ def exist(self, board: List[List[str]], word: str) -> bool:
 # 8. https://leetcode.com/problems/palindrome-partitioning/
 def partition(self, s: str) -> List[List[str]]:
     # T:O(n*2^n) and S:O(n)
+    # Time: O(n^2 * 2^(n-1)) ≈ O(n^2 * 2^n) — there are n-1 possible cut positions giving 2^(n-1) partition choices,
+    # and for each state we may try O(n) substrings with each palindrome check costing O(n).
     def check_pal(i, j):
         while i <= j:
             if s[i] != s[j]:
@@ -186,14 +188,16 @@ def partition(self, s: str) -> List[List[str]]:
         return True
 
     def find_partition(index):
-        if index == len(s):
+        if index == len(s): # reached end => one valid partition found
             all_parts.append(cur_parts[:])
-        else:
-            for i in range(index, len(s)):
-                if check_pal(index, i):
-                    cur_parts.append(s[index : i + 1])
-                    find_partition(i + 1)
-                    cur_parts.pop()
+            return
+
+        # try every possible substring starting at index
+        for i in range(index, len(s)):
+            if check_pal(index, i): 
+                cur_parts.append(s[index : i + 1]) # add the palindrome from index to i to current partition
+                find_partition(i + 1) # look from i+1 for remaining partition
+                cur_parts.pop()
 
     all_parts = []
     cur_parts = []
@@ -223,35 +227,30 @@ def letterCombinations(self, digits: str) -> List[str]:
     
 # 10. https://leetcode.com/problems/n-queens/
 def solveNQueens(self, n: int) -> List[List[str]]:
-    # T:O(n!) and S:O(n^2) for board
-    def is_possible_to_place(i, j):
-        return cols[j] and main_dig[j - i + n - 1] and other_dig[j + i]
+    # Time: O(N!) — each row chooses among remaining valid columns, leading to at most N! placements.
+    # Space: O(N) for recursion stack and column/diagonal tracking.
+    def dfs(row):
+        if row==n:
+            new_board=["".join(board[i]) for i in range(n)]
+            all_comb.append(new_board)
+            return
+        
+        for col in range(n):
+            # check we can put queen in [row,col] location
+            if col_check[col] and left_dig[row+col] and right_dig[row-col+n-1]:
+                col_check[col] = left_dig[row+col] = right_dig[row-col+n-1] = 0 # mark the column and diagonals as not available for next rows
+                board[row][col]='Q' # place the queen and go for next row
+                dfs(row+1)
+                board[row][col]='.' # unplace the queen and mark the column and diagonals as available
+                col_check[col] = left_dig[row+col] = right_dig[row-col+n-1] = 1
 
-    def set_pos(i, j, with_queen=False):
-        cols[j] = main_dig[j - i + n - 1] = other_dig[j + i] = (
-            False if with_queen else True
-        )
-        board[i][j] = "Q" if with_queen else "."
-
-    def find_placings(i):
-        if i == n:
-            all_comb.append(["".join(row) for row in board])
-        else:
-            # try to place queen at each column of row i
-            for j in range(n):
-                if is_possible_to_place(i, j):
-                    set_pos(i, j, with_queen=True)  # place the queen
-                    find_placings(i + 1)
-                    set_pos(i, j, with_queen=False)  # unplace the queen
-
-    cols = [True] * n
-    main_dig = [True] * (2 * n - 1)  # j-i+n-1
-    other_dig = [True] * (2 * n - 1)  # j+i
-    all_comb = []
-    board = [list("." * n) for _ in range(n)]
-    find_placings(0)
+    col_check=[1]*n
+    left_dig=[1]*(2*n-1)
+    right_dig=[1]*(2*n-1)
+    all_comb=[]
+    board=[['.']*n for _ in range(n)]
+    dfs(0)
     return all_comb
-
 
 # 11. https://leetcode.com/problems/generate-parentheses/description/
 def generateParenthesis(self, n: int) -> List[str]:
