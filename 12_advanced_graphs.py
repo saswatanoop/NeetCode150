@@ -4,7 +4,7 @@ import heapq
 
 
 # 1. https://leetcode.com/problems/network-delay-time/
-def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
+def networkDelayTime(self, times: List[List[int]], n: int, k: int):
     # T:O(ElogE)=>ElogV^2=>2ELogV S:O(V+E)
     # Dijkstra's algorithm
     graph=defaultdict(list)
@@ -30,17 +30,18 @@ def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
     return -1 if max_dist==float("inf") else max_dist
 
 # 3. https://leetcode.com/problems/min-cost-to-connect-all-points/description/
-from additional_data_structures import DSU
+from DS_DSU import DSU
 def minCostConnectPoints(self, points: List[List[int]]) -> int:
-    # T:O(n^2logn) S:O(n) n^2log(n^2)=>2(n^2)logn 
-    # Kruskal's algorithm: for finding MST
-    
-    edges=[]
+    # T:O(n^2logn) S:O(n) n^2log(n^2)=>2(n^2)logn
+
+    edges = []  # create all possible edges, T:O(n^2)
     for i in range(len(points)):
         for j in range(i+1, len(points)):
             weight= abs(points[i][0]-points[j][0]) + abs(points[i][1]-points[j][1])
             edges.append((weight,i,j))
+
     # Sort edges based on weight, T:O(ElogE) E=n^2
+    # Kruskal's algorithm: for finding MST
     edges.sort()
     dsu=DSU(len(points))
     cost=0
@@ -54,4 +55,4 @@ def minCostConnectPoints(self, points: List[List[int]]) -> int:
             dsu.union(u,v)
     return cost
 
-# 
+#

@@ -30,13 +30,11 @@ def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
 
 
 # 2. https://leetcode.com/problems/merge-two-sorted-lists/
-def mergeTwoLists(
-    self, list1: Optional[ListNode], list2: Optional[ListNode]
-) -> Optional[ListNode]:
+def mergeTwoLists( self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
     # T:O(n) and S:O(1)
-
     dummy = ListNode()
     temp = dummy
+    
     while list1 and list2:
         if list1.val < list2.val:
             temp.next = list1
