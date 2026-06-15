@@ -156,7 +156,7 @@ def deleteMiddle(self, head: Optional[ListNode]) -> Optional[ListNode]:
     return dummy.next
 
 # 6. https://leetcode.com/problems/copy-list-with-random-pointer/
-class Solution:
+class CopyRandomList:
     def copyRandomList(self, head: "Optional[Node]") -> "Optional[Node]":
         # T:O(3*n) S:O(1)
         if not head:
@@ -190,27 +190,25 @@ class Solution:
                 copy.next = l1.next
         return l2
 
-    def copyRandomList_one_pass_n_space(
-        self, head: "Optional[Node]"
-    ) -> "Optional[Node]":
+    def copyRandomList_one_pass_n_space(self, head: "Optional[Node]") -> "Optional[Node]":
         # T:O(n) S:O(n)
-        dic = defaultdict(Node)
-        temp = head
-        while temp:
-            if temp not in dic:
-                dic[temp] = Node(temp.val)
-            if temp.next:
-                if temp.next not in dic:
-                    dic[temp.next] = Node(temp.next.val)
-                dic[temp].next = dic[temp.next]
-            if temp.random:
-                if temp.random not in dic:
-                    dic[temp.random] = Node(temp.random.val)
-                dic[temp].random = dic[temp.random]
-            temp = temp.next
-
-        return dic[head] if head else None
-
+        copy = {None:None}
+        tmp = head
+        while tmp:
+            # Add all 3 nodes if not there in dictionary, None case handled: None mapped to None in copy
+            if tmp not in copy:
+                copy[tmp] = Node(tmp.val)
+            if tmp.next not in copy:
+                copy[tmp.next] = Node(tmp.next.val)
+            if tmp.random not in copy:
+                copy[tmp.random] = Node(tmp.random.val)
+            # add both the pointers
+            copy[tmp].next=copy[tmp.next]
+            copy[tmp].random=copy[tmp.random]
+            # move to next
+            tmp=tmp.next
+        return copy[head]
+        
 
 # 7. https://leetcode.com/problems/add-two-numbers/
 def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
@@ -266,54 +264,49 @@ def findDuplicate(self, nums: List[int]) -> int:
 class LRUCache:
 
     def __init__(self, capacity: int):
-        # most recent one will be at the start and oldest will be at the end
-        self.ordered_dic = OrderedDict()
-        self.capacity = capacity
+        # start: oldest, end: most recent
+        self.cache=OrderedDict()
+        self.capacity=capacity
 
     def get(self, key: int) -> int:
-        # T:O(1) and S:O(capacity)
-        if key not in self.ordered_dic:
+        if key not in self.cache:
             return -1
-        # move key to front
-        self.ordered_dic.move_to_end(key, last=False)
-        return self.ordered_dic[key]
+        self.cache.move_to_end(key) # move key to end, so that it becomes most recently used
+        return self.cache[key]
+        
 
     def put(self, key: int, value: int) -> None:
-        # T:O(1) and S:O(capacity)
-        # if capacity reached and we need to insert new element remove from the end
-        if key not in self.ordered_dic and len(self.ordered_dic) == self.capacity:
-            self.ordered_dic.popitem(last=True)
-        self.ordered_dic[key] = value
-        # move key to front
-        self.ordered_dic.move_to_end(key, last=False)
+        if key not in self.cache and len(self.cache)>=self.capacity: 
+            self.cache.popitem(last=False) # remove least recently used item, which is at the start
+        self.cache[key]=value
+        self.cache.move_to_end(key) # move key to end, so that it becomes most recently used
 
 
 # 10. https://leetcode.com/problems/merge-k-sorted-lists/description/
 def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
     # T:O(nlogk) and S:O(k)
-    dummy = ListNode()
-    min_heap = []
-    temp = dummy
-    counter = 0
-    for l in lists:
-        if l:
-            heapq.heappush(min_heap, (l.val, counter, l))
-            counter += 1
+    # create minheap of size k from first nodes of all the lists
+    pq_min=[]
+    for i, node in enumerate(lists):
+        if node:
+            pq_min.append((node.val, i, node))
+    heapq.heapify(pq_min)
 
-    while min_heap:
-        l = heapq.heappop(min_heap)[2]
-        temp.next = l
-        l = l.next
-        if l:
-            heapq.heappush(min_heap, (l.val, counter, l))
-            counter += 1
-        temp = temp.next
+    dummy=ListNode()
+    tmp=dummy
+    while pq_min:
+        _,i,node=heapq.heappop(pq_min)
+        tmp.next=node
+        tmp=tmp.next
+        node=node.next #move to next node in the same list, and add it to minheap if it is not null
+        if node:
+            heapq.heappush(pq_min,(node.val,i,node))
 
     return dummy.next
 
 
 # 11. https://leetcode.com/problems/reverse-nodes-in-k-group/
-class Solution:
+class ReverseKGroup:
     def reverseLL(self, node):
         last = node
         prev = None
