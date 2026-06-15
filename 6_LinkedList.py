@@ -127,26 +127,34 @@ def reorderList(self, head: Optional[ListNode]) -> None:
     head = merge_lists(l1, l2)
 
 
-# 5. https://leetcode.com/problems/remove-nth-node-from-end-of-list/
-def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
-    # T:O(n) and S:O(1)
-    # Adding dummy will help remove the nth node, that is the head node itself easily
-    dummy = ListNode()
-    dummy.next = head
-    prev_to_delete = fast = dummy
-    while n and fast.next:
-        fast = fast.next
-        n -= 1
-    # the n provided is higher than list size
-    if n != 0:
-        return False
+# 5.) https://leetcode.com/problems/remove-nth-node-from-end-of-list/
+def removeNthFromEnd(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+    # dummy node needed to handle the case when first node needs to be removed
+    dummy=ListNode(next=head)
+    slow=fast=dummy
+    # move fast k steps ahead
+    for i in range(k):
+        fast=fast.next
+    # move both fast and slow, slow will be at k+1 from the end
     while fast.next:
-        fast = fast.next
-        prev_to_delete = prev_to_delete.next
-
-    prev_to_delete.next = prev_to_delete.next.next
+        fast=fast.next
+        slow=slow.next
+    # remove the kth node
+    slow.next=slow.next.next
     return dummy.next
 
+# 5.5) https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list
+def deleteMiddle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+    # dummy node needed to handle the case when first node needs to be removed
+    dummy=ListNode(next=head) 
+    slow=fast=dummy
+    # keep slow one place before from middle
+    while fast and fast.next and fast.next.next:
+        slow=slow.next
+        fast=fast.next.next
+    
+    slow.next=slow.next.next
+    return dummy.next
 
 # 6. https://leetcode.com/problems/copy-list-with-random-pointer/
 class Solution:
