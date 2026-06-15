@@ -9,7 +9,6 @@ class Node:
         self.next = next
         self.random = random
 
-
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
@@ -50,7 +49,7 @@ def mergeTwoLists( self, list1: Optional[ListNode], list2: Optional[ListNode]) -
     return dummy.next
 
 
-# 3. https://leetcode.com/problems/linked-list-cycle/
+# 3.1) https://leetcode.com/problems/linked-list-cycle/
 def hasCycle(self, head: Optional[ListNode]) -> bool:
     # T:O(n) and S:O(1)
 
@@ -63,7 +62,7 @@ def hasCycle(self, head: Optional[ListNode]) -> bool:
 
     return False
 
-# 3.2 https://leetcode.com/problems/linked-list-cycle-ii/
+# 3.2) https://leetcode.com/problems/linked-list-cycle-ii/
 def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
     slow=fast=head
     while fast and fast.next:
@@ -127,7 +126,7 @@ def reorderList(self, head: Optional[ListNode]) -> None:
     head = merge_lists(l1, l2)
 
 
-# 5.) https://leetcode.com/problems/remove-nth-node-from-end-of-list/
+# 5.1) https://leetcode.com/problems/remove-nth-node-from-end-of-list/
 def removeNthFromEnd(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
     # dummy node needed to handle the case when first node needs to be removed
     dummy=ListNode(next=head)
@@ -143,7 +142,7 @@ def removeNthFromEnd(self, head: Optional[ListNode], k: int) -> Optional[ListNod
     slow.next=slow.next.next
     return dummy.next
 
-# 5.5) https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list
+# 5.2) https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list
 def deleteMiddle(self, head: Optional[ListNode]) -> Optional[ListNode]:
     # dummy node needed to handle the case when first node needs to be removed
     dummy=ListNode(next=head) 
@@ -238,20 +237,32 @@ def addTwoNumbers(
 
 # 8. https://leetcode.com/problems/find-the-duplicate-number/
 def findDuplicate(self, nums: List[int]) -> int:
-    # T:O(n) and S:O(1)
+    # Treat the array as a linked list:
+    #
+    #   node = index [there are n+1 nodes from 0 to n indexes]
+    #   next = nums[node] [next pointer is value at that index]
+    #
+    # Example: nums = [1, 3, 4, 2, 2]
+    #
+    # 0 -> 1 -> 3 -> 2 -> 4
+    #                ^     |
+    #                |_____|
+    #
+    # The duplicate number creates a cycle at the node, find the node where the cycle starts is equivalent to finding the duplicate number.
+
     slow = fast = 0
     while True:
-        slow = nums[slow]
-        fast = nums[nums[fast]]
-        if slow == fast:
-            break
-    slow2 = 0
-    while True:
-        slow = nums[slow]
-        slow2 = nums[slow2]
-        if slow == slow2:
-            return slow
+        slow = nums[slow] # slow = slow.next
+        fast = nums[nums[fast]] # fast = fast.next.next
 
+        # First meeting point somewhere inside the cycle.
+        if slow == fast:
+            slow = 0
+            while slow != fast:
+                slow = nums[slow]
+                fast = nums[fast]
+            
+            return slow # The cycle entrance is exactly the duplicate number.
 
 # 9. https://leetcode.com/problems/lru-cache/
 class LRUCache:
