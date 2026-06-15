@@ -18,16 +18,15 @@ class ListNode:
 
 # 1. https://leetcode.com/problems/reverse-linked-list/
 def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
-    # keep three pointes, prev, head and next
     # T:O(n) S:O(1)
-    prev = None
+    before = None
     while head:
-        next = head.next
-        head.next = prev
-        prev = head
-        head = next
+        after = head.next # store the next node before changing the head.next
+        head.next = before # reverse the link
+        before = head # move before to head
+        head = after # move head to next node, which is stored in after
 
-    return prev
+    return before
 
 
 # 2. https://leetcode.com/problems/merge-two-sorted-lists/
@@ -237,7 +236,7 @@ def findDuplicate(self, nums: List[int]) -> int:
 class LRUCache:
 
     def __init__(self, capacity: int):
-        # most recent one will be at the start and oldest willl be at the end
+        # most recent one will be at the start and oldest will be at the end
         self.ordered_dic = OrderedDict()
         self.capacity = capacity
 
