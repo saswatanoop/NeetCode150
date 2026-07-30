@@ -84,9 +84,7 @@ def reorderList(self, head: Optional[ListNode]) -> None:
     # 1. find middle
     # 2. reverse the second half
     # 3. merge both first and reversed second half
-    def merge_lists(
-        l1: Optional[ListNode], l2: Optional[ListNode]
-    ) -> Optional[ListNode]:
+    def merge_lists(l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
         dummy = ListNode()
         temp = dummy
         use_first = True
@@ -102,13 +100,13 @@ def reorderList(self, head: Optional[ListNode]) -> None:
         return dummy.next
 
     def reverse_list(l: Optional[ListNode]) -> Optional[ListNode]:
-        prev = None
+        before = None
         while l:
-            next = l.next
-            l.next = prev
-            prev = l
-            l = next
-        return prev
+            after = l.next
+            l.next = before
+            before = l
+            l = after
+        return before
 
     if not head or not head.next:
         return
