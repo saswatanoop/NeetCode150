@@ -139,17 +139,17 @@ class CheckSudoku:
         return True
 
 # 9. https://leetcode.com/problems/longest-consecutive-sequence/description/
-def longestConsecutive(self, nums: List[int]) -> int:
+def longestConsecutive(self, numbers: List[int]) -> int:
     # T:O(n) and S:O(n) for set
-    present=set(nums)
+    nums=set(numbers)
     ans=0
-    for n in present:
-        if n-1 in present:
+    for n in nums:
+        if n-1 in nums: # ignore, this is not the start of a sequence
             continue
-        end = n
-        while end+1 in present:
+        start = end = n
+        while end+1 in nums:
             end+=1
-        ans=max(ans,end-n+1)
+        ans=max(ans,end-start+1) # consecutive sequence is from start to end, so length is end-start+1
     return ans
             
 # 10. https://leetcode.com/problems/count-number-of-bad-pairs/description/
